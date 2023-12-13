@@ -1,56 +1,53 @@
 package com.example.fitquest
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.fitquest.R
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.common.BitMatrix
-import com.google.zxing.qrcode.QRCodeWriter
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddFriend() {
+fun SearchFriend() {
     var searchQuery by remember { mutableStateOf("") }
 
+    // Sample list of users for demonstration
+    val userList = listOf(
+        User("Harry Philip", R.drawable.profile_image),
+        User("Jane Smith", R.drawable.profile_image),
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Icon(imageVector = Icons.Default.KeyboardArrowLeft,
+        Icon(
+            imageVector = Icons.Default.KeyboardArrowLeft,
             contentDescription = null,
-            modifier = Modifier.height(40.dp))
+            modifier = Modifier.height(40.dp)
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -80,6 +77,71 @@ fun AddFriend() {
             )
         )
 
+        userList.forEach { user ->
+            UserListItem(user = user)
+        }
+    }
+}
+@Composable
+fun UserListItem(user: User) {
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Round profile image
+            Image(
+                painter = painterResource(id = user.profileImage),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // User's name
+            Text(text = user.username, fontSize = 22.sp)
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Send Friend Request Button
+            Button(
+                onClick = {
+                    // Handle send friend request button click
+                    // You can perform the necessary actions here
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .widthIn(min = 80.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
+            ) {
+                Text("Add", color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun ShareCode(name: String, code: String){
+    // Get the context
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ){
+        Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         // User Information Card
         OutlinedCard(
             modifier = Modifier
@@ -107,19 +169,11 @@ fun AddFriend() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // User's name
-                Text(text = "John Doe", fontSize = 22.sp)
+                Text(text = name, fontSize = 22.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // QR Code
-//                val qrCodeBitmap = generateQRCode("ABC123", 150, 150)
-//                Image(
-//                    bitmap = qrCodeBitmap,
-//                    contentDescription = null,
-//                    modifier = Modifier.size(80.dp)
-//                )
-
-                Spacer(modifier = Modifier.height(8.dp))
+                //Qr code
 
                 // Share Code
                 Text(text = "Code:", fontSize = 22.sp)
@@ -127,33 +181,55 @@ fun AddFriend() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .background(color= Color(0xFFE66353))
-                        .align(Alignment.CenterHorizontally)
-                        .clip(shape = RoundedCornerShape(26.dp)),
+                        .background(color = Color(0xFFE66353))
+                        .align(Alignment.CenterHorizontally),
+                )
+                {
+                    Text(
+                        text = code, color = Color.White, fontSize = 30.sp,
+                        modifier = Modifier.align(Alignment.Center)
                     )
-                    {
-                    Text(text = "123-456-789", color= Color.White, fontSize = 30.sp,
-                        modifier = Modifier.align(Alignment.Center))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Share Button
-                IconButton(
+                Button(
                     onClick = {
-                        // Handle share button click
-                    }
+                        val shareIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, code) // Replace with the actual code
+                            type = "text/plain"
+                        }
+                        // Use the context to start the activity
+                        context.startActivity(shareIntent)
+                    },
+                    modifier = Modifier
+                        .padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFf3b4ac))
                 ) {
-                    Icon(imageVector = Icons.Default.Send, contentDescription = null)
+                    Text("Share Code", fontSize = 25.sp)
                 }
             }
         }
     }
 }
 
+data class User(val username: String, val profileImage: Int)  // Sample user data class
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddFriend( name: String, code: String ) {
+    LazyColumn {
+        item {
+            SearchFriend()
+            ShareCode(name = name, code = code)
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun AddFriendPreview() {
-    AddFriend()
+    AddFriend(name = "John Doe", code= "123-456-789")
 }
