@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
                         unselectedIcon = Icons.Outlined.Add,
                         hasNews = true,
 
-                    ),
+                        ),
                     BottomNavigationItem(
                         title = "Challenges",
                         selectedIcon = Icons.Filled.LocationOn,
