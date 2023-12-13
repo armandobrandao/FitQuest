@@ -45,7 +45,7 @@ fun SearchFriend() {
     ) {
         Icon(
             imageVector = Icons.Default.KeyboardArrowLeft,
-            contentDescription = null,
+            contentDescription = "Back",
             modifier = Modifier.height(40.dp)
         )
 
