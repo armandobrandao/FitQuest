@@ -159,7 +159,7 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Daily Progress", fontWeight = FontWeight.Bold, fontSize = 30.sp)
+            Text(text = "Daily Progress", fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.Black)
         }
 
         // Two rounded containers side by side (Steps and Calories Burned)
@@ -223,7 +223,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "$value")
+            Text(text = "$value", color = Color.Black)
 
             Spacer(modifier = Modifier.height(2.dp))
 
@@ -240,7 +240,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
                     color = Color(0xFFE66353)
                 )
                 Spacer(modifier = Modifier.width(3.dp))
-                Text(text = "$goal", fontSize = 10.sp)
+                Text(text = "$goal", fontSize = 10.sp, color = Color.Black)
             }
         }
     }
@@ -258,7 +258,7 @@ fun DailyQuests() {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp)
+            Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.Black)
         }
         val imageQuest1 = R.drawable.pilates
         // Card 1

@@ -51,7 +51,7 @@ fun SearchFriend() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+        Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color.Black)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -108,7 +108,7 @@ fun UserListItem(user: User) {
             Spacer(modifier = Modifier.width(16.dp))
 
             // User's name
-            Text(text = user.username, fontSize = 22.sp)
+            Text(text = user.username, fontSize = 22.sp, color = Color.Black)
 
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -138,7 +138,7 @@ fun ShareCode(name: String, code: String){
             .fillMaxSize()
             .padding(16.dp)
     ){
-        Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+        Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color.Black)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -169,14 +169,14 @@ fun ShareCode(name: String, code: String){
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // User's name
-                Text(text = name, fontSize = 22.sp)
+                Text(text = name, fontSize = 22.sp, color = Color.Black)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Qr code
 
                 // Share Code
-                Text(text = "Code:", fontSize = 22.sp)
+                Text(text = "Code:", fontSize = 22.sp, color = Color.Black)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

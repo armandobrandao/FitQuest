@@ -56,7 +56,7 @@ fun InputBox(
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        Text(text = label, fontSize = 18.sp)
+        Text(text = label, fontSize = 18.sp, color = Color.Black)
         if (options.isNotEmpty()) {
             Box(
                 modifier = Modifier
@@ -141,7 +141,7 @@ fun GenerateWorkout() {
                 // Top Bar
                 TopAppBar(
                     title = {
-                        Text(text = "Generate Workout")
+                        Text(text = "Generate Workout", color = Color.Black)
                     },
                     navigationIcon = {
                         IconButton(
