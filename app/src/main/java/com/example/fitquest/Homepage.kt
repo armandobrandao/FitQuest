@@ -53,6 +53,7 @@ fun Header() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
+                    .background(Color.White)
     ) {
         // Replace R.drawable.your_logo with the actual resource ID of your logo
         val logoPainter = painterResource(id = R.drawable.logo)

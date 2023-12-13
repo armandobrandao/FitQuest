@@ -67,6 +67,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation ("androidx.appcompat:appcompat:1.4.2")
+    implementation ("com.google.android.material:material:1.6.1")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
+
     // CALENDARIO
     // The compose calendar library
     implementation ("com.kizitonwose.calendar:compose:2.3.0")
