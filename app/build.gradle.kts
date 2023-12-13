@@ -79,4 +79,7 @@ dependencies {
     // The compose calendar library
     implementation ("com.kizitonwose.calendar:compose:2.3.0")
     implementation ("com.google.zxing:core:3.4.1")
+
+    // WORKOUT API
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
 }

@@ -129,6 +129,30 @@ fun InputBox(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerateWorkout() {
+    val apiKey = "Tng/CZGSkgzfSCEV+DbTyw==fsY8JbSZOC11ObD4"
+
+    // Make the API request
+    var apiResponse by remember { mutableStateOf<String?>(null) }
+
+    // Mapping for display values
+    val difficultyOptionsMap = mapOf(
+        "beginner" to "Beginner",
+        "intermediate" to "Intermediate",
+        "expert" to "Expert"
+    )
+
+    val typeOptionsMap = mapOf(
+        "cardio" to "Cardio",
+        "olympic_weightlifting" to "Olympic Weightlifting",
+        "plyometrics" to "Plyometrics"
+    )
+
+    val muscleOptionsMap = mapOf(
+        "abdominals" to "Abdominals",
+        "abductors" to "Abductors",
+        "adductors" to "Adductors"
+    )
+
     LazyColumn {
         item {
             Column(
@@ -141,7 +165,7 @@ fun GenerateWorkout() {
                 // Top Bar
                 TopAppBar(
                     title = {
-                        Text(text = "Generate Workout", color = Color.Black)
+                        Text(text = "Create Workout", color = Color.Black)
                     },
                     navigationIcon = {
                         IconButton(
@@ -158,33 +182,53 @@ fun GenerateWorkout() {
                     }
                 )
                 // Intensity Input
-                InputBox(label = "Intensity", options = listOf("Low", "Moderate", "Vigorous"))
+                val intensityOptions = listOf("beginner", "intermediate", "expert")
+                val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
+                InputBox(label = "Intensity", options = intensityOptions.map { difficultyOptionsMap[it] ?: it })
 
                 // Location Input
-                InputBox(label = "Location", options = listOf("Home", "Gym", "Outside"))
+                val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
+                val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
+                InputBox(label = "Type", options = typeOptions.map { typeOptionsMap[it] ?: it })
 
                 // Duration Input
+                val selectedDuration by remember { mutableStateOf("") }
                 InputBox(label = "Duration", keyboardType = KeyboardType.Number)
 
                 // Type Input
-                InputBox(label = "Type", options = listOf("Abs", "Legs", "Full Body"))
+                val muscleOptions = listOf("abdominals", "abductors", "adductors")
+                val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
+                InputBox(label = "Type", options = muscleOptions.map { muscleOptionsMap[it] ?: it })
 
                 // Generate Workout Button
                 Button(
                     onClick = {
                         // Handle Generate Workout button click
+                        val response = WorkoutAPI.makeApiRequest(
+                            selectedMuscle,
+                            selectedDifficulty,
+                            selectedType,
+                            selectedDuration,
+                            apiKey,
+                        )
+                        apiResponse = response
+                        println(response)
                     },
                     modifier = Modifier
                         .padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFf3b4ac))
+                    colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
                 ) {
-                    Text("Generate Workout", color = Color.White, fontSize = 20.sp)
+                    Text("Generate Workout", color = Color.Black, fontSize = 20.sp)
+                }
+
+                // Display API response
+                apiResponse?.let { response ->
+                    Text("API Response: $response", fontSize = 16.sp)
                 }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
