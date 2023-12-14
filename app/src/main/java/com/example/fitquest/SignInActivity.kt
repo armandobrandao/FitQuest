@@ -1,55 +1,43 @@
 package com.example.fitquest
 
 import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import android.os.Bundle
+import android.util.Log
+import com.example.fitquest.databinding.ActivitySignInBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class SignInActivity : AppCompatActivity() {
 
-    private lateinit var emailEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var loginButton: Button
-    private lateinit var signUpRedirectText: TextView
-
+    private lateinit var binding: ActivitySignInBinding
+    //private lateinit var firebaseAuth: FirebaseAuth
     private val authManager = AuthManager(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
-    }
-    /*
-        // Initialize views
-        emailEditText = findViewById(R.id.login_email)
-        passwordEditText = findViewById(R.id.login_password)
-        loginButton = findViewById(R.id.login_button)
-        signUpRedirectText = findViewById(R.id.signupRedirectText)
+        binding = ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Set click listener for login button
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+        binding.loginButton.setOnClickListener {
+            val email = binding.loginEmail.text.toString()
+            val password = binding.loginPassword.text.toString()
 
-            // Call your authentication logic using AuthManager
             authManager.signIn(email, password) { success, errorMessage ->
                 if (success) {
-                    // Authentication successful, navigate to the next screen or perform necessary actions
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish() // Optional: Close the login activity to prevent going back
+                    // Autenticação bem-sucedida, faça o que precisar aqui
+                    Log.d("SignInActivity", "Autenticação bem-sucedida")
+
+                    val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish() // Opcional: finalize esta atividade se não quiser que o usuário volte para ela pressionando o botão de voltar
                 } else {
-                    // Authentication failed, display error message using Snackbar
-                    Snackbar.make(loginButton, errorMessage.orEmpty(), Snackbar.LENGTH_SHORT).show()
+                    // Autenticação falhou, trate o erro ou exiba uma mensagem para o usuário
+                    errorMessage?.let {
+                        // Exibir uma a mensagem de erro
+
+                    }
                 }
             }
         }
-
-        // Set click listener for sign-up redirect text
-        signUpRedirectText.setOnClickListener {
-            // Navigate to the registration screen or activity
-            // Example: startActivity(Intent(this, SignUpActivity::class.java))
-        }
     }
-     */
 }
