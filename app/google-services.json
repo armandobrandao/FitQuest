@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "362027783899",
+    "project_id": "fitquest-5d322",
+    "storage_bucket": "fitquest-5d322.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362027783899:android:dcf52193917b7dc6c31efe",
+        "android_client_info": {
+          "package_name": "com.example.fitquest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZj0CmluAy_aT2YHqepWyh5_X-8HG9-XE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

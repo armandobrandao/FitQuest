@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -37,6 +38,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        viewBinding = true
         compose = true
     }
     composeOptions {
@@ -47,6 +49,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -84,4 +88,7 @@ dependencies {
 
     // WORKOUT API
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+
+    //Firebase
+    implementation("com.google.firebase:firebase-auth:22.3.0")
 }
