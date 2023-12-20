@@ -110,7 +110,7 @@ fun CreateWorkoutButton() {
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Create Workout", color = Color.White, fontSize = 25.sp)
+            Text("Create Workout", color = Color.Black, fontSize = 25.sp)
         }
     }
 }
