@@ -152,7 +152,7 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         // Greeting("Android")
-                        Homepage(navController)
+                        Homepage()
                         //AddFriend("Maria", "123")
                     }
                 }

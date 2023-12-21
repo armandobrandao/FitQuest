@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -18,10 +19,22 @@ fun NavGraph (navController: NavHostController){
         startDestination = "Home"
     )
     {
-        composable("Home") { Homepage(navController) }
-        composable("Workout") { AddFriend("Maria","123") }
-        composable("Challenges") { Homepage(navController) }
-        composable("Profile") { Homepage(navController) }
+        composable("Home") {
+            Log.d("NavGraph", "Navigating to Home")
+            Homepage()
+        }
+        composable("Workout") {
+            Log.d("NavGraph", "Navigating to Workout")
+            AddFriend("Maria","123")
+        }
+        composable("Challenges") {
+            Log.d("NavGraph", "Navigating to Challenges")
+            Homepage()
+        }
+        composable("Profile") {
+            Log.d("NavGraph", "Navigating to Profile")
+            Homepage()
+        }
     }
 }
 
