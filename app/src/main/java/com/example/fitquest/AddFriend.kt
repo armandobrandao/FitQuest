@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -219,7 +221,7 @@ data class User(val username: String, val profileImage: Int)  // Sample user dat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddFriend( name: String, code: String ) {
+fun AddFriend(name: String, code: String) {
     LazyColumn {
         item {
             SearchFriend()
@@ -231,5 +233,7 @@ fun AddFriend( name: String, code: String ) {
 @Preview(showBackground = true)
 @Composable
 fun AddFriendPreview() {
+
+
     AddFriend(name = "John Doe", code= "123-456-789")
 }

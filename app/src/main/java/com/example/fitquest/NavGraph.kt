@@ -18,10 +18,10 @@ fun NavGraph (navController: NavHostController){
         startDestination = "Home"
     )
     {
-        composable("Home") { Homepage() }
+        composable("Home") { Homepage(navController) }
         composable("Workout") { AddFriend("Maria","123") }
-        composable("Challenges") { Homepage() }
-        composable("Profile") { Homepage() }
+        composable("Challenges") { Homepage(navController) }
+        composable("Profile") { Homepage(navController) }
     }
 }
 
