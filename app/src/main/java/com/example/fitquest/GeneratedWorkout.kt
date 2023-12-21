@@ -17,8 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,13 +44,13 @@ data class Exercise(
 )
 
 val sampleExercises = listOf(
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "45:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
     )
 
 @Composable
@@ -111,18 +114,31 @@ fun StartWorkoutButton() {
         }
     }
 }
+
 @Composable
 fun GeneratedWorkout() {
     Column {
-        // Image at the top
-        Image(
-            painter = painterResource(id = R.drawable.diverse_exercise), // Replace with your image resource
-            contentDescription = "illustration of people workoing out",
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp)
-        )
-        // Box with title and stats on top of the image
+                .paint(
+                    painter = painterResource(R.drawable.diverse_exercise),
+                    contentScale = ContentScale.FillWidth
+                )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.left_arrow),
+                contentDescription = "Back Arrow",
+                modifier = Modifier
+                    .height(32.dp)
+                    .padding(start = 8.dp, top= 10.dp)
+                    .clickable {
+                        // Handle back button click
+                        // You can perform the necessary actions here
+                    }
+            )
+        }
+            // Box with title and stats on top of the image
         Box(
             modifier = Modifier
                 .shadow(12.dp, shape = RoundedCornerShape(16.dp))
@@ -133,14 +149,14 @@ fun GeneratedWorkout() {
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Abs Workout",
+                    text = "Abs Workout",       // tem de ser gerado
                     fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp,
+                    fontSize = 35.sp,
                     color = Color.Black,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "20 mins | 5 exercises | 4x",
+                    text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
@@ -165,6 +181,7 @@ fun GeneratedWorkout() {
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
