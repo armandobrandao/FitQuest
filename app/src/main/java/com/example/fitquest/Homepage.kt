@@ -50,23 +50,42 @@ import java.util.Locale
 
 @Composable
 fun Header() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp) // Set an appropriate height for the header
     ) {
-        // Replace R.drawable.your_logo with the actual resource ID of your logo
-        val logoPainter = painterResource(id = R.drawable.logo)
+        // Centered logo using a Column
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
+        // Bell in the top-right corner
         Image(
-            painter = logoPainter,
-            contentDescription = "FIT QUEST Logo",
-            modifier = Modifier.size(150.dp) // adjust the size as needed
+            painter = painterResource(id = R.drawable.bell),
+            contentDescription = "Notification Bell",
+            modifier = Modifier
+                .size(32.dp)
+                .padding(end = 8.dp, top = 10.dp)
+                .clickable {
+                    // Handle bell click
+                    // You can perform the necessary actions here
+                }
+                .align(Alignment.TopEnd)
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -228,7 +247,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = value)
+            Text(text = "$value")
 
             Spacer(modifier = Modifier.height(2.dp))
 
