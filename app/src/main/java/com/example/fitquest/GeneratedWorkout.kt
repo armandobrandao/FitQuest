@@ -19,6 +19,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -28,12 +29,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
 
@@ -116,77 +119,78 @@ fun StartWorkoutButton() {
 }
 
 @Composable
-fun GeneratedWorkout() {
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .paint(
-                    painter = painterResource(R.drawable.diverse_exercise),
-                    contentScale = ContentScale.FillWidth
-                )
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.left_arrow),
-                contentDescription = "Back Arrow",
+fun GeneratedWorkout(navController: NavHostController) {
+    LazyColumn {
+        item {
+            Box(
                 modifier = Modifier
-                    .height(32.dp)
-                    .padding(start = 8.dp, top= 10.dp)
-                    .clickable {
-                        // Handle back button click
-                        // You can perform the necessary actions here
-                    }
-            )
-        }
-            // Box with title and stats on top of the image
-        Box(
-            modifier = Modifier
-                .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-                .background(Color.White)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .paint(
+                        painter = painterResource(R.drawable.diverse_exercise),
+                        contentScale = ContentScale.FillWidth
+                    )
             ) {
-                Text(
-                    text = "Abs Workout",       // tem de ser gerado
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 35.sp,
-                    color = Color.Black,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
-                // Placeholder content (replace with your content)
-                Box(
+                Image(
+                    painter = painterResource(id = R.drawable.left_arrow),
+                    contentDescription = "Back Arrow",
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .height(32.dp)
+                        .padding(start = 8.dp, top = 10.dp)
+                        .clickable {
+                            // Handle back button click
+                            // You can perform the necessary actions here
+                        }
+                )
+            }
+            // Box with title and stats on top of the image
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 70.dp)
+            ) {
+                Column(
+                    modifier = Modifier
                         .padding(16.dp)
-                        .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-                        .background(Color.White)
                 ) {
-                    LazyColumn {
-                        items(sampleExercises) { exercise ->
-                            ExerciseItem(exercise = exercise)
-                            Divider()
+                    Text(
+                        text = "Abs Workout",       // tem de ser gerado
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 35.sp,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
+                        fontSize = 14.sp
+                    )
+                    // Placeholder content (replace with your content)
+                    ElevatedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                    ) {
+                        Column {
+                            sampleExercises.forEachIndexed { index, exercise ->
+                                ExerciseItem(exercise = exercise)
+                                if (index < sampleExercises.size - 1) {
+                                    Divider()
+                                }
+                            }
                         }
                     }
+                    // Placeholder CreateWorkoutButton
+                    StartWorkoutButton()
                 }
-                // Placeholder CreateWorkoutButton
-                StartWorkoutButton()
             }
         }
     }
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun GeneratedWorkoutPreview() {
-    FitQuestTheme {
-        GeneratedWorkout()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GeneratedWorkoutPreview() {
+//    FitQuestTheme {
+//        GeneratedWorkout()
+//    }
+//}

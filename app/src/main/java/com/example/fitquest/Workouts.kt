@@ -19,6 +19,7 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -28,7 +29,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -37,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 
 data class Workout(
@@ -110,47 +114,53 @@ fun CreateWorkoutButton() {
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Create Workout", color = Color.Black, fontSize = 25.sp)
+            Text("Create Workout", fontSize = 25.sp)
         }
     }
 }
 
 
 @Composable
-fun Workouts() {
-    Column {
-        Header() // da Homepage
-        Spacer(modifier = Modifier.height(16.dp)) // Adjust the height as needed
-        Text(
-            text = "Last Workouts",
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            color = Color.Black,
-            modifier = Modifier.padding(8.dp)
-        )
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-                .background(Color.White)
-        ) {
-            LazyColumn {
-                items(sampleWorkouts) { workout ->
-                    WorkoutItem(workout = workout)
-                    Divider()
+fun Workouts(navController: NavHostController) {
+    LazyColumn (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
+    )  {
+        item {
+            Header() // da Homepage
+            Spacer(modifier = Modifier.height(16.dp)) // Adjust the height as needed
+            Text(
+                text = "Last Workouts",
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+            ElevatedCard(
+                modifier = Modifier
+                    .padding(16.dp)
+//                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+            ) {
+                Column {
+                    sampleWorkouts.forEachIndexed { index, workout ->
+                        WorkoutItem(workout = workout)
+                        if (index < sampleWorkouts.size - 1) {
+                            Divider()
+                        }
+                    }
                 }
             }
+            CreateWorkoutButton()
         }
-        CreateWorkoutButton()
     }
 }
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun WorkoutsPreview() {
-    FitQuestTheme {
-        Workouts()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun WorkoutsPreview() {
+//    FitQuestTheme {
+//        Workouts(navController= NavHostController)
+//    }
+//}

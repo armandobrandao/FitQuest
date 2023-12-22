@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +57,7 @@ fun InputBox(
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        Text(text = label, fontSize = 18.sp, color = Color.Black)
+        Text(text = label, fontSize = 18.sp)
         if (options.isNotEmpty()) {
             Box(
                 modifier = Modifier
@@ -128,7 +129,7 @@ fun InputBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenerateWorkout() {
+fun GenerateWorkout(navController: NavHostController) {
     val apiKey = "Tng/CZGSkgzfSCEV+DbTyw==fsY8JbSZOC11ObD4"
 
     // Make the API request
@@ -165,7 +166,7 @@ fun GenerateWorkout() {
                 // Top Bar
                 TopAppBar(
                     title = {
-                        Text(text = "Create Workout", color = Color.Black)
+                        Text(text = "Create Workout")
                     },
                     navigationIcon = {
                         IconButton(
@@ -218,7 +219,7 @@ fun GenerateWorkout() {
                         .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
                 ) {
-                    Text("Generate Workout", color = Color.Black, fontSize = 20.sp)
+                    Text("Generate Workout", fontSize = 20.sp)
                 }
 
                 // Display API response
@@ -230,8 +231,8 @@ fun GenerateWorkout() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GenerateWorkoutPreview() {
-    GenerateWorkout()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GenerateWorkoutPreview() {
+//    GenerateWorkout()
+//}

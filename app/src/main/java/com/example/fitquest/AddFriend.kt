@@ -44,6 +44,7 @@ fun SearchFriend() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(Color.White)
     ) {
         Icon(
             imageVector = Icons.Default.KeyboardArrowLeft,
@@ -90,10 +91,12 @@ fun UserListItem(user: User) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .background(Color.White)
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
+                .background(Color.White)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -139,6 +142,7 @@ fun ShareCode(name: String, code: String){
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(Color.White)
     ){
         Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color.Black)
 
@@ -149,6 +153,7 @@ fun ShareCode(name: String, code: String){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
+                .background(Color.White)
                 .clickable {
                     // Handle card click
                 }
@@ -156,6 +161,7 @@ fun ShareCode(name: String, code: String){
             Column(
                 modifier = Modifier
                     .padding(16.dp)
+                    .background(Color.White)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -221,8 +227,13 @@ data class User(val username: String, val profileImage: Int)  // Sample user dat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddFriend(name: String, code: String) {
-    LazyColumn {
+fun AddFriend(name: String, code: String, navController: NavHostController) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
+    ) {
         item {
             SearchFriend()
             ShareCode(name = name, code = code)
@@ -230,10 +241,8 @@ fun AddFriend(name: String, code: String) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AddFriendPreview() {
-
-
-    AddFriend(name = "John Doe", code= "123-456-789")
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AddFriendPreview() {
+//    AddFriend(name = "John Doe", code= "123-456-789")
+//}

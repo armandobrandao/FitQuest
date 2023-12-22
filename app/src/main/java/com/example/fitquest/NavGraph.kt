@@ -25,7 +25,7 @@ fun NavGraph (navController: NavHostController){
         }
         composable("Workout") {
             Log.d("NavGraph", "Navigating to Workout")
-            AddFriend("Maria","123")
+            AddFriend("Maria","123", navController)
         }
         composable("Challenges") {
             Log.d("NavGraph", "Navigating to Challenges")

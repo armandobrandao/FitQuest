@@ -150,10 +150,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    ) {
-                        // Greeting("Android")
-                        Homepage()
-                        //AddFriend("Maria", "123")
+                    )  {
+                        when (selectedItemIndex) {
+                            1 -> Workouts(navController = navController)
+                            else -> Homepage()
+                        }
                     }
                 }
             }

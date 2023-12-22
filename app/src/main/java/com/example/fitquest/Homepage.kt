@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,8 +21,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,7 +59,6 @@ fun Header() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
-                    .background(Color.White)
     ) {
         // Replace R.drawable.your_logo with the actual resource ID of your logo
         val logoPainter = painterResource(id = R.drawable.logo)
@@ -73,9 +78,8 @@ fun Header() {
 fun Calendario(close: () -> Unit = {}) {
     Column(
         modifier = Modifier
-            .background(Color.White)
             .padding(10.dp)
-            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+//            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
     ) {
         val currentDate = remember { LocalDate.now() }
         val startDate = remember { currentDate.minusDays(500) }
@@ -89,7 +93,6 @@ fun Calendario(close: () -> Unit = {}) {
         val visibleWeek = rememberFirstVisibleWeekAfterScroll(state)
 
         WeekCalendar(
-            modifier = Modifier.background(color = Color.White),
             state = state,
             dayContent = { day ->
                 if (day.date.isAfter(startDate) && day.date.isBefore(endDate.plusDays(1))) {
@@ -127,19 +130,26 @@ private fun Day(date: LocalDate, isSelected: Boolean, onClick: (LocalDate) -> Un
             Text(
                 text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH),
                 fontSize = 12.sp,
-                color = Color.Black,
                 fontWeight = FontWeight.Light,
             )
             Box(
                 modifier = Modifier
                     .size(24.dp) // Adjust the size of the circle as needed
-                    .background(Color.White, shape = CircleShape),
+                    .background(
+                        color = if (isSystemInDarkTheme()) {
+                            // Dark mode color
+                            colorResource(id = R.color.darkModeColor)
+                        } else {
+                            // Light mode color
+                            colorResource(id = R.color.lightModeColor)
+                        },
+                        shape = CircleShape
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = dateFormatter.format(date),
                     fontSize = 14.sp,
-                    color = Color.Black,
                     fontWeight = FontWeight.Bold,
                 )
             }
@@ -152,14 +162,13 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
-            .padding(horizontal = 10.dp)
+            .padding(horizontal = 5.dp)
     ) {
         // Title Row
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Daily Progress", fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.Black)
+            Text(text = "Daily Progress", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         }
 
         // Two rounded containers side by side (Steps and Calories Burned)
@@ -200,13 +209,14 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
 
 @Composable
 fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float, goal: Int) {
-    Box(
+    ElevatedCard(
         modifier = Modifier
             .padding(8.dp)
-            .height(125.dp)
+            .height(150.dp)
             .width(170.dp)
-            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-            .background(Color.White)
+//            .clip(shape = RoundedCornerShape(16.dp))
+//            .shadow(2.dp, shape = RoundedCornerShape(2.dp))
+//            .background(Color.White)
     ) {
 
         Column(
@@ -223,7 +233,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "$value", color = Color.Black)
+            Text(text = "$value")
 
             Spacer(modifier = Modifier.height(2.dp))
 
@@ -240,7 +250,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
                     color = Color(0xFFE66353)
                 )
                 Spacer(modifier = Modifier.width(3.dp))
-                Text(text = "$goal", fontSize = 10.sp, color = Color.Black)
+                Text(text = "$goal", fontSize = 10.sp)
             }
         }
     }
@@ -251,14 +261,13 @@ fun DailyQuests() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
             .padding(horizontal = 4.dp)
     ) {
         // Title Row
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp, color = Color.Black)
+            Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         }
         val imageQuest1 = R.drawable.pilates
         // Card 1
@@ -322,7 +331,11 @@ fun ClickableCardItem(title: String, difficulty: String, duration: String, image
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Homepage() {
-    LazyColumn {
+    LazyColumn (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
+    )  {
         item {
             Header()
             Calendario()
