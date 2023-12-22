@@ -44,7 +44,6 @@ fun SearchFriend() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(Color.White)
     ) {
         Icon(
             imageVector = Icons.Default.KeyboardArrowLeft,
@@ -54,7 +53,7 @@ fun SearchFriend() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color.Black)
+        Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 25.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -87,16 +86,14 @@ fun SearchFriend() {
 }
 @Composable
 fun UserListItem(user: User) {
-    OutlinedCard(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .background(Color.White)
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -113,7 +110,7 @@ fun UserListItem(user: User) {
             Spacer(modifier = Modifier.width(16.dp))
 
             // User's name
-            Text(text = user.username, fontSize = 22.sp, color = Color.Black)
+            Text(text = user.username, fontSize = 22.sp)
 
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -128,7 +125,7 @@ fun UserListItem(user: User) {
                     .widthIn(min = 80.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
             ) {
-                Text("Add", color = Color.White)
+                Text("Add")
             }
         }
     }
@@ -142,18 +139,16 @@ fun ShareCode(name: String, code: String){
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(Color.White)
     ){
-        Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color.Black)
+        Text("Share your code", fontWeight = FontWeight.Bold, fontSize = 25.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // User Information Card
-        OutlinedCard(
+        ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .background(Color.White)
                 .clickable {
                     // Handle card click
                 }
@@ -161,7 +156,6 @@ fun ShareCode(name: String, code: String){
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .background(Color.White)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -177,14 +171,14 @@ fun ShareCode(name: String, code: String){
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // User's name
-                Text(text = name, fontSize = 22.sp, color = Color.Black)
+                Text(text = name, fontSize = 22.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Qr code
 
                 // Share Code
-                Text(text = "Code:", fontSize = 22.sp, color = Color.Black)
+                Text(text = "Code:", fontSize = 22.sp)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -194,7 +188,7 @@ fun ShareCode(name: String, code: String){
                 )
                 {
                     Text(
-                        text = code, color = Color.White, fontSize = 30.sp,
+                        text = code, fontSize = 30.sp,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -225,13 +219,11 @@ fun ShareCode(name: String, code: String){
 
 data class User(val username: String, val profileImage: Int)  // Sample user data class
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFriend(name: String, code: String, navController: NavHostController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     ) {
         item {
