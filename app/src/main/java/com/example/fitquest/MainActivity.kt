@@ -154,7 +154,8 @@ class MainActivity : ComponentActivity() {
                         when (selectedItemIndex) {
                             1 -> Workouts(navController = navController)
                             2 -> WeeklyChallenges(navController = navController)
-                            3 -> AddFriend(name = "Maria", code = "123", navController = navController )
+//                            3 -> AddFriend(name = "Maria", code = "123", navController = navController )
+                            3 -> Challenge(navController = navController)
                             else -> Homepage()
                         }
                     }
