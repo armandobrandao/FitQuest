@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.fitquest.ui.theme.FitQuestTheme
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
@@ -49,11 +51,11 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun Header() {
+fun Header(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp) // Set an appropriate height for the header
+            .height(150.dp) // Set an appropriate height for the header
     ) {
         // Centered logo using a Column
         Column(
@@ -66,20 +68,20 @@ fun Header() {
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "Logo",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.size(120.dp)
             )
         }
-
         // Bell in the top-right corner
         Image(
             painter = painterResource(id = R.drawable.bell),
             contentDescription = "Notification Bell",
             modifier = Modifier
-                .size(32.dp)
+                .size(35.dp)
                 .padding(end = 8.dp, top = 10.dp)
                 .clickable {
                     // Handle bell click
                     // You can perform the necessary actions here
+                    navController.navigate(Screens.Notifications.route)
                 }
                 .align(Alignment.TopEnd)
         )
@@ -344,14 +346,15 @@ fun ClickableCardItem(title: String, difficulty: String, duration: String, image
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Homepage() {
+fun Homepage(navController: NavController) {
+    Log.d("Homepage", "Estou na home")
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     )  {
         item {
-            Header()
+            Header(navController)
             Calendario()
             DailyProgress(steps = "3000 steps", caloriesBurned = "1200 cals", distance = "5 km")
             DailyQuests()
@@ -360,11 +363,11 @@ fun Homepage() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun HomepagePreview() {
-    FitQuestTheme {
-        Homepage()
-    }
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview(showBackground = true)
+//@Composable
+//fun HomepagePreview() {
+//    FitQuestTheme {
+//        Homepage()
+//    }
+//}

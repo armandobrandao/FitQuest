@@ -35,6 +35,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
@@ -61,8 +63,6 @@ class MainActivity : ComponentActivity() {
 
             FitQuestTheme {
                 val navController = rememberNavController()
-                NavGraph(navController = navController)
-
 
                 // A surface container using the 'background' color from the theme
                 val items = listOf(
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                             val destinationRoute = when (titulo) {
                                                 "Home" -> Screens.Home.route
                                                 "Workout" -> Screens.Workout.route
-                                                "Challenges" -> Screens.Challenges.route
+                                                "Challenges"  -> Screens.Challenges.route
                                                 else -> {Screens.Profile.route}
                                             }
                                             navController.navigate(destinationRoute)
@@ -151,18 +151,11 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     )  {
-                        when (selectedItemIndex) {
-                            1 -> Workouts(navController = navController)
-                            2 -> WeeklyChallenges(navController = navController)
-//                            3 -> AddFriend(name = "Maria", code = "123", navController = navController )
-                            3 -> Challenge(navController = navController)
-                            else -> Homepage()
-                        }
+                        NavGraph(navController = navController)
                     }
                 }
             }
         }
     }
-
-
 }
+

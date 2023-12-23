@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -112,13 +113,15 @@ fun CreateWorkoutButton() {
 
 @Composable
 fun Workouts(navController: NavHostController) {
+    Log.d("Workouts", "Estou na Workouts")
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     )  {
         item {
-            Header() // da Homepage
+            Header(navController) // da Homepage
+            Log.d("Workouts", "Estou depois do header")
             Spacer(modifier = Modifier.height(16.dp)) // Adjust the height as needed
             Text(
                 text = "Last Workouts",

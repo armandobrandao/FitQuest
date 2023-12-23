@@ -13,24 +13,27 @@ import androidx.navigation.compose.composable
 fun NavGraph (navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = "Home"
+        startDestination = Screens.Home.route
     )
     {
-        composable("Home") {
+        composable(Screens.Home.route) {
             Log.d("NavGraph", "Navigating to Home")
-            Homepage()
+            Homepage(navController = navController)
         }
-        composable("Workout") {
+        composable(Screens.Workout.route) {
             Log.d("NavGraph", "Navigating to Workout")
-            AddFriend("Maria","123", navController)
+            Workouts(navController)
         }
-        composable("Challenges") {
+        composable(Screens.Challenges.route) {
             Log.d("NavGraph", "Navigating to Challenges")
-            Homepage()
+            Challenge(navController = navController)
         }
-        composable("Profile") {
+        composable(Screens.Profile.route) {
             Log.d("NavGraph", "Navigating to Profile")
-            Homepage()
+            DailyQuest(navController = navController)
+        }
+        composable(Screens.Notifications.route) {
+            Notifications(navController = navController)
         }
     }
 }
