@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
@@ -60,7 +61,6 @@ class MainActivity : ComponentActivity() {
         //setContentView(R.layout.activity_main)
 
         setContent {
-
             FitQuestTheme {
                 val navController = rememberNavController()
 
@@ -77,8 +77,7 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = Icons.Filled.Add,
                         unselectedIcon = Icons.Outlined.Add,
                         hasNews = true,
-
-                        ),
+                    ),
                     BottomNavigationItem(
                         title = "Challenges",
                         selectedIcon = Icons.Filled.LocationOn,
@@ -91,34 +90,42 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = Icons.Filled.Person,
                         unselectedIcon = Icons.Outlined.Person,
                         hasNews = false,
-
-                        )
+                    )
                 )
+
                 var selectedItemIndex by rememberSaveable {
                     mutableStateOf(0)
                 }
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Scaffold(
-                        //modifier = Modifier.background(color = Color.White)
-                        modifier = Modifier.background(color = Color.White),
-                        bottomBar = {
+
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination?.route ?: ""
+
+                // Conditionally show the NavigationBar only for the main pages
+                val shouldShowNavigationBar = currentDestination in listOf(
+                    Screens.Home.route,
+                    Screens.Workout.route,
+                    Screens.Challenges.route,
+                    Screens.Profile.route
+                )
+
+
+                Scaffold(
+                    modifier = Modifier.background(color = Color.White),
+                    bottomBar = {
+                        if (shouldShowNavigationBar) {
                             NavigationBar {
                                 items.forEachIndexed { index, item ->
                                     NavigationBarItem(
                                         selected = selectedItemIndex == index,
                                         onClick = {
                                             selectedItemIndex = index
-
                                             var titulo = item.title
                                             Log.d("TITULO", "The value of titulo is: $titulo")
                                             val destinationRoute = when (titulo) {
                                                 "Home" -> Screens.Home.route
                                                 "Workout" -> Screens.Workout.route
-                                                "Challenges"  -> Screens.Challenges.route
-                                                else -> {Screens.Profile.route}
+                                                "Challenges" -> Screens.Challenges.route
+                                                else -> Screens.Profile.route
                                             }
                                             navController.navigate(destinationRoute)
                                         },
@@ -150,9 +157,10 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    )  {
-                        NavGraph(navController = navController)
                     }
+                ) {
+                    // Call your NavGraph composable to set up the navigation
+                    NavGraph(navController = navController)
                 }
             }
         }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,9 +28,177 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+data class Notification(
+    val title: String,
+    val text: String,
+)
+
+val sampleNotifications = listOf(
+    Notification("INSANE WALKERS", "Get ready for a walking experience like never before! \uD83C\uDF1F Our newest group challenge, INSANE WALKERS, is here to elevate your fitness game! Rally your squad, gear up those kicks, and let the walking madness begin!"),
+    Notification("URBAN EXPLORER", "\uD83C\uDFD9️ Get Ready for an Adventure! \uD83C\uDFC3\u200D♂️ URBAN EXPLORER Challenge is Here!\n" +
+            "Embark on a fitness journey like never before with our brand-new challenge – URBAN EXPLORER! \uD83C\uDF06 Lace up your sneakers, because this challenge is all about exploring the city while staying fit and having a blast!"),
+    )
+
+@Composable
+fun NotificationItem(notification: Notification) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = notification.title, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Duration: ${notification.text}")
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FriendRequests() {
+    // Sample list of users for demonstration
+    val userList = listOf(
+        User("Harry Philip", R.drawable.profile_image, "@harry"),
+        User("Jane Smith", R.drawable.profile_image, "@jane"),
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Row {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back",
+                modifier = Modifier.height(50.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Notifications", fontWeight = FontWeight.Bold, fontSize = 27.sp)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("Friend Requests", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        userList.forEach { user ->
+            FriendsRequestListItem(user = user)
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        NotificationsContainer()
+    }
+}
+@Composable
+fun ClickableButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary
+) {
+    Box(
+        modifier = modifier
+            .background(backgroundColor, shape = RoundedCornerShape(12.dp)) // Adjust corner radius here
+            .clickable { onClick() }
+            .padding(4.dp) // Adjust the internal padding here
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            modifier = Modifier.padding(4.dp) // Adjust the text padding here
+        )
+    }
+}
+@Composable
+fun NotificationsContainer(){
+    Text("Notifications", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+
+    Spacer(modifier = Modifier.height(8.dp))
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+    ) {
+        Column {
+            sampleNotifications.forEachIndexed { index, notification ->
+                NotificationItem(notification = notification)
+                if (index < sampleNotifications.size - 1) {
+                    Divider()
+                }
+            }
+        }
+    }
+}
+@Composable
+fun FriendsRequestListItem(user: User) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp) // Adjust spacing here
+        ) {
+            // Round profile image
+            Image(
+                painter = painterResource(id = user.profileImage),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+
+            // User's name
+            Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+
+            // Buttons container
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Send Friend Request Button
+                ClickableButton(
+                    text = "Add",
+                    onClick = {
+                        // Handle send friend request button click
+                        // You can perform the necessary actions here
+                    },
+                    backgroundColor = Color(0xFFE66353)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                ClickableButton(
+                    text = "Delete",
+                    onClick = {
+                        // Handle send friend request button click
+                        // You can perform the necessary actions here
+                    },
+                    backgroundColor = Color.Gray
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 fun Notifications (navController: NavHostController) {
@@ -36,10 +206,9 @@ fun Notifications (navController: NavHostController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     ) {
         item {
-            SearchFriend()
+            FriendRequests()
         }
     }
 }

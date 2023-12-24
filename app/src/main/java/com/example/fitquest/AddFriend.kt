@@ -37,23 +37,23 @@ fun SearchFriend() {
 
     // Sample list of users for demonstration
     val userList = listOf(
-        User("Harry Philip", R.drawable.profile_image),
-        User("Jane Smith", R.drawable.profile_image),
+        User("Harry Philip", R.drawable.profile_image, "@harry"),
+        User("Jane Smith", R.drawable.profile_image, "@jane"),
     )
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowLeft,
-            contentDescription = "Back",
-            modifier = Modifier.height(40.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+        Row {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Back",
+                modifier = Modifier.height(50.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 27.sp)
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -132,7 +132,7 @@ fun UserListItem(user: User) {
 }
 
 @Composable
-fun ShareCode(name: String, code: String){
+fun ShareCode(user: User){
     // Get the context
     val context = LocalContext.current
     Column(
@@ -171,7 +171,7 @@ fun ShareCode(name: String, code: String){
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // User's name
-                Text(text = name, fontSize = 22.sp)
+                Text(text = user.username, fontSize = 22.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -188,7 +188,7 @@ fun ShareCode(name: String, code: String){
                 )
                 {
                     Text(
-                        text = code, fontSize = 30.sp,
+                        text = user.userUnder, fontSize = 30.sp,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -200,7 +200,7 @@ fun ShareCode(name: String, code: String){
                     onClick = {
                         val shareIntent = Intent().apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, code) // Replace with the actual code
+                            putExtra(Intent.EXTRA_TEXT, user.userUnder) // Replace with the actual code
                             type = "text/plain"
                         }
                         // Use the context to start the activity
@@ -217,18 +217,17 @@ fun ShareCode(name: String, code: String){
     }
 }
 
-data class User(val username: String, val profileImage: Int)  // Sample user data class
+data class User(val username: String, val profileImage: Int, val userUnder: String)  // Sample user data class
 
 @Composable
-fun AddFriend(name: String, code: String, navController: NavHostController) {
+fun AddFriend(user: User, navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     ) {
         item {
             SearchFriend()
-            ShareCode(name = name, code = code)
+            ShareCode(user)
         }
     }
 }
