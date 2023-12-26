@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import androidx.navigation.NavController
 import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
@@ -8,25 +9,33 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -37,18 +46,51 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
+@Composable
+fun RoundedImageCard(imageResource: Int) {
+    Card(
+        modifier = Modifier
+            .height(250.dp)
+            .width(200.dp)
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Image(
+            painter = painterResource(imageResource),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
 
 @Composable
-fun DailyQuestComplete(navController: NavController) {
+fun PhotosSection(){
+    // Replace the placeholder data with your actual image resources
+    val imageList = listOf(
+        R.drawable.principe_real,
+        R.drawable.principe_real,
+        R.drawable.principe_real
+    )
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(imageList) { imageResource ->
+            RoundedImageCard(imageResource)
+        }
+    }
+}
+@Composable
+fun CheckpointComplete(navController: NavController) {
     LazyColumn {
         item {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .paint(
                         painter = painterResource(R.drawable.diverse_exercise),
                         contentScale = ContentScale.FillWidth
@@ -68,7 +110,7 @@ fun DailyQuestComplete(navController: NavController) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "Daily Quest Complete",
+                        text = "Checkpoint Complete",
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
                     )
@@ -78,29 +120,36 @@ fun DailyQuestComplete(navController: NavController) {
                         fontSize = 25.sp,
                     )
                     Spacer(modifier = Modifier.height(26.dp))
-                    Text(
-                        text = "You've earned:",
-                        fontSize = 25.sp,
-                        textAlign = TextAlign.Center
-                    )
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.Bottom,
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "20 XP",
+                            text = "1/3",
                             fontSize = 100.sp,
                             textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.check_mark),
+                            contentDescription = "Check mark icon",
+                            modifier = Modifier.size(100.dp) // Adjust the size of the icon as needed
                         )
                     }
                     Spacer(modifier = Modifier.height(26.dp))
                     Text(
-                        text = "This is your 25º FitQuest workout!",
+                        text = "Share this moment!",
+                        fontWeight = FontWeight.Bold,
                         fontSize = 25.sp,
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    PhotosSection()
+
                     Spacer(modifier = Modifier.weight(1f))
                     // Placeholder CreateWorkoutButton
                     TakePhotoButton(context = LocalContext.current)
@@ -109,29 +158,7 @@ fun DailyQuestComplete(navController: NavController) {
         }
     }
 }
-@Composable
-fun TakePhotoButton(context: Context) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = {
-                // Open the camera app
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                context.startActivity(intent)
-            },
-            modifier = Modifier
-                .padding(8.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Text("Take a Photo!",  fontSize = 20.sp)
-        }
-    }
-}
+
 
 //@Preview(showBackground = true)
 //@Composable

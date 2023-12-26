@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -66,37 +67,39 @@ fun NotificationItem(notification: Notification) {
         }
     }
 }
+
+val requestList = listOf(
+    User("Lucy Bridgers", R.drawable.profile_image, "@lucy"),
+    User("Phoebe Backer", R.drawable.profile_image, "@phoebe"),
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendRequests() {
+fun FriendRequests(navController: NavHostController) {
     // Sample list of users for demonstration
-    val userList = listOf(
-        User("Harry Philip", R.drawable.profile_image, "@harry"),
-        User("Jane Smith", R.drawable.profile_image, "@jane"),
-    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Row {
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Back",
-                modifier = Modifier.height(50.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Notifications", fontWeight = FontWeight.Bold, fontSize = 27.sp)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
+        TopAppBar(
+            title = { Text(text = "Notifications", fontWeight = FontWeight.Bold, fontSize = 27.sp) },
+            navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            }
+        )
 
         Text("Friend Requests", fontWeight = FontWeight.Bold, fontSize = 25.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        userList.forEach { user ->
-            FriendsRequestListItem(user = user)
+        requestList.forEach { user ->
+            FriendsRequestListItem(user = user, onClick = {
+                // Navigate to friend's profile
+                navController.navigate("${Screens.Friend.route}/${user.username}")
+            })
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -145,11 +148,12 @@ fun NotificationsContainer(){
     }
 }
 @Composable
-fun FriendsRequestListItem(user: User) {
+fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick}
     ) {
         Row(
             modifier = Modifier
@@ -208,7 +212,7 @@ fun Notifications (navController: NavHostController) {
             .fillMaxSize()
     ) {
         item {
-            FriendRequests()
+            FriendRequests(navController)
         }
     }
 }

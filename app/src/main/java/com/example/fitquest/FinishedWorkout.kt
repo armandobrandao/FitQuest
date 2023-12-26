@@ -12,10 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,17 +48,9 @@ fun FinishedWorkout(navController: NavHostController) {
                         contentScale = ContentScale.FillWidth
                     )
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.left_arrow),
-                    contentDescription = "Back Arrow",
-                    modifier = Modifier
-                        .height(32.dp)
-                        .padding(start = 8.dp, top = 10.dp)
-                        .clickable {
-                            // Handle back button click
-                            // You can perform the necessary actions here
-                        }
-                )
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
+                }
             }
             // Box with title and stats on top of the image
             ElevatedCard (

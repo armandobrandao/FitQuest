@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,10 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainCardFriend(user: User, navController: NavController) {
+    val addFriendIcon =
+        if (isSystemInDarkTheme()) painterResource(id = R.drawable.add_user_2)
+        else painterResource(id = R.drawable.add_user)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -137,7 +142,7 @@ fun MainCardFriend(user: User, navController: NavController) {
                     colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.bell),
+                        painter = addFriendIcon,
                         contentDescription = "Add Friend icon",
                         modifier = Modifier.size(20.dp) // Adjust the size of the icon as needed
                     )

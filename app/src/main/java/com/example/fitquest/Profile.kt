@@ -222,32 +222,24 @@ fun FriendsSection(navController: NavController) {
             }
         }
 
-        ElevatedCard(
-            modifier = Modifier
-                .padding(16.dp)
-            // .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-        ) {
-            Column {
-                sampleFriends.forEachIndexed { index, friend ->
-                    FriendItem(user = friend, onClick = {
-                        // Navigate to friend's profile
-                        navController.navigate("${Screens.Friend.route}/${friend.username}")
-                    })
-                    if (index < sampleFriends.size - 1) {
-                        Divider()
-                    }
-                }
+        Column {
+            sampleFriends.forEachIndexed { index, friend ->
+                FriendItem(user = friend, onClick = {
+                    // Navigate to friend's profile
+                    navController.navigate("${Screens.Friend.route}/${friend.username}")
+                })
             }
         }
+
     }
 }
 
 @Composable
 fun FriendItem(user: User, onClick: () -> Unit) {
-    Column(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal=16.dp, vertical=8.dp)
             .clickable { onClick.invoke() }
     ) {
         Row(
@@ -262,12 +254,12 @@ fun FriendItem(user: User, onClick: () -> Unit) {
                 painter = painterResource(id = user.profileImage),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
             )
 
             // User's name
-            Text(text = user.username, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(id = R.drawable.right_arrow), // Replace with your arrow icon resource

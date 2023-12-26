@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -273,7 +274,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
 }
 
 @Composable
-fun DailyQuests() {
+fun DailyQuests(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -285,30 +286,44 @@ fun DailyQuests() {
         ) {
             Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         }
-        val imageQuest1 = R.drawable.pilates
-        // Card 1
-        ClickableCardItem("Pilates Session", "Medium", "20 mins", imageQuest1)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        val imageQuest2 = R.drawable.pilates
-
-        // Card 2
-        ClickableCardItem("Cardio Session", "Medium", "30 mins", imageQuest2)
+        sampleDailyQuests.forEachIndexed { index, quest ->
+            ClickableCardItem(quest = quest, onClick = {
+                // Navigate to friend's profile
+                navController.navigate("${Screens.DailyQuest.route}/${quest.title}")
+            })
+            if (index < sampleDailyQuests.size - 1) {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+        }
     }
 }
+
+data class DailyQuest(
+    val title: String,
+    val difficulty: String,
+    val duration: String,
+    val image: Int
+)
+
+val sampleDailyQuests = listOf(
+    DailyQuest("Pilates Session", "Medium", "20 mins",  R.drawable.pilates),
+    DailyQuest("Cardio Session", "Medium", "30 mins",  R.drawable.pilates),
+    )
+
 @Composable
-fun ClickableCardItem(title: String, difficulty: String, duration: String, image: Int) {
+fun ClickableCardItem(quest: DailyQuest, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .clickable { /* Handle click here */ }
+            .clickable { onClick.invoke() }
             .padding(8.dp)
             .height(140.dp)
             .fillMaxWidth()
     ) {
         // Image
         Image(
-            painter = painterResource(id = image), // Replace with your image resource
-            contentDescription = title, // Content description can be set to null for decorative images
+            painter = painterResource(id = quest.image), // Replace with your image resource
+            contentDescription = quest.title, // Content description can be set to null for decorative images
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
@@ -324,9 +339,9 @@ fun ClickableCardItem(title: String, difficulty: String, duration: String, image
             verticalArrangement = Arrangement.Top
         ) {
             // Content
-            Text(text = title, fontSize = 20.sp, color = Color.White)
-            Text(text = difficulty, fontSize = 16.sp, color = Color.White)
-            Text(text = duration, fontSize = 16.sp, color = Color.White)
+            Text(text = quest.title, fontSize = 20.sp, color = Color.White)
+            Text(text = quest.difficulty, fontSize = 16.sp, color = Color.White)
+            Text(text = quest.duration, fontSize = 16.sp, color = Color.White)
 
             // Spacer for layout adjustment
             Spacer(modifier = Modifier.weight(1f))
@@ -357,7 +372,7 @@ fun Homepage(navController: NavController) {
             Header(navController)
             Calendario()
             DailyProgress(steps = "3000 steps", caloriesBurned = "1200 cals", distance = "5 km")
-            DailyQuests()
+            DailyQuests(navController)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.fitquest
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -120,6 +121,10 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false) {
 fun WeeklyChallenges(navController: NavHostController) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
+    val colorText =
+        if (isSystemInDarkTheme()) Color.White
+        else Color.Black
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -142,6 +147,7 @@ fun WeeklyChallenges(navController: NavHostController) {
                 Text(
                     text = "Individual",
                     fontSize = 25.sp,
+                    color= colorText
                 )
             }
             Tab(
@@ -155,6 +161,7 @@ fun WeeklyChallenges(navController: NavHostController) {
                 Text(
                     text = "Group",
                     fontSize = 25.sp,
+                    color= colorText
                 )
             }
         }
@@ -175,11 +182,17 @@ fun IndividualChallenges() {
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     ) {
         item {
-            Text(
-                text = "Weekly Challenges",
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+            ) {
+                Text(
+                    text = "Weekly Challenges",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 30.sp,
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
@@ -187,20 +200,20 @@ fun IndividualChallenges() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 LinearProgressIndicator(
                     progress = 0.3f,
                     color = Color(0xFFE66353),
                     modifier = Modifier
                         .fillMaxWidth() // Adjust the width here
-                        .padding(start= 16.dp, end= 16.dp)
+                        .padding(start = 16.dp, end = 16.dp)
                         .height(16.dp)
                 )
             }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal= 16.dp, vertical = 2.dp),
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "33% Completed", fontWeight = FontWeight.Bold)
@@ -225,6 +238,7 @@ fun IndividualChallenges() {
                 }
             }
         }
+
     }
 }
 
@@ -236,11 +250,17 @@ fun GroupChallenges() {
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     ) {
         item {
-            Text(
-                text = "Weekly Challenges",
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
+            ){
+                Text(
+                    text = "Weekly Challenges",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 30.sp,
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier

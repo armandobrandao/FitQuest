@@ -15,15 +15,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitquest.ui.theme.FitQuestTheme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 
@@ -47,6 +57,31 @@ val sampleWorkouts = listOf(
     Workout("Core and Cardio", "45:00", "315 kcal", R.drawable.abs_exercise),
 
 )
+
+@Composable
+fun HeaderSimple() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp) // Set an appropriate height for the header
+    ) {
+        // Centered logo using a Column
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier.size(120.dp)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun WorkoutItem(workout: Workout) {
@@ -88,7 +123,7 @@ fun WorkoutItem(workout: Workout) {
     }
 }
 @Composable
-fun CreateWorkoutButton() {
+fun CreateWorkoutButton(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,20 +132,20 @@ fun CreateWorkoutButton() {
     ) {
         Button(
             onClick = {
-                // Handle the "Create Workout" button click
-                // You can perform the necessary actions here
+                navController.navigate(Screens.GenerateWorkout.route)
             },
             modifier = Modifier
                 .padding(8.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Create Workout", fontSize = 25.sp)
+            Text("Create Workout", fontSize =20.sp)
         }
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Workouts(navController: NavHostController) {
     Log.d("Workouts", "Estou na Workouts")
@@ -120,13 +155,11 @@ fun Workouts(navController: NavHostController) {
             .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
     )  {
         item {
-            Header(navController) // da Homepage
-            Log.d("Workouts", "Estou depois do header")
-            Spacer(modifier = Modifier.height(16.dp)) // Adjust the height as needed
+            HeaderSimple()
             Text(
                 text = "Last Workouts",
                 fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
+                fontSize = 27.sp,
                 modifier = Modifier.padding(8.dp)
             )
             ElevatedCard(
@@ -143,7 +176,7 @@ fun Workouts(navController: NavHostController) {
                     }
                 }
             }
-            CreateWorkoutButton()
+            CreateWorkoutButton(navController)
         }
     }
 }

@@ -10,6 +10,13 @@ sealed class Screens(val route: String) {
     object Notifications : Screens("notifications")
     object AddFriends : Screens("addFriends")
     object Friend : Screens("friend")
+    object DailyQuest : Screens("dailyQuest")
+    object GenerateWorkout : Screens("generateWorkout")
+    object CheckpointComplete : Screens("checkpointComplete")
+
+
+
+
 
 
 }

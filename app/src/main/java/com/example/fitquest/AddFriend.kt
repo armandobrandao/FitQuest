@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -29,31 +30,30 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
+// Sample list of users for demonstration
+val searchList = listOf(
+    User("Evan Sheeran", R.drawable.profile_image, "@evan"),
+    User("Taylor Smith", R.drawable.profile_image, "@taylor"),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchFriend() {
+fun SearchFriend(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
-    // Sample list of users for demonstration
-    val userList = listOf(
-        User("Harry Philip", R.drawable.profile_image, "@harry"),
-        User("Jane Smith", R.drawable.profile_image, "@jane"),
-    )
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Row {
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Back",
-                modifier = Modifier.height(50.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Add Friends", fontWeight = FontWeight.Bold, fontSize = 27.sp)
-        }
+        TopAppBar(
+            title = { Text(text = "Add Friends", fontWeight = FontWeight.Bold, fontSize = 27.sp) },
+            navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -79,40 +79,42 @@ fun SearchFriend() {
             )
         )
 
-        userList.forEach { user ->
-            UserListItem(user = user)
+        searchList.forEach { user ->
+            UserListItem(user = user, onClick = {
+                // Navigate to friend's profile
+                navController.navigate("${Screens.Friend.route}/${user.username}")
+            })
         }
     }
 }
 @Composable
-fun UserListItem(user: User) {
+fun UserListItem(user: User, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Round profile image
             Image(
                 painter = painterResource(id = user.profileImage),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
-
             // User's name
-            Text(text = user.username, fontSize = 22.sp)
+            Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             // Send Friend Request Button
             Button(
@@ -226,7 +228,7 @@ fun AddFriend(user: User, navController: NavController) {
             .fillMaxSize()
     ) {
         item {
-            SearchFriend()
+            SearchFriend(navController)
             ShareCode(user)
         }
     }
