@@ -85,9 +85,37 @@ fun NavGraph (navController: NavHostController){
         composable(Screens.CheckpointComplete.route) {
             CheckpointComplete(navController = navController)
         }
-        composable(Screens.MapsActivity.route) {
-            MapsActivity(navController = navController)
+
+        composable("${Screens.LocationChallenge.route}/{challengeName}") { backStackEntry ->
+            val challengeName = backStackEntry.arguments?.getString("challengeName")
+            if (challengeName != null) {
+                val challenge = sampleChallenges.find { it.name == challengeName }
+                Log.d("NavGraph", "Navigating to DailyQuest for $challengeName")
+                if (challenge != null) {
+                    LocationChallenge(navController = navController, challenge)
+                }else {
+                    // Handle the case where friend is null (e.g., username not found)
+                }
+            } else {
+                // Handle the case where friendUsername is null or not provided
+            }
         }
+
+        composable("${Screens.Checkpoint.route}/{checkpointName}") { backStackEntry ->
+            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
+            if (checkpointName != null) {
+                val checkpoint = samplePlaces.find { it.name == checkpointName }
+                Log.d("NavGraph", "Navigating to DailyQuest for $checkpointName")
+                if (checkpoint != null) {
+                    Checkpoint(navController = navController, checkpoint)
+                }else {
+                    // Handle the case where friend is null (e.g., username not found)
+                }
+            } else {
+                // Handle the case where friendUsername is null or not provided
+            }
+        }
+
 
     }
 }

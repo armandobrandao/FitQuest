@@ -13,7 +13,9 @@ sealed class Screens(val route: String) {
     object DailyQuest : Screens("dailyQuest")
     object GenerateWorkout : Screens("generateWorkout")
     object CheckpointComplete : Screens("checkpointComplete")
-    object MapsActivity : Screens("mapsActivity")
+    object LocationChallenge : Screens("locationChallenge")
+    object Checkpoint : Screens("checkpoint")
+
 
 
 

@@ -3,6 +3,7 @@ package com.example.fitquest
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 //TEM DE SER ALTERADOS PARA FAZER DISPLAY DOS VALORES CORRETOS
@@ -27,9 +29,9 @@ data class Challenge(
 )
 
 val sampleChallenges = listOf(
-    Challenge("Core and Cardio", 200, "1/3"),
-    Challenge("Strength Training", 150, "2/3"),
-    Challenge("Flexibility Workout", 100, "3/3")
+    Challenge("Urban Explorer", 200, "1/3"),
+    Challenge("Insane Walkers", 150, "2/3"),
+    Challenge("On Fire!", 100, "3/3")
 )
 
 data class GroupChallenge(
@@ -46,11 +48,12 @@ val sampleGroupChallenges = listOf(
 
 
 @Composable
-fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false) {
+fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable { onClick.invoke() }
     ) {
         // Title and XP Row
         Row(
@@ -168,14 +171,14 @@ fun WeeklyChallenges(navController: NavHostController) {
 
         // Display content based on the selected tab
         when (selectedTabIndex) {
-            0 -> IndividualChallenges()
-            1 -> GroupChallenges()
+            0 -> IndividualChallenges(navController)
+            1 -> GroupChallenges(navController)
         }
     }
 }
 
 @Composable
-fun IndividualChallenges() {
+fun IndividualChallenges(navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -230,7 +233,10 @@ fun IndividualChallenges() {
             ) {
                 Column {
                     sampleChallenges.forEachIndexed { index, challenge ->
-                        ChallengeItem(challenge = challenge)
+                        ChallengeItem(challenge = challenge, onClick = {
+                            // Navigate to friend's profile
+                            navController.navigate("${Screens.LocationChallenge.route}/${challenge.name}")
+                        })
                         if (index < sampleChallenges.size - 1) {
                             Divider()
                         }
@@ -243,7 +249,7 @@ fun IndividualChallenges() {
 }
 
 @Composable
-fun GroupChallenges() {
+fun GroupChallenges(navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -298,7 +304,10 @@ fun GroupChallenges() {
             ) {
                 Column {
                     sampleGroupChallenges.forEachIndexed { index, challenge ->
-                        ChallengeItem(challenge = challenge, isGroupChallenge = true)
+                        ChallengeItem(challenge = challenge, isGroupChallenge = true, onClick = {
+                            // Navigate to friend's profile
+                            navController.navigate("${Screens.LocationChallenge.route}/${challenge.name}")
+                        })
                         if (index < sampleGroupChallenges.size - 1) {
                             Divider()
                         }

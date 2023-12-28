@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
                                             val destinationRoute = when (titulo) {
                                                 "Home" -> Screens.Home.route
                                                 "Workout" -> Screens.Workout.route
-                                                "Challenges" -> Screens.MapsActivity.route
+                                                "Challenges" -> Screens.Challenges.route
                                                 else -> Screens.Profile.route
                                             }
                                             navController.navigate(destinationRoute)
