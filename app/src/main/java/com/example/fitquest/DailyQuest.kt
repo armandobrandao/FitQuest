@@ -83,7 +83,7 @@ fun DailyQuest(navController: NavHostController) {
                         }
                     }
                     // Placeholder CreateWorkoutButton
-                    StartWorkoutButton()
+                    StartWorkoutButton(navController)
                 }
             }
         }

@@ -116,6 +116,10 @@ fun NavGraph (navController: NavHostController){
             }
         }
 
+        composable(Screens.CountdownPage.route) {
+            CountdownPage(navController = navController)
+        }
+
 
     }
 }

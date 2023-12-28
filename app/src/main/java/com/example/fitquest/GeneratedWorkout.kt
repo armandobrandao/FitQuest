@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
@@ -96,7 +97,7 @@ fun ExerciseItem(exercise: Exercise) {
 }
 
 @Composable
-fun StartWorkoutButton() {
+fun StartWorkoutButton(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,8 +106,7 @@ fun StartWorkoutButton() {
     ) {
         Button(
             onClick = {
-                // Handle the "Create Workout" button click
-                // You can perform the necessary actions here
+                navController.navigate(Screens.CountdownPage.route)
             },
             modifier = Modifier
                 .padding(8.dp),
@@ -138,7 +138,6 @@ fun GeneratedWorkout(navController: NavHostController) {
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 70.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -171,7 +170,7 @@ fun GeneratedWorkout(navController: NavHostController) {
                         }
                     }
                     // Placeholder CreateWorkoutButton
-                    StartWorkoutButton()
+                    StartWorkoutButton(navController)
                 }
             }
         }

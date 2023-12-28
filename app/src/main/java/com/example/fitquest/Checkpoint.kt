@@ -230,7 +230,7 @@ fun Checkpoint(navController: NavController, checkpoint: Place) {
            CheckpointSection(navController, checkpoint)
         }
         item {
-            StartWorkoutButton()
+            StartWorkoutButton(navController)
         }
 
     }

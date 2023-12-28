@@ -15,6 +15,7 @@ sealed class Screens(val route: String) {
     object CheckpointComplete : Screens("checkpointComplete")
     object LocationChallenge : Screens("locationChallenge")
     object Checkpoint : Screens("checkpoint")
+    object CountdownPage : Screens("countDownPage")
 
 
 
