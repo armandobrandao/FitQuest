@@ -1,8 +1,12 @@
 package com.example.fitquest
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,11 +39,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fitquest.ui.theme.FitQuestTheme
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.BuildConfig
 
 data class BottomNavigationItem(
     val title: String,
@@ -48,14 +55,13 @@ data class BottomNavigationItem(
     val hasNews: Boolean,
     val badgeCount: Int? = null
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.O)
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
@@ -124,7 +130,7 @@ class MainActivity : ComponentActivity() {
                                             val destinationRoute = when (titulo) {
                                                 "Home" -> Screens.Home.route
                                                 "Workout" -> Screens.Workout.route
-                                                "Challenges" -> Screens.CheckpointComplete.route
+                                                "Challenges" -> Screens.MapsActivity.route
                                                 else -> Screens.Profile.route
                                             }
                                             navController.navigate(destinationRoute)

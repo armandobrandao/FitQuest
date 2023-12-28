@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -85,6 +84,9 @@ fun NavGraph (navController: NavHostController){
 
         composable(Screens.CheckpointComplete.route) {
             CheckpointComplete(navController = navController)
+        }
+        composable(Screens.MapsActivity.route) {
+            MapsActivity(navController = navController)
         }
 
     }
