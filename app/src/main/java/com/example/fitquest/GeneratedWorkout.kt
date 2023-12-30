@@ -31,6 +31,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
@@ -44,18 +48,27 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 data class Exercise(
     val name: String,
     val duration: String,
-    val imageResId: Int
+    val imageResId: Int,
+    val durationInSeconds: Int
 )
 
 val sampleExercises = listOf(
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise),
+    Exercise("Abdominais", "1:00",  R.drawable.abs_exercise, 60),
+    Exercise("Flexoes", "1:00",  R.drawable.abs_exercise,60),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
+    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
     )
+
+val sampleExercises2 = listOf(
+    Exercise("Abdominais", "0:20",  R.drawable.abs_exercise, 5),
+    Exercise("Flexoes", "0:20",  R.drawable.abs_exercise,5),
+//    Exercise("Core and Cardio", "0:20",  R.drawable.abs_exercise,10),
+)
+
+var numSets = 2
 
 @Composable
 fun ExerciseItem(exercise: Exercise) {
@@ -106,14 +119,15 @@ fun StartWorkoutButton(navController: NavController) {
     ) {
         Button(
             onClick = {
-                navController.navigate(Screens.CountdownPage.route)
+                navController.navigate("${Screens.CountdownPage.route}/$sampleExercises2/$numSets")
             },
+
             modifier = Modifier
                 .padding(8.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Start", color = Color.Black, fontSize = 25.sp)
+            Text("Start", fontSize = 25.sp)
         }
     }
 }

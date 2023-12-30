@@ -16,6 +16,11 @@ sealed class Screens(val route: String) {
     object LocationChallenge : Screens("locationChallenge")
     object Checkpoint : Screens("checkpoint")
     object CountdownPage : Screens("countDownPage")
+    object Exercise : Screens("exercise")
+    object FinishedWorkout : Screens("finishedWorkout")
+    object DailyQuestComplete : Screens("dailyQuestComplete")
+
+
 
 
 

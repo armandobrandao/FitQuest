@@ -116,9 +116,57 @@ fun NavGraph (navController: NavHostController){
             }
         }
 
-        composable(Screens.CountdownPage.route) {
-            CountdownPage(navController = navController)
+        composable("${Screens.CountdownPage.route}/{listExercises}/{numSets}") { backStackEntry ->
+            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
+                // Logic to convert the string into a List<Exercise>
+                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
+                sampleExercises2
+            } ?: emptyList()
+
+            val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
+
+            CountdownPage(
+                navController = navController,
+                listExercises = listExercises,
+                numSets = numSets
+            )
         }
+
+        composable("${Screens.Exercise.route}/{listExercises}/{numSets}") { backStackEntry ->
+            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
+                // Logic to convert the string into a List<Exercise>
+                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
+                sampleExercises2
+            } ?: emptyList()
+
+            val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
+
+            Exercise(
+                navController = navController,
+                listExercises = listExercises,
+                numSets = numSets
+            )
+        }
+
+        composable("${Screens.FinishedWorkout.route}/{listExercises}") { backStackEntry ->
+            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
+                // Logic to convert the string into a List<Exercise>
+                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
+                sampleExercises2
+            } ?: emptyList()
+
+            FinishedWorkout(
+                navController = navController,
+                listExercises = listExercises
+            )
+        }
+        composable(Screens.DailyQuestComplete.route) {
+            DailyQuestComplete(navController = navController)
+        }
+
+
+
+
 
 
     }

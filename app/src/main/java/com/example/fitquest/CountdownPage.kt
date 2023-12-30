@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun CountdownPage(navController: NavController) {
+fun CountdownPage(navController: NavController, listExercises: List<Exercise>, numSets: Int) {
     var secondsLeft by remember { mutableStateOf(3) }
     var secondsLeftDisplayed by remember { mutableStateOf(0) }
 
@@ -36,7 +36,7 @@ fun CountdownPage(navController: NavController) {
 
             override fun onFinish() {
                 // Countdown completed, navigate to another page
-                navController.navigate(Screens.Home.route)
+                navController.navigate("${Screens.Exercise.route}/$sampleExercises/$numSets")
             }
         }
 

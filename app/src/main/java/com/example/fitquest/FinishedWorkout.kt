@@ -33,11 +33,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
-fun FinishedWorkout(navController: NavHostController) {
+fun FinishedWorkout(navController: NavController, listExercises: List<Exercise>) {
     LazyColumn {
         item {
             Box(
@@ -120,16 +121,16 @@ fun FinishedWorkout(navController: NavHostController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                     ) {
                         Column {
-                            sampleExercises.forEachIndexed { index, exercise ->
+                            listExercises.forEachIndexed { index, exercise ->
                                 ExerciseItem(exercise = exercise)
-                                if (index < sampleExercises.size - 1) {
+                                if (index < listExercises.size - 1) {
                                     Divider()
                                 }
                             }
                         }
                     }
                     // Placeholder CreateWorkoutButton
-                    ContinueWorkoutButton()
+                    ContinueWorkoutButton(navController)
                 }
             }
         }
@@ -137,7 +138,7 @@ fun FinishedWorkout(navController: NavHostController) {
 }
 
 @Composable
-fun ContinueWorkoutButton() {
+fun ContinueWorkoutButton(navController : NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,8 +147,7 @@ fun ContinueWorkoutButton() {
     ) {
         Button(
             onClick = {
-                // Handle the "Create Workout" button click
-                // You can perform the necessary actions here
+                navController.navigate(Screens.DailyQuestComplete.route)
             },
             modifier = Modifier
                 .padding(8.dp),
