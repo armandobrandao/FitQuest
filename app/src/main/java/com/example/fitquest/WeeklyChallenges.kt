@@ -1,6 +1,8 @@
 package com.example.fitquest
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalTime
 
 //TEM DE SER ALTERADOS PARA FAZER DISPLAY DOS VALORES CORRETOS
 data class Challenge(
@@ -46,7 +52,46 @@ val sampleGroupChallenges = listOf(
     GroupChallenge("Strength Training", 150, "2/3", R.drawable.profile_image),
 )
 
+// Calculate remaining time
+@RequiresApi(Build.VERSION_CODES.O)
+val currentDay = LocalDate.now().dayOfWeek
+@RequiresApi(Build.VERSION_CODES.O)
+val timeUntilMidnight = Duration.between(LocalTime.now(), LocalTime.MAX).toMinutes()
 
+// Sample completion value (replace this with your completion logic)
+val completion = 0.33f
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CompletionInfo(completion: Float, currentDay: DayOfWeek, timeUntilMidnight: Long) {
+    // Calculate remaining days, hours, and minutes
+    val daysLeft = DayOfWeek.SUNDAY.value - currentDay.value
+    val hoursLeft = timeUntilMidnight / 60
+    val minutesLeft = timeUntilMidnight % 60
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "${(completion * 100).toInt()}% Completed",
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = when {
+                daysLeft > 0 -> "$daysLeft ${if (daysLeft > 1) "days" else "day"} left"
+                hoursLeft > 0 -> "$hoursLeft ${if (hoursLeft > 1) "hours" else "hour"} left"
+                else -> "$minutesLeft ${if (minutesLeft > 1) "minutes" else "minute"} left"
+            },
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: () -> Unit) {
     Column(
@@ -120,6 +165,7 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: ()
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklyChallenges(navController: NavHostController) {
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -177,6 +223,7 @@ fun WeeklyChallenges(navController: NavHostController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun IndividualChallenges(navController: NavController) {
     LazyColumn(
@@ -213,16 +260,18 @@ fun IndividualChallenges(navController: NavController) {
                         .height(16.dp)
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "33% Completed", fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = "3 days", fontWeight = FontWeight.Bold)
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 16.dp, vertical = 2.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(text = "33% Completed", fontWeight = FontWeight.Bold)
+//                Spacer(modifier = Modifier.weight(1f))
+//                Text(text = "3 days", fontWeight = FontWeight.Bold)
+//            }
+
+            CompletionInfo(completion, currentDay, timeUntilMidnight)
             Spacer(modifier = Modifier.height(8.dp))
             // Placeholder content (replace with your content)
             ElevatedCard(
@@ -248,6 +297,7 @@ fun IndividualChallenges(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GroupChallenges(navController: NavController) {
     LazyColumn(
@@ -284,16 +334,18 @@ fun GroupChallenges(navController: NavController) {
                         .height(16.dp)
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal= 16.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "33% Completed", fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = "3 days", fontWeight = FontWeight.Bold)
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal= 16.dp, vertical = 2.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text(text = "33% Completed", fontWeight = FontWeight.Bold)
+//                Spacer(modifier = Modifier.weight(1f))
+//                Text(text = "3 days", fontWeight = FontWeight.Bold)
+//            }
+            CompletionInfo(completion, currentDay, timeUntilMidnight)
+
             Spacer(modifier = Modifier.height(8.dp))
             // Placeholder content (replace with your content)
             ElevatedCard(
