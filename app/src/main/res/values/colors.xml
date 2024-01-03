@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#3F51B5</color>
     <color name="orange">#FF5722</color>
+    <color name="red">#FF0000</color>
 <!--    Adicionados para testar na Homepage -->
     <color name="darkModeColor">#FF211C18</color>
     <color name="lightModeColor">#FFFFFFFF</color>

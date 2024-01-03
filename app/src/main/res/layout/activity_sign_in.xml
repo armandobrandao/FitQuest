@@ -88,7 +88,16 @@
                     android:id="@+id/login_button"
                     android:textSize="18sp"
                     app:cornerRadius="30dp"/>
-
+                <TextView
+                    android:id="@+id/errorMessageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/red"
+                    android:textSize="16sp"
+                    android:visibility="invisible"
+                    />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -99,6 +108,7 @@
                     android:layout_marginTop="8dp"
                     android:textSize="18sp"
                     android:textColor="@color/blue"/>
+
 
             </LinearLayout>
 

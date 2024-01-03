@@ -3,6 +3,7 @@ package com.example.fitquest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitquest.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val errorMessageTextView = binding.errorMessageTextView
         binding.signupButton.setOnClickListener {
             val email = binding.signupEmail.text.toString()
             val password = binding.signupPassword.text.toString()
@@ -37,11 +38,15 @@ class SignUpActivity : AppCompatActivity() {
                         // Registration failed, handle the error or show a message to the user
                         errorMessage?.let {
                             // Display an error message
+                            errorMessageTextView.text = "Your password needs to be at least 6 characters long"
+                            errorMessageTextView.visibility = View.VISIBLE
                         }
                     }
                 }
             } else {
                 // Passwords do not match, handle it accordingly
+                errorMessageTextView.text = "Passwords do not match"
+                errorMessageTextView.visibility = View.VISIBLE
             }
         }
 

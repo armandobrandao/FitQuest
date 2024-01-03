@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.example.fitquest.databinding.ActivitySignInBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,7 +18,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val errorMessageTextView = binding.errorMessageTextView
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
             val password = binding.loginPassword.text.toString()
@@ -33,7 +34,8 @@ class SignInActivity : AppCompatActivity() {
                 } else {
                     // Autenticação falhou, trate o erro ou exiba uma mensagem para o usuário
                     errorMessage?.let {
-                        // Exibir uma a mensagem de erro
+                        errorMessageTextView.text = "Incorrect email or password. Please try again."
+                        errorMessageTextView.visibility = View.VISIBLE
 
                     }
                 }
