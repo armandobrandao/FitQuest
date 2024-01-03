@@ -222,16 +222,22 @@ fun CheckpointSection(navController: NavController, checkpoint: Place){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Checkpoint(navController: NavController, checkpoint: Place) {
-    LazyColumn {
-        item {
-            MapSection(navController, focusCheckpoint = checkpoint)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                MapSection(navController, focusCheckpoint = checkpoint)
+            }
+            item {
+                CheckpointSection(navController, checkpoint)
+            }
         }
-        item {
-           CheckpointSection(navController, checkpoint)
-        }
-        item {
-            StartWorkoutButton(navController)
-        }
-
+        StartWorkoutButton(navController)
     }
 }

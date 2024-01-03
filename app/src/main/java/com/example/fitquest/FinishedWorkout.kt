@@ -2,6 +2,7 @@ package com.example.fitquest
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,101 +40,114 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
 fun FinishedWorkout(navController: NavController, listExercises: List<Exercise>) {
-    LazyColumn {
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .paint(
-                        painter = painterResource(R.drawable.diverse_exercise),
-                        contentScale = ContentScale.FillWidth
-                    )
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
-                }
-            }
-            // Box with title and stats on top of the image
-            ElevatedCard (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom=70.dp)
-            ){
-                Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                Box(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .paint(
+                            painter = painterResource(R.drawable.diverse_exercise),
+                            contentScale = ContentScale.FillWidth
+                        )
                 ) {
-                    Text(
-                        text = "Finished Workout",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Time:",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = "00:27:08",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Calories:",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = "216 kcal",
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Exercises Performed", // tem de ser gerados
-                        fontSize = 25.sp
-                    )
-                    // Placeholder content (replace with your content)
-                    ElevatedCard(
+                }
+                // Box with title and stats on top of the image
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 70.dp)
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                     ) {
-                        Column {
-                            listExercises.forEachIndexed { index, exercise ->
-                                ExerciseItem(exercise = exercise)
-                                if (index < listExercises.size - 1) {
-                                    Divider()
+                        Text(
+                            text = "Finished Workout",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Time:",
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = "00:27:08",
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Calories:",
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = "216 kcal",
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Exercises Performed", // tem de ser gerados
+                            fontSize = 25.sp
+                        )
+                        // Placeholder content (replace with your content)
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                        ) {
+                            Column {
+                                listExercises.forEachIndexed { index, exercise ->
+                                    ExerciseItem(exercise = exercise)
+                                    if (index < listExercises.size - 1) {
+                                        Divider()
+                                    }
                                 }
                             }
                         }
                     }
-                    // Placeholder CreateWorkoutButton
-                    ContinueWorkoutButton(navController)
                 }
             }
         }
+        // Placeholder CreateWorkoutButton
+        ContinueWorkoutButton(navController)
     }
 }
 
@@ -142,8 +156,10 @@ fun ContinueWorkoutButton(navController : NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
+            .height(80.dp), // Adjust the height as needed
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
     ) {
         Button(
             onClick = {
@@ -154,7 +170,7 @@ fun ContinueWorkoutButton(navController : NavController) {
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Continue", fontSize = 25.sp)
+            Text("Continue", fontSize = 20.sp)
         }
     }
 }

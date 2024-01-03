@@ -44,7 +44,15 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
 fun DailyQuestComplete(navController: NavController) {
-    LazyColumn {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
         item {
             Box(
                 modifier = Modifier
@@ -102,11 +110,12 @@ fun DailyQuestComplete(navController: NavController) {
                         fontSize = 25.sp,
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    // Placeholder CreateWorkoutButton
-                    TakePhotoButton(context = LocalContext.current)
                 }
             }
         }
+    }
+    // Placeholder CreateWorkoutButton
+    TakePhotoButton(context = LocalContext.current)
     }
 }
 @Composable
@@ -114,8 +123,10 @@ fun TakePhotoButton(context: Context) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
+            .height(80.dp), // Adjust the height as needed
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
     ) {
         Button(
             onClick = {

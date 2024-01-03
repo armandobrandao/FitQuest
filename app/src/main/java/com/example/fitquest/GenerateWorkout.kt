@@ -156,70 +156,111 @@ fun GenerateWorkout(navController: NavHostController) {
         "adductors" to "Adductors"
     )
 
-    LazyColumn {
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Top Bar
-                TopAppBar(
-                    title = {
-                        Text(text = "Create Workout", fontWeight = FontWeight.Bold, fontSize = 27.sp)
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                        }
-                    }
-                )
-                // Intensity Input
-                val intensityOptions = listOf("beginner", "intermediate", "expert")
-                val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
-                InputBox(label = "Intensity", options = intensityOptions.map { difficultyOptionsMap[it] ?: it })
+    val intensityOptions = listOf("beginner", "intermediate", "expert")
+    val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
 
-                // Location Input
-                val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
-                val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
-                InputBox(label = "Type", options = typeOptions.map { typeOptionsMap[it] ?: it })
+    val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
+    val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
 
-                // Duration Input
-                val selectedDuration by remember { mutableStateOf("") }
-                InputBox(label = "Duration", keyboardType = KeyboardType.Number)
+    val selectedDuration by remember { mutableStateOf("") }
 
-                // Type Input
-                val muscleOptions = listOf("abdominals", "abductors", "adductors")
-                val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
-                InputBox(label = "Type", options = muscleOptions.map { muscleOptionsMap[it] ?: it })
+    val muscleOptions = listOf("abdominals", "abductors", "adductors")
+    val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
 
-                // Generate Workout Button
-                Button(
-                    onClick = {
-                        // Handle Generate Workout button click
-                        val response = WorkoutAPI.makeApiRequest(
-                            selectedMuscle,
-                            selectedDifficulty,
-                            selectedType,
-                            selectedDuration,
-                            apiKey,
-                        )
-                        apiResponse = response
-                        println(response)
-                    },
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                Column(
                     modifier = Modifier
+                        .fillMaxSize()
                         .padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Generate Workout", fontSize = 20.sp)
-                }
+                    // Top Bar
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Create Workout",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 27.sp
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        }
+                    )
+                    // Intensity Input
+//                    val intensityOptions = listOf("beginner", "intermediate", "expert")
+//                    val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
+                    InputBox(
+                        label = "Intensity",
+                        options = intensityOptions.map { difficultyOptionsMap[it] ?: it })
 
-                // Display API response
-                apiResponse?.let { response ->
-                    Text("API Response: $response", fontSize = 16.sp)
+                    // Location Input
+//                    val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
+//                    val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
+                    InputBox(label = "Type", options = typeOptions.map { typeOptionsMap[it] ?: it })
+
+                    // Duration Input
+//                    val selectedDuration by remember { mutableStateOf("") }
+                    InputBox(label = "Duration", keyboardType = KeyboardType.Number)
+
+                    // Type Input
+//                    val muscleOptions = listOf("abdominals", "abductors", "adductors")
+//                    val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
+                    InputBox(
+                        label = "Type",
+                        options = muscleOptions.map { muscleOptionsMap[it] ?: it })
                 }
+            }
+        }
+
+        // Generate Workout Button
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .height(70.dp), // Adjust the height as needed
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+        ) {
+            Button(
+                onClick = {
+                    // Handle Generate Workout button click
+                    val response = WorkoutAPI.makeApiRequest(
+                        selectedMuscle,
+                        selectedDifficulty,
+                        selectedType,
+                        selectedDuration,
+                        apiKey,
+                    )
+                    apiResponse = response
+                    println(response)
+                },
+                modifier = Modifier
+                    .padding(8.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
+            ) {
+                Text("Generate Workout", fontSize = 20.sp)
+            }
+
+            // Display API response
+            apiResponse?.let { response ->
+                Text("API Response: $response", fontSize = 16.sp)
             }
         }
     }

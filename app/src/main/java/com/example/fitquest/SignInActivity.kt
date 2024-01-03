@@ -39,5 +39,12 @@ class SignInActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // Set OnClickListener for the "Not yet registered? Register here" text
+        binding.signupRedirectText.setOnClickListener {
+            // Start SignUpActivity when the text is clicked
+            val intent = Intent(this@SignInActivity, SignUpActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -114,80 +115,95 @@ fun StartWorkoutButton(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
+            .height(70.dp), // Adjust the height as needed
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
     ) {
         Button(
             onClick = {
                 navController.navigate("${Screens.CountdownPage.route}/$sampleExercises2/$numSets")
             },
-
             modifier = Modifier
                 .padding(8.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Start", fontSize = 25.sp)
+            Text("Start", fontSize = 20.sp)
         }
     }
 }
 
+
 @Composable
 fun GeneratedWorkout(navController: NavHostController) {
-    LazyColumn {
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .paint(
-                        painter = painterResource(R.drawable.diverse_exercise),
-                        contentScale = ContentScale.FillWidth
-                    )
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
-                }
-            }
-            // Box with title and stats on top of the image
-            ElevatedCard(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                Box(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .paint(
+                            painter = painterResource(R.drawable.diverse_exercise),
+                            contentScale = ContentScale.FillWidth
+                        )
                 ) {
-                    Text(
-                        text = "Abs Workout",       // tem de ser gerado
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
-                        fontSize = 14.sp
-                    )
-                    // Placeholder content (replace with your content)
-                    ElevatedCard(
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
+                    }
+                }
+                // Box with title and stats on top of the image
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                     ) {
-                        Column {
-                            sampleExercises.forEachIndexed { index, exercise ->
-                                ExerciseItem(exercise = exercise)
-                                if (index < sampleExercises.size - 1) {
-                                    Divider()
+                        Text(
+                            text = "Abs Workout",       // tem de ser gerado
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
+                            fontSize = 14.sp
+                        )
+                        // Placeholder content (replace with your content)
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                        ) {
+                            Column {
+                                sampleExercises.forEachIndexed { index, exercise ->
+                                    ExerciseItem(exercise = exercise)
+                                    if (index < sampleExercises.size - 1) {
+                                        Divider()
+                                    }
                                 }
                             }
                         }
                     }
-                    // Placeholder CreateWorkoutButton
-                    StartWorkoutButton(navController)
                 }
             }
         }
+        // Placeholder CreateWorkoutButton
+        StartWorkoutButton(navController)
     }
 }
 

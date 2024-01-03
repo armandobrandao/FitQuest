@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignInActivity">
+    tools:context=".SignUpActivity">
 
     <!-- Top Section: Logo Centered -->
     <LinearLayout
@@ -49,7 +49,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sign In"
+                    android:text="Sign Up"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_gravity="center"/>
@@ -57,7 +57,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/login_email"
+                    android:id="@+id/signup_email"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/orange_border"
                     android:hint="Email"
@@ -69,13 +69,26 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/login_password"
+                    android:id="@+id/signup_password"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/orange_border"
                     android:padding="16dp"
                     android:hint="Password"
-                    android:textColor="@color/black"
                     android:inputType="textPassword"
+                    android:textColor="@color/black"
+                    android:drawableLeft="@drawable/baseline_lock_24"
+                    android:drawablePadding="16dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/signup_password2"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/orange_border"
+                    android:padding="16dp"
+                    android:hint="Repeat Password"
+                    android:inputType="textPassword"
+                    android:textColor="@color/black"
                     android:drawableLeft="@drawable/baseline_lock_24"
                     android:drawablePadding="16dp" />
 
@@ -84,21 +97,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:padding="16dp"
-                    android:text="Login"
-                    android:id="@+id/login_button"
+                    android:text="Sign up"
+                    android:id="@+id/signup_button"
                     android:textSize="18sp"
                     app:cornerRadius="30dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/signupRedirectText"
-                    android:text="Not yet registered? Register here"
-                    android:layout_gravity="center"
-                    android:padding="8dp"
-                    android:layout_marginTop="8dp"
-                    android:textSize="18sp"
-                    android:textColor="@color/blue"/>
 
             </LinearLayout>
 

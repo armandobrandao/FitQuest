@@ -127,8 +127,11 @@ fun CreateWorkoutButton(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
+            .padding(bottom = 80.dp)
+            .height(70.dp), // Adjust the height as needed
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
     ) {
         Button(
             onClick = {
@@ -149,35 +152,40 @@ fun CreateWorkoutButton(navController: NavController) {
 @Composable
 fun Workouts(navController: NavHostController) {
     Log.d("Workouts", "Estou na Workouts")
-    LazyColumn (
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
-    )  {
-        item {
-            HeaderSimple()
-            Text(
-                text = "Last Workouts",
-                fontWeight = FontWeight.Bold,
-                fontSize = 27.sp,
-                modifier = Modifier.padding(8.dp)
-            )
-            ElevatedCard(
-                modifier = Modifier
-                    .padding(16.dp)
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                HeaderSimple()
+                Text(
+                    text = "Last Workouts",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 27.sp,
+                    modifier = Modifier.padding(8.dp)
+                )
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(16.dp)
 //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
-            ) {
-                Column {
-                    sampleWorkouts.forEachIndexed { index, workout ->
-                        WorkoutItem(workout = workout)
-                        if (index < sampleWorkouts.size - 1) {
-                            Divider()
+                ) {
+                    Column {
+                        sampleWorkouts.forEachIndexed { index, workout ->
+                            WorkoutItem(workout = workout)
+                            if (index < sampleWorkouts.size - 1) {
+                                Divider()
+                            }
                         }
                     }
                 }
             }
-            CreateWorkoutButton(navController)
         }
+        CreateWorkoutButton(navController)
     }
 }
 

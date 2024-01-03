@@ -40,118 +40,131 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Challenge(navController: NavHostController) {
-    LazyColumn {
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .paint(
-                        painter = painterResource(R.drawable.diverse_exercise),
-                        contentScale = ContentScale.FillWidth
-                    )
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
-                }
-            }
-            // Box with title and stats on top of the image
-            ElevatedCard (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom=70.dp)
-            ){
-                Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                Box(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .paint(
+                            painter = painterResource(R.drawable.diverse_exercise),
+                            contentScale = ContentScale.FillWidth
+                        )
                 ) {
-                    Text(
-                        text = "Group Challenge",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Row(
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
+                    }
+                }
+                // Box with title and stats on top of the image
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 70.dp)
+                ) {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(16.dp)
                     ) {
                         Text(
-                            text = "Insane Walkers",
-                            fontSize = 25.sp,
+                            text = "Group Challenge",
                             fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Insane Walkers",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = "150 XP",
+                                fontSize = 25.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "Complete 85 000 steps",
+                            fontSize = 20.sp,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = 2.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            LinearProgressIndicator(
+                                progress = 1f,
+                                color = Color(0xFFE66353),
+                                modifier = Modifier
+                                    .padding(start = 16.dp, end = 16.dp)
+                                    .height(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(3.dp))
+                            Text(text = "100%", fontSize = 10.sp)
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
                         Text(
-                            text = "150 XP",
+                            text = "Stats",
                             fontSize = 25.sp,
                             textAlign = TextAlign.Center
                         )
-                    }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "Complete 85 000 steps",
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier
-                            .padding(vertical = 2.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        LinearProgressIndicator(
-                            progress = 1f,
-                            color = Color(0xFFE66353),
-                            modifier = Modifier
-                                .padding(start= 16.dp, end= 16.dp)
-                                .height(16.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "You completed: 45 200 steps",
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Text(text = "100%", fontSize = 10.sp)
-                    }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "Stats",
-                        fontSize = 25.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "You completed: 45 200 steps",
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center
-                    )
 
-                    Text(
-                        text = "Josh completed: 39 800 steps",
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Text(text = "Friend",fontSize = 25.sp)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier
-                            .padding(vertical = 2.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.profile_image),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape)
+                        Text(
+                            text = "Josh completed: 39 800 steps",
+                            fontSize = 15.sp,
+                            textAlign = TextAlign.Center
                         )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(text = "Friend", fontSize = 25.sp)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = 2.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.profile_image),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
                     }
-                    // Placeholder CreateWorkoutButton
-                    StartWorkoutButton(navController)
                 }
             }
         }
+        // Placeholder CreateWorkoutButton
+        StartWorkoutButton(navController)
     }
 }
