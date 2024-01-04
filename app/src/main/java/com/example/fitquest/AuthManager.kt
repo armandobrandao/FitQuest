@@ -32,6 +32,31 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
+    fun signUpUser(name: String, username: String, callback: (Boolean, String?) -> Unit) {
+        val user = auth.currentUser
+        val userProfile = UserProfile(username, name)
+
+        saveUserProfile(user?.uid, userProfile, callback)
+    }
+
+    private fun saveUserProfile(
+        userId: String?,
+        userProfile: UserProfile,
+        callback: (Boolean, String?) -> Unit
+    ) {
+        userId?.let {
+            firestore.collection("users")
+                .document(it)
+                .set(userProfile)
+                .addOnSuccessListener {
+                    callback(true, null)
+                }
+                .addOnFailureListener { e ->
+                    callback(false, "Error creating user profile: $e")
+                }
+        }
+    }
+
     fun signOut() {
         auth.signOut()
     }

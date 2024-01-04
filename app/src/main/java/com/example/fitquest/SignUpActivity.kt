@@ -27,6 +27,7 @@ class SignUpActivity : AppCompatActivity() {
             if (password == confirmPassword) {
                 authManager.signUp(email, password) { success, errorMessage ->
                     if (success) {
+
                         // Registration successful, you can handle it here
                         Log.d("SignUpActivity", "Registration successful")
 

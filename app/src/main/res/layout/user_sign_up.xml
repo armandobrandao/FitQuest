@@ -31,6 +31,8 @@
         android:layout_below="@id/editTextName"
         android:layout_marginTop="16dp"/>
 
+
+
     <Button
         android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
@@ -38,5 +40,16 @@
         android:text="Submit"
         android:layout_below="@id/editTextUsername"
         android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/errorMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        android:layout_below="@id/buttonSubmit"/>
 
 </RelativeLayout>
