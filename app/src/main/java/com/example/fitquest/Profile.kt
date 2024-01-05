@@ -98,6 +98,7 @@ fun MainCard(user: User) {
                 )
             }
         }
+
         Column {
             Row(
                 modifier = Modifier
@@ -122,6 +123,20 @@ fun MainCard(user: User) {
                         .padding(start = 16.dp, end = 16.dp)
                         .height(16.dp)
                 )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Button(
+                    colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
+                    onClick = {
+
+                    }) {
+                    Text("Edit Profile")
+                }
             }
         }
     }

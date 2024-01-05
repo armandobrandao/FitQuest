@@ -77,7 +77,6 @@ fun NavGraph (navController: NavHostController){
                 // Handle the case where friendUsername is null or not provided
             }
         }
-
         composable(Screens.GenerateWorkout.route) {
             GenerateWorkout(navController = navController)
         }
@@ -162,6 +161,11 @@ fun NavGraph (navController: NavHostController){
         }
         composable(Screens.DailyQuestComplete.route) {
             DailyQuestComplete(navController = navController)
+        }
+
+        composable(Screens.SignUpUser.route) {
+            Log.d("NavGraph", "Navigating to SignUpUser")
+            SignUpUser()
         }
 
 

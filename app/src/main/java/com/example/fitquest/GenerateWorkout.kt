@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,7 +49,7 @@ import androidx.navigation.NavHostController
 fun InputBox(
     label: String,
     options: List<String> = emptyList(),
-    keyboardType: KeyboardType = KeyboardType.Text
+    onValueChange: (String) -> Unit // Add a callback to update the state
 ) {
     var selectedOption by remember { mutableStateOf(options.firstOrNull()) }
     val context = LocalContext.current
@@ -91,6 +92,7 @@ fun InputBox(
                                 text = { Text(text = item) },
                                 onClick = {
                                     selectedOption = item
+                                    onValueChange(item) // Update the state with the original value
                                     expanded = false
                                     Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
                                 }
@@ -110,10 +112,11 @@ fun InputBox(
                     value = selectedOption ?: "",
                     onValueChange = {
                         selectedOption = it
+                        onValueChange(it) // Update the state with the original value
                     },
                     label = { Text(text = label) },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = keyboardType,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
@@ -129,43 +132,64 @@ fun InputBox(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerateWorkout(navController: NavHostController) {
-    val apiKey = "Tng/CZGSkgzfSCEV+DbTyw==fsY8JbSZOC11ObD4"
 
     // Make the API request
     var apiResponse by remember { mutableStateOf<String?>(null) }
 
     // Mapping for display values
     val difficultyOptionsMap = mapOf(
+        "" to "(optional)",
         "beginner" to "Beginner",
         "intermediate" to "Intermediate",
-        "expert" to "Expert"
+        "expert" to "Expert",
     )
 
     val typeOptionsMap = mapOf(
+        "" to "(optional)",
         "cardio" to "Cardio",
         "olympic_weightlifting" to "Olympic Weightlifting",
-        "plyometrics" to "Plyometrics"
+        "plyometrics" to "Plyometrics",
+        "powerlifting" to "Powerlifting",
+        "strength" to "Strength",
+        "stretching" to "Stretching",
+        "strongman" to "Strongman",
     )
 
     val muscleOptionsMap = mapOf(
+        "" to "(optional)",
         "abdominals" to "Abdominals",
         "abductors" to "Abductors",
-        "adductors" to "Adductors"
+        "adductors" to "Adductors",
+        "biceps" to "Biceps",
+        "calves" to "Calves",
+        "chest" to "Chest",
+        "forearms" to "Forearms",
+        "glutes" to "Glutes",
+        "hamstrings" to "Hamstrings",
+        "lats" to "Lats",
+        "lower_back" to "Lower Back",
+        "middle_back" to "Middle Back",
+        "neck" to "Neck",
+        "quadriceps" to "Quadriceps",
+        "traps" to "Traps",
+        "triceps" to "Triceps",
     )
 
-    val intensityOptions = listOf("beginner", "intermediate", "expert")
-    val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
+    val intensityOptions = listOf("", "beginner", "intermediate", "expert")
+    var selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
 
-    val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
-    val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
+    val typeOptions = listOf("", "cardio", "olympic_weightlifting", "plyometrics", "powerlifting", "strength", "stretching", "strongman")
+    var selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
 
-    val selectedDuration by remember { mutableStateOf("") }
+    var selectedDuration by remember { mutableStateOf("") }
 
-    val muscleOptions = listOf("abdominals", "abductors", "adductors")
-    val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
+    val muscleOptions = listOf("", "abdominals", "abductors", "adductors", "biceps", "calves", "chest", "forearms", "glutes",
+        "hamstrings", "lats", "lower_back", "middle_back", "neck", "quadriceps", "traps", "triceps")
+    var selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
 
 
     Column(
@@ -203,28 +227,30 @@ fun GenerateWorkout(navController: NavHostController) {
                             }
                         }
                     )
-                    // Intensity Input
-//                    val intensityOptions = listOf("beginner", "intermediate", "expert")
-//                    val selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
+
                     InputBox(
                         label = "Intensity",
-                        options = intensityOptions.map { difficultyOptionsMap[it] ?: it })
+                        options = intensityOptions.map { difficultyOptionsMap[it] ?: it },
+                        onValueChange = { selectedDifficulty = difficultyOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
+                    )
 
-                    // Location Input
-//                    val typeOptions = listOf("cardio", "olympic_weightlifting", "plyometrics")
-//                    val selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
-                    InputBox(label = "Type", options = typeOptions.map { typeOptionsMap[it] ?: it })
-
-                    // Duration Input
-//                    val selectedDuration by remember { mutableStateOf("") }
-                    InputBox(label = "Duration", keyboardType = KeyboardType.Number)
-
-                    // Type Input
-//                    val muscleOptions = listOf("abdominals", "abductors", "adductors")
-//                    val selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
                     InputBox(
                         label = "Type",
-                        options = muscleOptions.map { muscleOptionsMap[it] ?: it })
+                        options = typeOptions.map { typeOptionsMap[it] ?: it },
+                        onValueChange = { selectedType = typeOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
+                    )
+
+                    InputBox(
+                        label = "Duration (m)",
+                        onValueChange = { selectedDuration = it }
+                    )
+
+                    InputBox(
+                        label = "Muscle Type",
+                        options = muscleOptions.map { muscleOptionsMap[it] ?: it },
+                        onValueChange = { selectedMuscle = muscleOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
+                    )
+
                 }
             }
         }
@@ -240,16 +266,19 @@ fun GenerateWorkout(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
+                    Log.d("GENERATE", "selectedMuscle: $selectedMuscle")
+                    Log.d("GENERATE", "selectedDifficulty: $selectedDifficulty")
+                    Log.d("GENERATE", "selectedType: $selectedType")
+
                     // Handle Generate Workout button click
                     val response = WorkoutAPI.makeApiRequest(
                         selectedMuscle,
-                        selectedDifficulty,
                         selectedType,
-                        selectedDuration,
-                        apiKey,
+                        selectedDifficulty,
+                        selectedDuration
                     )
                     apiResponse = response
-                    println(response)
+                    Log.d("GENERATE", "Ainda dentro do onClick response: $response")
                 },
                 modifier = Modifier
                     .padding(8.dp),
@@ -271,3 +300,4 @@ fun GenerateWorkout(navController: NavHostController) {
 //fun GenerateWorkoutPreview() {
 //    GenerateWorkout()
 //}
+

@@ -37,6 +37,8 @@ class SignUpActivity : AppCompatActivity() {
                         finish() // Optional: finish this activity if you don't want the user to come back to it by pressing the back button
                     } else {
                         // Registration failed, handle the error or show a message to the user
+
+                        // TODO: Distinguir entre os erros, pode ser por ja ter la o email
                         errorMessage?.let {
                             // Display an error message
                             errorMessageTextView.text = "Your password needs to be at least 6 characters long"

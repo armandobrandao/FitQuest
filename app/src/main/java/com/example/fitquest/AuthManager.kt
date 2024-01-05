@@ -4,6 +4,9 @@ import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class AuthManager(private val activity: Activity) {
 
@@ -32,11 +35,43 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
-    fun signUpUser(name: String, username: String, callback: (Boolean, String?) -> Unit) {
+    fun signUpUser(
+        name: String,
+        username: String,
+        gender: String,
+        age: Int,
+        weight: Double,
+        height: Double,
+        activityLevel: String,
+        sessionsOutside: Int,
+        callback: (Boolean, String?) -> Unit
+    ) {
         val user = auth.currentUser
-        val userProfile = UserProfile(username, name)
+        val userProfile = UserProfile(
+            username = username,
+            fullName = name,
+            gender = gender,
+            age = age,
+            weight = weight,
+            height = height,
+            activityLevel = activityLevel,
+            sessionsOutside = sessionsOutside,
+            xp = 0,
+            level = 0,
+            joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
+            longestStreak = 0,
+            places = 0,
+            friends = emptyList(),
+            achievements = emptyList()
+        )
 
         saveUserProfile(user?.uid, userProfile, callback)
+    }
+
+    private fun getCurrentFormattedDate(): String {
+        // Replace this with your date formatting logic
+        val currentTime = Calendar.getInstance().time
+        return SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentTime)
     }
 
     private fun saveUserProfile(
