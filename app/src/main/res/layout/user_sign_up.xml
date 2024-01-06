@@ -10,36 +10,130 @@
         android:text="Complete Your Profile"
         android:textSize="24sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        />
+    <TextView
+        android:id="@+id/textViewnameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:layout_below="@id/textViewTitle"
+        android:layout_marginTop="16dp"
+        android:textSize = "19dp"/>
 
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="First and last"
         android:inputType="textPersonName"
-        android:layout_below="@id/textViewTitle"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/textViewnameLabel"
+        android:textSize = "15dp"/>
+
+
+    <TextView
+        android:id="@+id/textViewUsernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username:"
+        android:layout_below="@id/editTextName"
+        android:layout_marginTop="16dp"
+        android:textSize = "19dp"/>
 
     <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:hint="Select a valid username"
         android:inputType="text"
-        android:layout_below="@id/editTextName"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/textViewUsernameLabel"
+        android:textSize = "15dp"/>
 
 
+
+
+
+    <TextView
+        android:id="@+id/textViewAgeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age:"
+        android:layout_below="@id/editTextUsername"
+        android:layout_marginTop="46dp"
+        android:textSize = "19dp"/>
+    <EditText
+        android:id="@+id/editAge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select your current age"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/textViewAgeLabel"
+        android:textSize = "15dp"/>
+
+
+    <TextView
+        android:id="@+id/textViewHeightLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Height:"
+        android:layout_below="@id/editAge"
+        android:layout_marginTop="16dp"
+        android:textSize = "19dp"/>
+
+    <EditText
+        android:id="@+id/editheight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select your height in centimeters (cm)"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/textViewHeightLabel"
+        android:textSize = "15dp"/>
+
+    <TextView
+        android:id="@+id/textViewWeightLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight:"
+        android:layout_below="@id/editheight"
+        android:layout_marginTop="16dp"
+        android:textSize = "19dp"/>
+
+    <EditText
+        android:id="@+id/editWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewWeightLabel"
+        android:hint="Select your weight in kilograms (kg)"
+        android:inputType="numberDecimal"
+        android:singleLine="false"
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/textViewGenderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select your biological sex:"
+        android:layout_below="@id/editWeight"
+        android:layout_marginTop="16dp"
+        android:textSize = "19dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewGenderLabel"
+        android:layout_marginTop="6dp"
+
+        />
 
     <Button
         android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_below="@id/editTextUsername"
-        android:layout_marginTop="32dp"/>
+        android:text="Continue"
+        android:layout_below="@id/spinnerGender"
+        android:layout_marginTop="22dp"/>
 
     <TextView
         android:id="@+id/errorMessageTextView"
