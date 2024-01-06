@@ -113,7 +113,7 @@
         android:id="@+id/textViewGenderLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select your biological sex:"
+        android:text="Select your gender:"
         android:layout_below="@id/editWeight"
         android:layout_marginTop="16dp"
         android:textSize = "19dp"/>

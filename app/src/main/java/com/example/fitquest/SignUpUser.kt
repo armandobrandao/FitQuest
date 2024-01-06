@@ -46,15 +46,9 @@ class SignUpUser : AppCompatActivity() {
                 if (success) {
                     Log.d("SignUpUser", "User criado com sucesso")
 
-                    val intent = Intent(this@SignUpUser, MainActivity::class.java)
+                    val intent = Intent(this@SignUpUser, questionary::class.java)
 
-                    // Para direcionar para um questionario diferente dependendo do genero
 
-                   // val intent = when (selectedGender) {
-                   //     "Male" -> Intent(this@SignUpUser, MaleActivity::class.java)
-                   //     "Female" -> Intent(this@SignUpUser, FemaleActivity::class.java)
-                   //     else -> Intent(this@SignUpUser, OtherActivity::class.java)
-                   // }
                     startActivity(intent)
                     finish()
                 } else {
