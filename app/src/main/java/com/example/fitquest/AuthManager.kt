@@ -42,8 +42,13 @@ class AuthManager(private val activity: Activity) {
         age: Int,
         weight: Double,
         height: Double,
+        goal: String,
+        motivation: String,
+        pushUps: String,
         activityLevel: String,
-        sessionsOutside: Int,
+        firstDay: String,
+        trainingDays: String,
+        sessionsOutside: String,
         callback: (Boolean, String?) -> Unit
     ) {
         val user = auth.currentUser
@@ -54,6 +59,11 @@ class AuthManager(private val activity: Activity) {
             age = age,
             weight = weight,
             height = height,
+            goal = goal,
+            motivation = motivation,
+            pushUps = pushUps,
+            firstDayOfWeek = firstDay,
+            trainingDays = trainingDays,
             activityLevel = activityLevel,
             sessionsOutside = sessionsOutside,
             xp = 0,
@@ -67,6 +77,7 @@ class AuthManager(private val activity: Activity) {
 
         saveUserProfile(user?.uid, userProfile, callback)
     }
+
 
     private fun getCurrentFormattedDate(): String {
         // Replace this with your date formatting logic

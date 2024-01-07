@@ -50,6 +50,7 @@
                 android:value="" />
         </activity>
 
+
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">

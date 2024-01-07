@@ -1,262 +1,268 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Your existing code -->
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Physical goals"
-        android:textSize="24sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
-        />
-
-    <TextView
-        android:id="@+id/textGoalLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="What are your main goals?"
-        android:layout_below="@id/textViewTitle"
-        android:layout_marginTop="16dp"
-        android:textSize="19dp" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupGoal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/textGoalLabel">
-
-        <RadioButton
-            android:id="@+id/radioButtonlose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lose weight" />
-
-        <RadioButton
-            android:id="@+id/radioButtonBuild"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Build muscle" />
-
-        <RadioButton
-            android:id="@+id/radioButtonMaintain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Maintain shape" />
-
-    </RadioGroup>
+        android:layout_height="wrap_content">
 
     <!-- Your existing code -->
-
-    <TextView
-        android:id="@+id/textMotivationLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="What motivates you the most?"
-        android:layout_below="@id/radioGroupGoal"
-        android:layout_marginTop="16dp"
-        android:textSize="19dp" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupMotivation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/textMotivationLabel">
-        <RadioButton
-            android:id="@+id/radioButtonFeelConfident"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Feel confident" />
-
-        <RadioButton
-            android:id="@+id/radioButtonRelieveStress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Relieve stress" />
-
-        <RadioButton
-            android:id="@+id/radioButtonImproveHealth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Improve health" />
-
-        <RadioButton
-            android:id="@+id/radioButtonIncreaseEnergy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Increase energy" />
-
-    </RadioGroup>
-
-    <!-- Your existing code -->
-
-    <TextView
-        android:id="@+id/textPushUpsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="How many push-ups can you do without stopping?"
-        android:layout_below="@id/radioGroupMotivation"
-        android:layout_marginTop="16dp"
-        android:textSize="19dp" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupPushUps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/textPushUpsLabel">
-
-        <RadioButton
-            android:id="@+id/radioButtonBeginner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3-5 " />
-
-        <RadioButton
-            android:id="@+id/radioButtonIntermediate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5-10 " />
-
-        <RadioButton
-            android:id="@+id/radioButtonAdvanced"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="At least 10 " />
-
-    </RadioGroup>
-
-    <!-- Your existing code -->
-
-    <TextView
-        android:id="@+id/textActivityLevelLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="What is your level of physical activity?"
-        android:layout_below="@id/radioGroupPushUps"
-        android:layout_marginTop="16dp"
-        android:textSize="19dp" />
-
-    <RadioGroup
-        android:id="@+id/radioGroupActivityLevel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/textActivityLevelLabel">
-
-        <RadioButton
-            android:id="@+id/radioButtonSedentary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sedentary" />
-
-        <RadioButton
-            android:id="@+id/radioButtonLightlyActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lightly active" />
-
-        <RadioButton
-            android:id="@+id/radioButtonModeratelyActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Moderately active" />
-
-        <RadioButton
-            android:id="@+id/radioButtonVeryActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Very active" />
-
-    </RadioGroup>
-
-
-
-    <TextView
-        android:id="@+id/textWeeklyGoalLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Define your weekly goal (for better results, we recommend at least 3 workout days per week):"
-        android:layout_below="@id/radioGroupActivityLevel"
-        android:layout_marginTop="16dp"
-        android:textSize="19dp" />
-
-    <LinearLayout
-        android:id="@+id/linearLayoutTrainingDays"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/textWeeklyGoalLabel">
-
         <TextView
-            android:id="@+id/textTrainingDays"
+            android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Training days (1 to 7):"
-            android:textSize="16dp"
+            android:text="Physical goals"
+            android:textSize="24sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
             />
 
-        <EditText
-            android:id="@+id/editTextTrainingDays"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Enter days"
-            android:inputType="number"
-            android:singleLine="true"
-            android:textSize="16dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutFirstDay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/linearLayoutTrainingDays"
-        android:layout_marginTop="8dp">
-
         <TextView
-            android:id="@+id/textFirstDay"
+            android:id="@+id/textGoalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="First day of the week:"
-            android:textSize="16dp" />
+            android:text="What are your main goals?"
+            android:layout_below="@id/textViewTitle"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp" />
 
-        <Spinner
-            android:id="@+id/spinnerFirstDay"
-            android:layout_width="0dp"
+        <RadioGroup
+            android:id="@+id/radioGroupGoal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_below="@id/textGoalLabel">
 
-    <!-- Your existing code -->
+            <RadioButton
+                android:id="@+id/radioButtonlose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lose weight" />
 
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Continue"
-        android:layout_below="@id/linearLayoutFirstDay"
-        android:layout_marginTop="22dp"/>
+            <RadioButton
+                android:id="@+id/radioButtonBuild"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Build muscle" />
 
-    <TextView
-        android:id="@+id/errorMessageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/red"
-        android:textSize="16sp"
-        android:visibility="invisible"
-        android:layout_below="@id/buttonSubmit"/>
-</RelativeLayout>
+            <RadioButton
+                android:id="@+id/radioButtonMaintain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maintain shape" />
 
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textMotivationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What motivates you the most?"
+            android:layout_below="@id/radioGroupGoal"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupMotivation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textMotivationLabel">
+            <RadioButton
+                android:id="@+id/radioButtonFeelConfident"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feel confident" />
+
+            <RadioButton
+                android:id="@+id/radioButtonRelieveStress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Relieve stress" />
+
+            <RadioButton
+                android:id="@+id/radioButtonImproveHealth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Improve health" />
+
+            <RadioButton
+                android:id="@+id/radioButtonIncreaseEnergy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Increase energy" />
+
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textPushUpsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How many push-ups can you do without stopping?"
+            android:layout_below="@id/radioGroupMotivation"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupPushUps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textPushUpsLabel">
+
+            <RadioButton
+                android:id="@+id/radioButtonBeginner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3-5 " />
+
+            <RadioButton
+                android:id="@+id/radioButtonIntermediate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5-10 " />
+
+            <RadioButton
+                android:id="@+id/radioButtonAdvanced"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 10 " />
+
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textActivityLevelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What is your level of physical activity?"
+            android:layout_below="@id/radioGroupPushUps"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupActivityLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textActivityLevelLabel">
+
+            <RadioButton
+                android:id="@+id/radioButtonSedentary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sedentary" />
+
+            <RadioButton
+                android:id="@+id/radioButtonLightlyActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lightly active" />
+
+            <RadioButton
+                android:id="@+id/radioButtonModeratelyActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moderately active" />
+
+            <RadioButton
+                android:id="@+id/radioButtonVeryActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Very active" />
+
+        </RadioGroup>
+
+
+
+        <TextView
+            android:id="@+id/textWeeklyGoalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Define your weekly goal (for better results, we recommend at least 3 workout days per week):"
+            android:layout_below="@id/radioGroupActivityLevel"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutTrainingDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/textWeeklyGoalLabel">
+
+            <TextView
+                android:id="@+id/textTrainingDays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Training days (1 to 7):"
+                android:textSize="16dp"
+                />
+
+            <NumberPicker
+                android:id="@+id/numberPickerTrainingDays"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:max="7"
+                android:min="1"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFirstDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/linearLayoutTrainingDays"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/textFirstDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First day of the week:"
+                android:textSize="16dp" />
+
+            <Spinner
+                android:id="@+id/spinnerFirstDay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+        </LinearLayout>
+
+        <!-- Your existing code -->
+
+        <Button
+            android:id="@+id/buttonSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:layout_below="@id/linearLayoutFirstDay"
+            android:layout_marginTop="22dp"/>
+
+        <TextView
+            android:id="@+id/errorMessageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:layout_below="@id/buttonSubmit"/>
+    </RelativeLayout>
+
+</ScrollView>

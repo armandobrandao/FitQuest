@@ -7,13 +7,18 @@ data class UserProfile(
     val age: Int = 0,
     val weight: Double = 0.0,
     val height: Double = 0.0,
-    val activityLevel: String = "",
-    val sessionsOutside: Int = 0,
+    val goal: String = "", // New field from the questionnaire
+    val motivation: String = "", // New field from the questionnaire
+    val pushUps: String = "", // New field from the questionnaire
+    val activityLevel: String = "", // New field from the questionnaire
+    val firstDayOfWeek: String = "", // New field from the questionnaire
+    val trainingDays: String = "", // New field from the questionnaire
+    val sessionsOutside: String = "",
     val xp: Int = 0,
     val level: Int = 0,
     val joinDate: String = "",
     val longestStreak: Int = 0,
     val places: Int = 0,
-    val friends: List<UserProfile>, //TODO: verificar se é msm UserProfile aqui ou se devemos criar outra coisa para os amigos
-    val achievements: List<Achievement>,
+    val friends: List<UserProfile> = emptyList(),
+    val achievements: List<Achievement> = emptyList(),
 )
