@@ -1,0 +1,9 @@
+<!-- res/drawable/spinner_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:width="1dp"
+        android:color="#000000" /> <!-- Adjust the color and width as needed -->
+    <padding
+        android:left="8dp"
+        android:right="8dp"/>
+</shape>
