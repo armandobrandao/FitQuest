@@ -377,6 +377,17 @@ fun Homepage(navController: NavController) {
     }
 }
 
+fun calculateProgress(currentValue: Int, goalValue: Int): Float {
+    // Ensure that the goalValue is greater than 0 to avoid division by zero
+    if (goalValue > 0) {
+        val progress = currentValue.toFloat() / goalValue.toFloat()
+        return progress.coerceIn(0f, 1f) // Ensure the progress is between 0 and 1
+    } else {
+        return 0f // Default to 0 if the goalValue is 0 or negative
+    }
+}
+
+
 
 //@RequiresApi(Build.VERSION_CODES.O)
 //@Preview(showBackground = true)

@@ -55,6 +55,7 @@ class AuthManager(private val activity: Activity) {
         val userProfile = UserProfile(
             username = username,
             fullName = name,
+            profileImage = 0,
             gender = gender,
             age = age,
             weight = weight,
@@ -103,11 +104,56 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-    fun signOut() {
-        auth.signOut()
+    fun getCurrentUser(callback: (UserProfile?) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            firestore.collection("users")
+                .document(user.uid)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val userProfile = documentSnapshot.toObject(UserProfile::class.java)
+                        if (userProfile != null) {
+                            val currentUser = UserProfile(
+                                username = userProfile.username,
+                                fullName = userProfile.fullName,
+                                profileImage = userProfile.profileImage,
+                                gender = userProfile.gender,
+                                age = userProfile.age,
+                                weight = userProfile.weight,
+                                height = userProfile.height,
+                                goal = userProfile.goal, // New field from the questionnaire
+                                motivation= userProfile.motivation, // New field from the questionnaire
+                                pushUps= userProfile.pushUps, // New field from the questionnaire
+                                activityLevel= userProfile.activityLevel, // New field from the questionnaire
+                                firstDayOfWeek= userProfile.firstDayOfWeek, // New field from the questionnaire
+                                trainingDays= userProfile.trainingDays, // New field from the questionnaire
+                                sessionsOutside= userProfile.sessionsOutside,
+                                xp= userProfile.xp,
+                                level= userProfile.level,
+                                joinDate= userProfile.joinDate,
+                                longestStreak= userProfile.longestStreak,
+                                places= userProfile.places,
+                                friends= userProfile.friends,
+                                achievements= userProfile.achievements,
+                            )
+                            callback(currentUser)
+                        } else {
+                            callback(null)
+                        }
+                    } else {
+                        callback(null)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    callback(null)
+                }
+        } else {
+            callback(null)
+        }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
+    fun signOut() {
+        auth.signOut()
     }
 }

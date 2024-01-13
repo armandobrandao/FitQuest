@@ -3,6 +3,7 @@ package com.example.fitquest
 data class UserProfile(
     val username: String = "",
     val fullName: String = "",
+    val profileImage: Int = 0,
     val gender: String = "",
     val age: Int = 0,
     val weight: Double = 0.0,

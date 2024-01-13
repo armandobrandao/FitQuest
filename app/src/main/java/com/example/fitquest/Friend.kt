@@ -162,9 +162,9 @@ fun Friend(user: User, navController: NavController) {
         item {
             MainCardFriend(user, navController)
             Spacer(modifier = Modifier.height(16.dp))
-            StatisticsSection()
+//            StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))
-            AchievementsSection()
+//            AchievementsSection(user)
         }
     }
 }

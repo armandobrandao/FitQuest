@@ -115,8 +115,10 @@ fun Challenge(navController: NavHostController) {
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val currentValue = 50 // Replace with your actual current value
+                            val goalValue = 100
                             LinearProgressIndicator(
-                                progress = 1f,
+                                progress = calculateProgress(currentValue, goalValue),
                                 color = Color(0xFFE66353),
                                 modifier = Modifier
                                     .padding(start = 16.dp, end = 16.dp)

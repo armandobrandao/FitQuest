@@ -30,7 +30,7 @@ fun NavGraph (navController: NavHostController){
         }
         composable(Screens.Profile.route) {
             Log.d("NavGraph", "Navigating to Profile")
-            Profile( user = Harry, navController = navController)
+            Profile( user = Harry2, navController = navController)
         }
         composable(Screens.Notifications.route) {
             Notifications(navController = navController)
@@ -167,15 +167,10 @@ fun NavGraph (navController: NavHostController){
             Log.d("NavGraph", "Navigating to SignUpUser")
             SignUpUser()
         }
-
-
-
-
-
-
     }
 }
 
 val Harry = User("Harry Philip", R.drawable.profile_image, "@harry")
+val Harry2 = UserProfile("@harry","Harry Philip", R.drawable.profile_image)
 
 

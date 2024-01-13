@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,16 +37,6 @@ import androidx.navigation.NavController
 
 data class Statistic(val value: String, val icon: Int, val title: String)  // Sample user data class
 
-val statisticsList1 = listOf(
-    Statistic("110", R.drawable.bell, "Total XP"),
-    Statistic("11", R.drawable.bell, "Longest Streak"),
-    )
-
-val statisticsList2 = listOf(
-    Statistic("23%", R.drawable.bell, "Progress"),
-    Statistic("3", R.drawable.bell, "Places"),
-)
-
 data class Achievement(val name: String, val icon: Int, val description: String)
 
 val sampleAchievement = listOf(
@@ -52,7 +44,7 @@ val sampleAchievement = listOf(
     Achievement("Streak Marathoner", R.drawable.bell, "Unstoppable! You achieved a remarkable 200-day streak of daily workouts, consistency is yor superpower"),
 )
 @Composable
-fun MainCard(user: User) {
+fun MainCard(user: UserProfile) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxSize()
@@ -69,15 +61,15 @@ fun MainCard(user: User) {
                     .weight(1f)
                     .padding(horizontal = 16.dp) // Add padding here
             ) {
-                Text(text = user.username, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(text = user.fullName, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
                 Spacer(modifier = Modifier.height(4.dp)) // Add more space here
 
-                Text(text = user.userUnder, fontSize = 18.sp)
+                Text(text = user.username, fontSize = 18.sp)
 
                 Spacer(modifier = Modifier.height(8.dp)) // Add more space here
 
-                Text(text = "Joined in June 2020", fontSize = 12.sp)
+                Text(text = "Joined in" + user.joinDate.toString(), fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(2.dp)) // Add more space here
                 Text(text = "Portugal", fontSize = 12.sp)
             }
@@ -105,9 +97,9 @@ fun MainCard(user: User) {
                     .padding(horizontal= 32.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Lvl 1", fontWeight = FontWeight.Bold)
+                Text(text = "Lvl." + (user.level).toString(), fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.weight(1f))
-                Text(text = "100/200", fontWeight = FontWeight.Bold)
+                Text(text = (user.xp).toString() + "/200", fontWeight = FontWeight.Bold)
             }
             Row(
                 modifier = Modifier
@@ -116,7 +108,7 @@ fun MainCard(user: User) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 LinearProgressIndicator(
-                    progress = 0.5f,
+                    progress = calculateProgress(user.xp, 200 ),
                     color = Color(0xFFE66353),
                     modifier = Modifier
                         .fillMaxWidth() // Adjust the width here
@@ -126,14 +118,16 @@ fun MainCard(user: User) {
             }
             Row(
                 modifier = Modifier
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
+                    .padding(16.dp)
+                    .fillMaxWidth(), // Adjusted to fill the width
+                horizontalArrangement = Arrangement.Center, // Center the content horizontally
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
+                val context = LocalContext.current
                 Button(
                     colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
                     onClick = {
-
+                        context.startActivity(Intent(context, EditInfo::class.java))
                     }) {
                     Text("Edit Profile")
                 }
@@ -142,7 +136,17 @@ fun MainCard(user: User) {
     }
 }
 @Composable
-fun StatisticsSection() {
+fun StatisticsSection(user: UserProfile) {
+    val statisticsList1 = listOf(
+        Statistic((user.xp).toString(), R.drawable.bell, "Total XP"),
+        Statistic((user.longestStreak).toString(), R.drawable.bell, "Longest Streak"),
+    )
+
+    val statisticsList2 = listOf(
+        Statistic("23%", R.drawable.bell, "Progress"),
+        Statistic((user.places).toString(), R.drawable.bell, "Places"),
+    )
+
     Column(modifier = Modifier.padding(horizontal=16.dp)) {
         Text("Statistics", fontWeight = FontWeight.Bold, fontSize = 21.sp)
 
@@ -218,7 +222,7 @@ val sampleFriends = listOf(
 
 
 @Composable
-fun FriendsSection(navController: NavController) {
+fun FriendsSection(navController: NavController, user: UserProfile) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = Modifier
@@ -236,21 +240,34 @@ fun FriendsSection(navController: NavController) {
                 Text("Add Friends")
             }
         }
-
-        Column {
-            sampleFriends.forEachIndexed { index, friend ->
-                FriendItem(user = friend, onClick = {
-                    // Navigate to friend's profile
-                    navController.navigate("${Screens.Friend.route}/${friend.username}")
-                })
+        if (user.friends.isNotEmpty()) {
+            Column {
+                user.friends.forEachIndexed { index, friend ->
+                    FriendItem(user = friend, onClick = {
+                        // Navigate to friend's profile
+                        navController.navigate("${Screens.Friend.route}/${friend.username}")
+                    })
+                }
+            }
+        }else{
+            ElevatedCard(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+    //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                )  {
+                        Text("You don´t have any friends yet, add some!", fontSize = 15.sp)
+                }
             }
         }
-
     }
 }
 
 @Composable
-fun FriendItem(user: User, onClick: () -> Unit) {
+fun FriendItem(user: UserProfile, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -288,7 +305,7 @@ fun FriendItem(user: User, onClick: () -> Unit) {
 
 
 @Composable
-fun AchievementsSection(){
+fun AchievementsSection(user: UserProfile){
     Column(modifier = Modifier.padding(horizontal=16.dp)) {
         Text("Achievements", fontWeight = FontWeight.Bold, fontSize = 21.sp)
 
@@ -297,12 +314,24 @@ fun AchievementsSection(){
                 .padding(16.dp)
 //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
         ) {
-            Column {
-                sampleAchievement.forEachIndexed { index, achievement ->
-                    AchievementItem(achievement = achievement)
-                    if (index < sampleAchievement.size - 1) {
-                        Divider()
+            if(user.achievements.isNotEmpty()) {
+                Column {
+                    user.achievements.forEachIndexed { index, achievement ->
+                        AchievementItem(achievement = achievement)
+                        if (index < user.achievements.size - 1) {
+                            Divider()
+                        }
                     }
+                }
+            } else{
+                Column (
+                    modifier = Modifier
+                        .padding(16.dp)
+//                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                ) {
+
+                        Text("Your achievements will appear here", fontSize = 15.sp)
+
                 }
             }
         }
@@ -341,7 +370,7 @@ fun AchievementItem(achievement: Achievement) {
     }
 }
 @Composable
-fun Profile(user: User, navController: NavController) {
+fun Profile(user: UserProfile, navController: NavController) {
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
@@ -350,10 +379,10 @@ fun Profile(user: User, navController: NavController) {
         item {
             MainCard(user)
             Spacer(modifier = Modifier.height(16.dp))
-            StatisticsSection()
+            StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))
-            FriendsSection(navController)
-            AchievementsSection()
+            FriendsSection(navController, user)
+            AchievementsSection(user)
         }
     }
 }

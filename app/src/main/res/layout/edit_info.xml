@@ -1,0 +1,613 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/linearTextandBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <!-- Toolbar with IconButton -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize">
+
+                <!-- IconButton -->
+                <ImageButton
+                    android:id="@+id/buttonArrowBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignTop="@id/toolbar"
+                    android:contentDescription="Back"
+                    android:onClick="onBackButtonClick"
+                    android:src="@drawable/left_arrow"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/white" />
+            </androidx.appcompat.widget.Toolbar>
+
+            <!-- Edit Your Profile Title -->
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/toolbar"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:text="Edit Your Profile"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:id="@+id/textViewnameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name:"
+            android:layout_below="@id/linearTextandBack"
+            android:layout_marginTop="16dp"
+            android:textSize = "19dp"
+            />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewnameLabel"
+            android:hint="First and last"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textSize="15dp"
+            />
+
+
+        <TextView
+            android:id="@+id/textViewUsernameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username:"
+            android:layout_below="@id/editTextName"
+            android:layout_marginTop="16dp"
+            android:textSize = "19dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewUsernameLabel"
+            android:hint="Select a valid username"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textSize="15dp"
+         />
+
+
+        <TextView
+            android:id="@+id/textViewAgeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Age:"
+            android:layout_below="@id/editTextUsername"
+            android:layout_marginTop="46dp"
+            android:textSize = "19dp"
+         />
+
+        <EditText
+            android:id="@+id/editAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewAgeLabel"
+            android:hint="Select your current age"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:textSize="15dp"
+        />
+
+
+        <TextView
+            android:id="@+id/textViewHeightLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Height:"
+            android:layout_below="@id/editAge"
+            android:layout_marginTop="16dp"
+            android:textSize = "19dp"
+        />
+
+        <EditText
+            android:id="@+id/editHeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewHeightLabel"
+            android:hint="Select your height in centimeters (cm)"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:textSize="15dp"
+        />
+
+        <TextView
+            android:id="@+id/textViewWeightLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weight:"
+            android:layout_below="@id/editHeight"
+            android:layout_marginTop="16dp"
+            android:textSize = "19dp"
+        />
+
+        <EditText
+            android:id="@+id/editWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewWeightLabel"
+            android:hint="Select your weight in kilograms (kg)"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:singleLine="false"
+            android:textSize="15dp"
+         />
+
+        <TextView
+            android:id="@+id/textViewGenderLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your gender:"
+            android:layout_below="@id/editWeight"
+            android:layout_marginTop="16dp"
+            android:textSize = "19dp"
+         />
+
+        <Spinner
+            android:id="@+id/spinnerGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewGenderLabel"
+            android:layout_marginTop="6dp"
+
+            android:minHeight="48dp"
+        />
+
+        <Button
+            android:id="@+id/buttonContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:layout_below="@id/spinnerGender"
+            android:layout_marginTop="22dp"
+     />
+
+
+        <TextView
+            android:id="@+id/textViewTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Physical goals"
+            android:textSize="24sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/textGoalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What are your main goals?"
+            android:layout_below="@id/textViewTitle2"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp"
+            android:visibility="gone"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroupGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textGoalLabel"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/radioButtonlose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lose weight" />
+
+            <RadioButton
+                android:id="@+id/radioButtonBuild"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Build muscle" />
+
+            <RadioButton
+                android:id="@+id/radioButtonMaintain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maintain shape" />
+
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textMotivationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What motivates you the most?"
+            android:layout_below="@id/radioGroupGoal"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp"
+            android:visibility="gone"
+        />
+
+        <RadioGroup
+            android:id="@+id/radioGroupMotivation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textMotivationLabel"
+            android:visibility="gone"
+            >
+            <RadioButton
+                android:id="@+id/radioButtonFeelConfident"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feel confident" />
+
+            <RadioButton
+                android:id="@+id/radioButtonRelieveStress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Relieve stress" />
+
+            <RadioButton
+                android:id="@+id/radioButtonImproveHealth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Improve health" />
+
+            <RadioButton
+                android:id="@+id/radioButtonIncreaseEnergy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Increase energy" />
+
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textPushUpsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How many push-ups can you do without stopping?"
+            android:layout_below="@id/radioGroupMotivation"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp"
+            android:visibility="gone"
+           />
+
+        <RadioGroup
+            android:id="@+id/radioGroupPushUps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textPushUpsLabel"
+            android:visibility="gone"
+         >
+
+            <RadioButton
+                android:id="@+id/radioButtonBeginner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3-5 " />
+
+            <RadioButton
+                android:id="@+id/radioButtonIntermediate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5-10 " />
+
+            <RadioButton
+                android:id="@+id/radioButtonAdvanced"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="At least 10 " />
+
+        </RadioGroup>
+
+        <!-- Your existing code -->
+
+        <TextView
+            android:id="@+id/textActivityLevelLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What is your level of physical activity?"
+            android:layout_below="@id/radioGroupPushUps"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp"
+            android:visibility="gone"
+/>
+
+        <RadioGroup
+            android:id="@+id/radioGroupActivityLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/textActivityLevelLabel"
+            android:visibility="gone"
+   >
+
+            <RadioButton
+                android:id="@+id/radioButtonSedentary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sedentary" />
+
+            <RadioButton
+                android:id="@+id/radioButtonLightlyActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lightly active" />
+
+            <RadioButton
+                android:id="@+id/radioButtonModeratelyActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moderately active" />
+
+            <RadioButton
+                android:id="@+id/radioButtonVeryActive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Very active" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textWeeklyGoalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Define your weekly goal (for better results, we recommend at least 3 workout days per week):"
+            android:layout_below="@id/radioGroupActivityLevel"
+            android:layout_marginTop="16dp"
+            android:textSize="19dp"
+            android:visibility="gone"
+      />
+
+
+        <TextView
+            android:id="@+id/textTrainingDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Training days (1 to 7):"
+            android:textSize="16dp"
+            android:layout_below="@id/textWeeklyGoalLabel"
+            android:visibility="gone"
+            />
+
+        <RadioGroup
+            android:id="@+id/radioGroupTrainingDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/textTrainingDays"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/radioButtonTraining1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButtonTraining2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButtonTraining3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButtonTraining4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                />
+            <RadioButton
+                android:id="@+id/radioButtonTraining5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                />
+            <RadioButton
+                android:id="@+id/radioButtonTraining6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6"
+                />
+            <RadioButton
+                android:id="@+id/radioButtonTraining7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7"
+                />
+
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFirstDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/radioGroupTrainingDays"
+            android:layout_marginTop="8dp"
+          >
+
+            <TextView
+                android:id="@+id/textFirstDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First day of the week:"
+                android:textSize="16dp"
+                android:visibility="gone"
+      />
+
+            <Spinner
+                android:id="@+id/spinnerFirstDay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+            />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textSessionsOutside"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How many session can you do outside?"
+            android:textSize="16dp"
+            android:layout_below="@id/linearLayoutFirstDay"
+            android:visibility="gone"
+            />
+
+        <RadioGroup
+            android:id="@+id/radioGroupSessionsOutside"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/textSessionsOutside"
+            android:visibility="gone"
+            >
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                />
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                />
+            <RadioButton
+                android:id="@+id/radioButton5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                />
+            <RadioButton
+                android:id="@+id/radioButton6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6"
+                />
+            <RadioButton
+                android:id="@+id/radioButton7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7"
+                />
+
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/radioGroupSessionsOutside"
+            android:layout_gravity="center_horizontal"
+           >
+
+            <!-- First Button and TextView pair -->
+            <Button
+                android:id="@+id/buttonBack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Back"
+                android:layout_marginTop="22dp"
+                android:visibility="gone"
+            />
+
+            <TextView
+                android:id="@+id/errorMessageTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                android:layout_below="@id/buttonBack"
+         />
+
+            <!-- Second Button and TextView pair -->
+            <Button
+                android:id="@+id/buttonSubmit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Update"
+                android:layout_marginTop="22dp"
+                android:visibility="gone"
+             />
+
+            <TextView
+                android:id="@+id/errorMessageSubmitTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                android:layout_below="@id/buttonSubmit"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</ScrollView>
