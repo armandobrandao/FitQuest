@@ -99,7 +99,7 @@ fun MainCard(user: UserProfile) {
             ) {
                 Text(text = "Lvl. " + (user.level).toString(), fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.weight(1f))
-                Text(text = (user.xp).toString() + "/200", fontWeight = FontWeight.Bold)
+                Text(text = (user.xp_level).toString() + "/200", fontWeight = FontWeight.Bold)
             }
             Row(
                 modifier = Modifier
@@ -108,7 +108,7 @@ fun MainCard(user: UserProfile) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 LinearProgressIndicator(
-                    progress = calculateProgress(user.xp, 200 ),
+                    progress = calculateProgress(user.xp_level, 200 ),
                     color = Color(0xFFE66353),
                     modifier = Modifier
                         .fillMaxWidth() // Adjust the width here
@@ -138,7 +138,7 @@ fun MainCard(user: UserProfile) {
 @Composable
 fun StatisticsSection(user: UserProfile) {
     val statisticsList1 = listOf(
-        Statistic((user.xp).toString(), R.drawable.bell, "Total XP"),
+        Statistic((user.xp_total).toString(), R.drawable.bell, "Total XP"),
         Statistic((user.longestStreak).toString(), R.drawable.bell, "Longest Streak"),
     )
 

@@ -69,7 +69,8 @@ class AuthManager(private val activity: Activity) {
             trainingDays = trainingDays,
             activityLevel = activityLevel,
             sessionsOutside = sessionsOutside,
-            xp = 0,
+            xp_total = 0,
+            xp_level = 0,
             level = 0,
             joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
             longestStreak = 0,
@@ -119,6 +120,8 @@ class AuthManager(private val activity: Activity) {
                     if (documentSnapshot.exists()) {
                         val userProfile = documentSnapshot.toObject(UserProfile::class.java)
                         if (userProfile != null) {
+                            val currentLevelData = calculateUserLevel(userProfile.xp_total)
+                            val currentLevelXpData = calculateUserLevelXp(userProfile.xp_total)
                             val currentUser = UserProfile(
                                 username = userProfile.username,
                                 fullName = userProfile.fullName,
@@ -127,15 +130,16 @@ class AuthManager(private val activity: Activity) {
                                 age = userProfile.age,
                                 weight = userProfile.weight,
                                 height = userProfile.height,
-                                goal = userProfile.goal, // New field from the questionnaire
-                                motivation = userProfile.motivation, // New field from the questionnaire
-                                pushUps = userProfile.pushUps, // New field from the questionnaire
-                                activityLevel = userProfile.activityLevel, // New field from the questionnaire
-                                firstDayOfWeek = userProfile.firstDayOfWeek, // New field from the questionnaire
-                                trainingDays = userProfile.trainingDays, // New field from the questionnaire
+                                goal = userProfile.goal,
+                                motivation = userProfile.motivation,
+                                pushUps = userProfile.pushUps,
+                                activityLevel = userProfile.activityLevel,
+                                firstDayOfWeek = userProfile.firstDayOfWeek,
+                                trainingDays = userProfile.trainingDays,
                                 sessionsOutside = userProfile.sessionsOutside,
-                                xp = userProfile.xp,
-                                level = userProfile.level,
+                                xp_total = userProfile.xp_total,
+                                xp_level = currentLevelXpData,
+                                level = currentLevelData,
                                 joinDate = userProfile.joinDate,
                                 longestStreak = userProfile.longestStreak,
                                 places = userProfile.places,
@@ -143,9 +147,14 @@ class AuthManager(private val activity: Activity) {
                                 achievements = userProfile.achievements,
                                 progress = userProfile.progress,
                                 uniqueCode = userProfile.uniqueCode,
-
                             )
-                            callback(currentUser)
+                            updateCurrentUserProfile(user.uid, currentUser) {
+                                if (it) {
+                                    callback(currentUser)
+                                } else {
+                                    callback(null)
+                                }
+                            }
                         } else {
                             callback(null)
                         }
@@ -159,6 +168,18 @@ class AuthManager(private val activity: Activity) {
         } else {
             callback(null)
         }
+    }
+
+    private fun updateCurrentUserProfile(userId: String, userProfile: UserProfile, callback: (Boolean) -> Unit) {
+        firestore.collection("users")
+            .document(userId)
+            .set(userProfile)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
     }
 
     fun signOut() {
@@ -182,5 +203,17 @@ class AuthManager(private val activity: Activity) {
     fun hashString(input: String): String {
         val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
         return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
+    }
+
+    fun calculateUserLevel(xp_total: Int): Int{
+        val levelThreshold = 200
+        val currentLevel = (xp_total / levelThreshold) + 1
+        return currentLevel
+    }
+
+    fun calculateUserLevelXp(xp_total: Int): Int{
+        val levelThreshold = 200
+        val xpInCurrentLevel = xp_total % levelThreshold
+        return xpInCurrentLevel
     }
 }

@@ -15,13 +15,14 @@ data class UserProfile(
     val firstDayOfWeek: String = "", // New field from the questionnaire
     val trainingDays: String = "", // New field from the questionnaire
     val sessionsOutside: String = "",
-    val xp: Int = 0, //Este não está alterar
-    val level: Int = 0,//Este não está alterar
+    val xp_total: Int = 0,
+    val xp_level: Int = 0,
+    val level: Int = 0,
     val joinDate: String = "",
     val longestStreak: Int = 0,
     val places: Int = 0,
     val friends: List<UserProfile> = emptyList(),
     val achievements: List<Achievement> = emptyList(),
-    val progress: Int = 0,//Este ALTERA
+    val progress: Int = 0,
     val uniqueCode: String = "",
 )
