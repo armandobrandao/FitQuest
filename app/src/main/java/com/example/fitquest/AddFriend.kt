@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,13 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 
 // Sample list of users for demonstration
 val searchList = listOf(
@@ -134,7 +131,7 @@ fun UserListItem(user: User, onClick: () -> Unit) {
 }
 
 @Composable
-fun ShareCode(user: User){
+fun ShareCode(user: UserProfile){
     // Get the context
     val context = LocalContext.current
     Column(
@@ -173,7 +170,7 @@ fun ShareCode(user: User){
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // User's name
-                Text(text = user.username, fontSize = 22.sp)
+                Text(text = user.fullName, fontSize = 22.sp)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -190,7 +187,7 @@ fun ShareCode(user: User){
                 )
                 {
                     Text(
-                        text = user.userUnder, fontSize = 30.sp,
+                        text = user.uniqueCode, fontSize = 30.sp,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -202,7 +199,7 @@ fun ShareCode(user: User){
                     onClick = {
                         val shareIntent = Intent().apply {
                             action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, user.userUnder) // Replace with the actual code
+                            putExtra(Intent.EXTRA_TEXT, user.uniqueCode) // Replace with the actual code
                             type = "text/plain"
                         }
                         // Use the context to start the activity
@@ -222,7 +219,7 @@ fun ShareCode(user: User){
 data class User(val username: String, val profileImage: Int, val userUnder: String)  // Sample user data class
 
 @Composable
-fun AddFriend(user: User, navController: NavController) {
+fun AddFriend(user: UserProfile, navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

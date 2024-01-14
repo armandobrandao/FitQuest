@@ -98,6 +98,7 @@ dependencies {
 
     //Firebase
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    //implementation ("com.google.firebase:firebase-firestore-ktx")
 
     //Maps
     implementation ("com.google.maps.android:maps-compose:2.2.0")

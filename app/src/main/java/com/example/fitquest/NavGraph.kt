@@ -4,21 +4,42 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavGraph (navController: NavHostController){
+
+fun NavGraph (navController: NavHostController, authManager: AuthManager){
+    var currentUser by remember { mutableStateOf<UserProfile?>(null) }
+    var userKey by remember { mutableStateOf(0) }
+    LaunchedEffect(authManager, userKey) {
+        authManager.getCurrentUser { user ->
+            if (user != null) {
+                currentUser = user
+                // Increment the key to trigger a re-execution of LaunchedEffect
+                userKey++
+            } else {
+                // Handle the case where the user is null
+            }
+        }
+    }
     NavHost(
         navController = navController,
         startDestination = Screens.Home.route
+
     )
     {
         composable(Screens.Home.route) {
             Log.d("NavGraph", "Navigating to Home")
             Homepage(navController = navController)
+
         }
         composable(Screens.Workout.route) {
             Log.d("NavGraph", "Navigating to Workout")
@@ -30,13 +51,23 @@ fun NavGraph (navController: NavHostController){
         }
         composable(Screens.Profile.route) {
             Log.d("NavGraph", "Navigating to Profile")
-            Profile( user = Harry2, navController = navController)
+            //Profile( user = Harry2, navController = navController)
+            currentUser?.let {
+                Profile(user = it, navController = navController)
+            } ?: run {
+                // Handle the case where currentUser is null
+            }
         }
         composable(Screens.Notifications.route) {
             Notifications(navController = navController)
         }
         composable(Screens.AddFriends.route) {
-            AddFriend(user= Harry, navController = navController)
+            //AddFriend(user= Harry, navController = navController)
+            currentUser?.let {
+                AddFriend(user = it, navController = navController)
+            } ?: run {
+                // Handle the case where currentUser is null
+            }
         }
 
         // Update the NavGraph composable

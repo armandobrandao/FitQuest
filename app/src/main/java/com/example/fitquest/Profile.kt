@@ -65,11 +65,11 @@ fun MainCard(user: UserProfile) {
 
                 Spacer(modifier = Modifier.height(4.dp)) // Add more space here
 
-                Text(text = user.username, fontSize = 18.sp)
+                Text(text = "@" + user.username, fontSize = 18.sp)
 
                 Spacer(modifier = Modifier.height(8.dp)) // Add more space here
 
-                Text(text = "Joined in" + user.joinDate.toString(), fontSize = 12.sp)
+                Text(text = "Joined in " + user.joinDate.toString(), fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(2.dp)) // Add more space here
                 Text(text = "Portugal", fontSize = 12.sp)
             }
@@ -97,7 +97,7 @@ fun MainCard(user: UserProfile) {
                     .padding(horizontal= 32.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Lvl." + (user.level).toString(), fontWeight = FontWeight.Bold)
+                Text(text = "Lvl. " + (user.level).toString(), fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(text = (user.xp).toString() + "/200", fontWeight = FontWeight.Bold)
             }
@@ -143,7 +143,7 @@ fun StatisticsSection(user: UserProfile) {
     )
 
     val statisticsList2 = listOf(
-        Statistic("23%", R.drawable.bell, "Progress"),
+        Statistic((user.progress).toString() + "%", R.drawable.bell, "Progress"),
         Statistic((user.places).toString(), R.drawable.bell, "Places"),
     )
 

@@ -170,7 +170,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     // Call your NavGraph composable to set up the navigation
-                    NavGraph(navController = navController)
+                    NavGraph(navController = navController,authManager = authManager )
                 }
             }
         }

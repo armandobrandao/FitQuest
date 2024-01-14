@@ -2,11 +2,13 @@ package com.example.fitquest
 
 import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import java.security.MessageDigest
+import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 class AuthManager(private val activity: Activity) {
 
@@ -55,7 +57,7 @@ class AuthManager(private val activity: Activity) {
         val userProfile = UserProfile(
             username = username,
             fullName = name,
-            profileImage = 0,
+            profileImage = R.drawable.default_profile_image,
             gender = gender,
             age = age,
             weight = weight,
@@ -73,7 +75,10 @@ class AuthManager(private val activity: Activity) {
             longestStreak = 0,
             places = 0,
             friends = emptyList(),
-            achievements = emptyList()
+            achievements = emptyList(),
+            progress = 0,
+            uniqueCode = generateUniqueCode(username),
+
         )
 
         saveUserProfile(user?.uid, userProfile, callback)
@@ -123,19 +128,22 @@ class AuthManager(private val activity: Activity) {
                                 weight = userProfile.weight,
                                 height = userProfile.height,
                                 goal = userProfile.goal, // New field from the questionnaire
-                                motivation= userProfile.motivation, // New field from the questionnaire
-                                pushUps= userProfile.pushUps, // New field from the questionnaire
-                                activityLevel= userProfile.activityLevel, // New field from the questionnaire
-                                firstDayOfWeek= userProfile.firstDayOfWeek, // New field from the questionnaire
-                                trainingDays= userProfile.trainingDays, // New field from the questionnaire
-                                sessionsOutside= userProfile.sessionsOutside,
-                                xp= userProfile.xp,
-                                level= userProfile.level,
-                                joinDate= userProfile.joinDate,
-                                longestStreak= userProfile.longestStreak,
-                                places= userProfile.places,
-                                friends= userProfile.friends,
-                                achievements= userProfile.achievements,
+                                motivation = userProfile.motivation, // New field from the questionnaire
+                                pushUps = userProfile.pushUps, // New field from the questionnaire
+                                activityLevel = userProfile.activityLevel, // New field from the questionnaire
+                                firstDayOfWeek = userProfile.firstDayOfWeek, // New field from the questionnaire
+                                trainingDays = userProfile.trainingDays, // New field from the questionnaire
+                                sessionsOutside = userProfile.sessionsOutside,
+                                xp = userProfile.xp,
+                                level = userProfile.level,
+                                joinDate = userProfile.joinDate,
+                                longestStreak = userProfile.longestStreak,
+                                places = userProfile.places,
+                                friends = userProfile.friends,
+                                achievements = userProfile.achievements,
+                                progress = userProfile.progress,
+                                uniqueCode = userProfile.uniqueCode,
+
                             )
                             callback(currentUser)
                         } else {
@@ -155,5 +163,24 @@ class AuthManager(private val activity: Activity) {
 
     fun signOut() {
         auth.signOut()
+    }
+
+    fun generateUniqueCode(username: String): String {
+        val random = SecureRandom()
+        val salt = random.nextInt().absoluteValue.toString()
+
+        // Concatenate username and randomness
+        val combinedData = "$username$salt"
+
+        // Create a hash of the combined data
+        val hashedCode = hashString(combinedData)
+
+        // Return a portion of the hash as the unique code
+        return hashedCode.substring(0, 8) // You can adjust the length as needed
+    }
+
+    fun hashString(input: String): String {
+        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
+        return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
     }
 }
