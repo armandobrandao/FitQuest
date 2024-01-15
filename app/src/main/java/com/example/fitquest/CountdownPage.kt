@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -23,7 +24,9 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun CountdownPage(navController: NavController, listExercises: List<ExerciseData>, numSets: Int) {
+fun CountdownPage(navController: NavController, exercises: WorkoutData, numSets: Int, isQuest: Boolean) {
+    Log.d("CountdownPage", "Entra na CountdownPage")
+    Log.d("CountdownPage", "exercises, $exercises")
     var secondsLeft by remember { mutableStateOf(3) }
     var secondsLeftDisplayed by remember { mutableStateOf(0) }
 
@@ -36,7 +39,7 @@ fun CountdownPage(navController: NavController, listExercises: List<ExerciseData
 
             override fun onFinish() {
                 // Countdown completed, navigate to another page
-                navController.navigate("${Screens.Exercise.route}/$sampleExercises/$numSets")
+                navController.navigate("${Screens.Exercise.route}/$exercises/$numSets/$isQuest")
             }
         }
 

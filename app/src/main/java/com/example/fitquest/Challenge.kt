@@ -167,6 +167,6 @@ fun Challenge(navController: NavHostController) {
             }
         }
         // Placeholder CreateWorkoutButton
-        StartWorkoutButton(navController)
+//        StartWorkoutButton(navController)
     }
 }

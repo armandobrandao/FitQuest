@@ -22,11 +22,11 @@ import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Exercise(navController: NavController, listExercises: List<ExerciseData>, numSets: Int) {
+fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: Int, isQuest: Boolean) {
     var currentSet by remember { mutableStateOf(1) }
     var currentExercise by remember { mutableStateOf(0) }
     var timerRunning by remember { mutableStateOf(true) }
-    var timerValue by remember { mutableStateOf(listExercises[currentExercise].durationInSeconds + 1) }
+    var timerValue by remember { mutableStateOf(listExercises.exercises[currentExercise].durationInSeconds + 1) }
     var isBreak by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(1f) }
 
@@ -34,7 +34,7 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
 
     if (timerRunning) {
         // Countdown timer for exercise
-        LaunchedEffect(currentExercise) {
+        DisposableEffect (currentExercise) {
             val exerciseTimer = object : CountDownTimer((timerValue * 1000).toLong(), 1000) {
                 val timerFull = timerValue
                 override fun onTick(millisUntilFinished: Long) {
@@ -52,8 +52,8 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
                 }
 
                 override fun onFinish() {
-                    if(currentExercise == listExercises.size-1 && currentSet >= numSets ){
-                        navController.navigate("${Screens.FinishedWorkout.route}/$listExercises")
+                    if(currentExercise == listExercises.exercises.size-1 && currentSet >= numSets ){
+                        navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest")
                     }else {
                         // Exercise timer completed, start the break timer
                         isBreak = true
@@ -68,16 +68,16 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
 
             exerciseTimer.start()
 
-//            // Cleanup logic
-//            onDispose {
-//                exerciseTimer.cancel()
-//            }
+            // Cleanup logic
+            onDispose {
+                exerciseTimer.cancel()
+            }
         }
     }
 
     if (timerRunning && isBreak) {
         // Countdown timer for break
-        LaunchedEffect(isBreak) {
+        DisposableEffect (isBreak) {
             val breakTimer = object : CountDownTimer((timerValue * 1000).toLong(), 1000) {
                 val timerFull = timerValue
                 override fun onTick(millisUntilFinished: Long) {
@@ -98,21 +98,22 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
                     isBreak = false
                     currentExercise++
 
-                    if (currentExercise >= listExercises.size) {
+                    if (currentExercise >= listExercises.exercises.size) {
                         // Move to the next set
                         currentSet++
+                        currentExercise = 0
 
                         if (currentSet > numSets) {
                             // All sets are completed, navigate or handle completion
                             navController.navigate("${Screens.FinishedWorkout.route}/$listExercises")
-                        } else {
-                            // Reset exercise index for the new set
-                            currentExercise = 0
-                            Log.d("SET onFinish 2.1","$currentSet" )
-                            Log.d("EX onFinish 2.1","$currentExercise" )
                         }
+                        // Reset exercise index for the new set
+
+                        Log.d("SET onFinish 2.1","$currentSet" )
+                        Log.d("EX onFinish 2.1","$currentExercise" )
+
                     } else {
-                        timerValue = listExercises[currentExercise].durationInSeconds + 1
+                        timerValue = listExercises.exercises[currentExercise].durationInSeconds + 1
                         timerRunning = true
 
                         Log.d("SET onFinish 2.2","$currentSet" )
@@ -123,10 +124,10 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
 
             breakTimer.start()
 
-//            // Cleanup logic
-//            onDispose {
-//                breakTimer.cancel()
-//            }
+            // Cleanup logic
+            onDispose {
+                breakTimer.cancel()
+            }
         }
     }
 
@@ -138,7 +139,7 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
         TopAppBar(
             title = {
                 Text(
-                    text = "Exercise ${currentExercise + 1} out of ${listExercises.size}",
+                    text = "Exercise ${currentExercise + 1} out of ${listExercises.exercises.size}",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -165,12 +166,12 @@ fun Exercise(navController: NavController, listExercises: List<ExerciseData>, nu
                 modifier = Modifier.width(300.dp)
             ) {
                 Text(
-                    text = listExercises[currentExercise].name,
+                    text = listExercises.exercises[currentExercise].name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Image(
-                    painter = painterResource(id = listExercises[currentExercise].imageResId.toInt()),
+                    painter = painterResource(id = listExercises.exercises[currentExercise].imageResId),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

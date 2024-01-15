@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,18 +32,12 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.fitquest.ui.theme.FitQuestTheme
 
 
 data class Exercise(
@@ -60,10 +54,10 @@ data class Exercise(
 )
 
 val sampleExercises = listOf(
-    ExerciseData("Abdominais", "1 set of 12 reps", "R.drawable.abs_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
-    ExerciseData("Flexoes", "1 set of 10 reps", "R.drawable.abs_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
-    ExerciseData("Core and Cardio", "1:00", "R.drawable.core_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
-    ExerciseData("Another Exercise", "0:45", "R.drawable.another_exercise", 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
+    ExerciseData("Abdominais", "1 set of 12 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
+    ExerciseData("Flexoes", "1 set of 10 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
+    ExerciseData("Core and Cardio", "1:00", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
+    ExerciseData("Another Exercise", "0:45", R.drawable.abs_exercise, 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
     // Add more exercises as needed
 )
 
@@ -75,7 +69,7 @@ val sampleExercises = listOf(
 //)
 
 
-var numSets = 2
+var numSets = 3
 
 @Composable
 fun ExerciseItem(exercise: ExerciseData) {
@@ -95,7 +89,7 @@ fun ExerciseItem(exercise: ExerciseData) {
             ) {
                 Text(text = exercise.name)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Duration: ${exercise.duration}")
+                Text(text = "Duration: ${exercise.durationInSeconds}")
             }
             Spacer(modifier = Modifier.width(46.dp))
             Column(
@@ -104,20 +98,23 @@ fun ExerciseItem(exercise: ExerciseData) {
                 horizontalAlignment = Alignment.End
             ) {
                 Image(
-                    painter = painterResource(id = exercise.imageResId.toInt()),
+                    painter = painterResource(id = exercise.imageResId),
                     contentDescription = "Image of: ${exercise.name}",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)
                         .clip(MaterialTheme.shapes.medium)
                 )
+
+
             }
         }
     }
 }
 
 @Composable
-fun StartWorkoutButton(navController: NavController) {
+fun StartWorkoutButton(navController: NavController, workout: WorkoutData, isQuest: Boolean) {
+    Log.d("StartWorkoutButton", "isQuest, $isQuest")
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -128,7 +125,7 @@ fun StartWorkoutButton(navController: NavController) {
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.CountdownPage.route}/$sampleExercises/$numSets")
+                navController.navigate("${Screens.CountdownPage.route}/$workout/$numSets/$isQuest")
             },
             modifier = Modifier
                 .padding(8.dp),
@@ -209,7 +206,7 @@ fun GeneratedWorkout(navController: NavHostController) {
             }
         }
         // Placeholder CreateWorkoutButton
-        StartWorkoutButton(navController)
+//        StartWorkoutButton(navController, workout )
     }
 }
 

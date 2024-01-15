@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var currentUser by remember { mutableStateOf<UserProfile?>(null) }
     var userKey by remember { mutableStateOf(0) }
+    var dailyQuest by remember { mutableStateOf<WorkoutData?>(null) }
     LaunchedEffect(authManager, userKey) {
         authManager.getCurrentUser { user ->
             if (user != null) {
@@ -29,6 +30,9 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                 // Handle the case where the user is null
             }
         }
+        authManager.getDailyQuestForToday { result ->
+            dailyQuest = result
+        }
     }
     NavHost(
         navController = navController,
@@ -38,7 +42,11 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     {
         composable(Screens.Home.route) {
             Log.d("NavGraph", "Navigating to Home")
-            Homepage(navController = navController)
+            dailyQuest?.let {
+                Homepage(navController = navController, dailyQuest= dailyQuest!!)
+            } ?: run {
+                // Handle the case where dailyQuest is null
+            }
 
         }
         composable(Screens.Workout.route) {
@@ -97,15 +105,17 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         composable("${Screens.DailyQuest.route}/{questTitle}") { backStackEntry ->
             val questTitle = backStackEntry.arguments?.getString("questTitle")
             if (questTitle != null) {
-                val quest = sampleDailyQuests.find { it.title == questTitle }
+                // Retrieve the DailyQuest based on the title
+                val quest = dailyQuest
                 Log.d("NavGraph", "Navigating to DailyQuest for $questTitle")
                 if (quest != null) {
-                    DailyQuest(navController = navController)
-                }else {
-                    // Handle the case where friend is null (e.g., username not found)
+                    // Pass the retrieved DailyQuest to the DailyQuest composable
+                    DailyQuest(quest = quest, navController = navController)
+                } else {
+                    // Handle the case where the retrieved DailyQuest is null
                 }
             } else {
-                // Handle the case where friendUsername is null or not provided
+                // Handle the case where questTitle is null or not provided
             }
         }
         composable(Screens.GenerateWorkout.route) {
@@ -146,52 +156,134 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             }
         }
 
-        composable("${Screens.CountdownPage.route}/{listExercises}/{numSets}") { backStackEntry ->
-            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
-                // Logic to convert the string into a List<Exercise>
-                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises
-            } ?: emptyList()
-
+        composable("${Screens.CountdownPage.route}/{workout}/{numSets}/{isQuest}") { backStackEntry ->
+            val workout = backStackEntry.arguments?.getString("workout")
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
+            val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
-            CountdownPage(
-                navController = navController,
-                listExercises = listExercises,
-                numSets = numSets
-            )
+            if(isQuest != null) {
+                if (workout != null) {
+                    if(isQuest) {
+                        // Retrieve the DailyQuest based on the title
+                        val exercises = dailyQuest
+                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                        if (exercises != null) {
+                            Log.d("NAVGRAPH", "exercises, $exercises")
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                            CountdownPage(
+                                navController = navController,
+                                exercises = exercises,
+                                numSets = numSets,
+                                isQuest = true
+                            )
+                        } else {
+                            // Handle the case where the retrieved DailyQuest is null
+                        }
+                    } else {
+                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                    }
+                }else{
+
+                }
+            }else{
+
+            }
         }
 
-        composable("${Screens.Exercise.route}/{listExercises}/{numSets}") { backStackEntry ->
-            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
-                // Logic to convert the string into a List<Exercise>
-                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises
-            } ?: emptyList()
-
+        composable("${Screens.Exercise.route}/{exercises}/{numSets}/{isQuest}") { backStackEntry ->
+            val workout = backStackEntry.arguments?.getString("exercises")
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
+            val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
-            Exercise(
-                navController = navController,
-                listExercises = listExercises,
-                numSets = numSets
-            )
+            if(isQuest != null) {
+                if (workout != null) {
+                    if(isQuest) {
+                        // Retrieve the DailyQuest based on the title
+                        val exercises = dailyQuest
+                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                        if (exercises != null) {
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                            Exercise(
+                                navController = navController,
+                                listExercises = exercises,
+                                numSets = numSets,
+                                isQuest = true
+                            )
+                        } else {
+                            // Handle the case where the retrieved DailyQuest is null
+                        }
+                    } else {
+                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                    }
+                }else{
+
+                }
+            }else{
+
+            }
+
         }
 
-        composable("${Screens.FinishedWorkout.route}/{listExercises}") { backStackEntry ->
-            val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
-                // Logic to convert the string into a List<Exercise>
-                // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises
-            } ?: emptyList()
+        composable("${Screens.FinishedWorkout.route}/{listExercises}/{isQuest}") { backStackEntry ->
+            val workout = backStackEntry.arguments?.getString("listExercises")
+            val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
-            FinishedWorkout(
-                navController = navController,
-                listExercises = listExercises
-            )
+            if(isQuest != null) {
+                if (workout != null) {
+                    if(isQuest) {
+                        // Retrieve the DailyQuest based on the title
+                        val exercises = dailyQuest
+                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                        if (exercises != null) {
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                            FinishedWorkout(
+                                navController = navController,
+                                listExercises = exercises,
+                                isQuest = true
+                            )
+                        } else {
+                            // Handle the case where the retrieved DailyQuest is null
+                        }
+                    } else {
+                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                    }
+                }else{
+
+                }
+            }else{
+
+            }
+
         }
-        composable(Screens.DailyQuestComplete.route) {
-            DailyQuestComplete(navController = navController)
+        composable("${Screens.DailyQuestComplete.route}/{listExercises}/{isQuest}") { backStackEntry ->
+            val workout = backStackEntry.arguments?.getString("listExercises")
+            val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
+
+            if(isQuest != null) {
+                if (workout != null) {
+                    if(isQuest) {
+                        // Retrieve the DailyQuest based on the title
+                        val exercises = dailyQuest
+                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                        if (exercises != null) {
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                            DailyQuestComplete(
+                                navController = navController,
+                                listExercises = exercises,
+                                isQuest = true
+                            )
+                        } else {
+                            // Handle the case where the retrieved DailyQuest is null
+                        }
+                    } else {
+                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                    }
+                }else{
+
+                }
+            }else{
+
+            }
         }
 
         composable(Screens.SignUpUser.route) {
@@ -200,8 +292,5 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
     }
 }
-
-val Harry = User("Harry Philip", R.drawable.profile_image, "@harry")
-val Harry2 = UserProfile("@harry","Harry Philip", R.drawable.profile_image)
 
 

@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
-fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseData>) {
+fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, isQuest: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,11 +76,20 @@ fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseDa
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        Text(
-                            text = "Finished Workout",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                        )
+                        if(isQuest){
+                            Text(
+                                text = "Finished Daily Quest",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                            )
+                        }else{
+                            Text(
+                                text = "Finished Workout",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                            )
+                        }
+
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier
@@ -98,7 +107,7 @@ fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseDa
                                     textAlign = TextAlign.Center
                                 )
                                 Text(
-                                    text = "00:27:08",
+                                    text = calculateTotalDuration(listExercises.exercises),
                                     fontSize = 20.sp,
                                     textAlign = TextAlign.Center
                                 )
@@ -134,9 +143,9 @@ fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseDa
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
-                                listExercises.forEachIndexed { index, exercise ->
+                                listExercises.exercises.forEachIndexed { index, exercise ->
                                     ExerciseItem(exercise = exercise)
-                                    if (index < listExercises.size - 1) {
+                                    if (index < listExercises.exercises.size - 1) {
                                         Divider()
                                     }
                                 }
@@ -147,12 +156,22 @@ fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseDa
             }
         }
         // Placeholder CreateWorkoutButton
-        ContinueWorkoutButton(navController)
+        ContinueWorkoutButton(navController, listExercises, isQuest)
     }
 }
 
+fun calculateTotalDuration(exercises: List<ExerciseData>): String {
+    val totalSecondsExercises = exercises.sumBy { it.durationInSeconds } + (exercises.size - 1) * 30
+    val totalSeconds = totalSecondsExercises * 4
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+}
+
 @Composable
-fun ContinueWorkoutButton(navController : NavController) {
+fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutData, isQuest: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,7 +182,7 @@ fun ContinueWorkoutButton(navController : NavController) {
     ) {
         Button(
             onClick = {
-                navController.navigate(Screens.DailyQuestComplete.route)
+                navController.navigate("${Screens.DailyQuestComplete.route}/$listExercises/$isQuest")
             },
             modifier = Modifier
                 .padding(8.dp),

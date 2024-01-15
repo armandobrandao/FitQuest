@@ -1,8 +1,5 @@
 package com.example.fitquest
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,16 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.example.fitquest.ui.theme.FitQuestTheme
 
 
 @Composable
-fun DailyQuest(navController: NavController) {
+fun DailyQuest(quest: WorkoutData, navController: NavController) {
+    val totalTimeInMinutes = calculateTotalTime(quest.exercises)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +72,7 @@ fun DailyQuest(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "20 mins | 5 exercises | 4x", // tem de ser gerados
+                            text = "$totalTimeInMinutes mins | ${quest.exercises.size} exercises | 4x", // tem de ser gerados
                             fontSize = 14.sp
                         )
                         // Placeholder content (replace with your content)
@@ -88,9 +83,9 @@ fun DailyQuest(navController: NavController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
-                                sampleExercises.forEachIndexed { index, exercise ->
+                                quest.exercises.forEachIndexed { index, exercise ->
                                     ExerciseItem(exercise = exercise)
-                                    if (index < sampleExercises.size - 1) {
+                                    if (index < quest.exercises.size - 1) {
                                         Divider()
                                     }
                                 }
@@ -103,10 +98,18 @@ fun DailyQuest(navController: NavController) {
             }
         }
         // Bottom bar
-        StartWorkoutButton(navController = navController)
+        StartWorkoutButton(navController = navController, workout = quest, isQuest = true)
     }
 }
 
+// Function to calculate total time in minutes
+private fun calculateTotalTime(exercises: List<ExerciseData>): Int {
+    // Calculate total time of exercises and breaks in seconds
+    val totalTimeInSeconds = (exercises.sumBy { it.durationInSeconds } + (exercises.size - 1) * 30) * 4
+
+    // Convert total time to minutes
+    return totalTimeInSeconds / 60
+}
 
 
 //@Preview(showBackground = true)

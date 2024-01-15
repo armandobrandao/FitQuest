@@ -43,7 +43,7 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 
 
 @Composable
-fun DailyQuestComplete(navController: NavController) {
+fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData, isQuest: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,11 +75,20 @@ fun DailyQuestComplete(navController: NavController) {
                     modifier = Modifier
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Daily Quest Complete",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                    )
+                    if (isQuest){
+                        Text(
+                            text = "Daily Quest Complete",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                        )
+                    }else{
+                        Text(
+                            text = "Workout Complete",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                        )
+
+                    }
                     Spacer(modifier = Modifier.height(26.dp))
                     Text(
                         text = "Well done! Great job staying active!",

@@ -8,7 +8,6 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import kotlin.math.absoluteValue
 
@@ -48,6 +47,25 @@ class AuthManager(private val activity: Activity) {
                         // Check if the user already has a DailyQuest for the current day
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                             if (!hasDailyQuest) {
+//                                val newExercise = ExerciseData(
+//                                    name = "Lunges",
+//                                    duration = "1 set of 10 reps per leg",
+//                                    imageResId= R.drawable.abs_exercise,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
                                 // If no DailyQuest exists for the current day, generate a new one
                                 generateNewDailyQuest(user.uid) { newDailyQuest ->
                                     if (newDailyQuest != null) {
@@ -62,6 +80,25 @@ class AuthManager(private val activity: Activity) {
                                     }
                                 }
                             } else {
+//                                val newExercise = ExerciseData(
+//                                    name = "Squats",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.abs_exercise,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
                                 // If a DailyQuest already exists for the current day, proceed without generating a new one
                                 callback(true, null)
                             }
@@ -86,6 +123,7 @@ class AuthManager(private val activity: Activity) {
             .document(userId)
             .collection("dailyQuests")
             .whereEqualTo("date", currentDate)
+            .whereEqualTo("quest", true)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 // Check if there is a DailyQuest for the current day
@@ -279,7 +317,7 @@ class AuthManager(private val activity: Activity) {
 
 
     // Add this function to your AuthManager class
-    fun saveDailyQuestForUser(userId: String, dailyQuest: DailyQuest, callback: (Boolean) -> Unit) {
+    fun saveDailyQuestForUser(userId: String, dailyQuest: WorkoutData, callback: (Boolean) -> Unit) {
         Log.d("AuthManager", "Entra no saveDailyQuestForUser")
         firestore.collection("users")
             .document(userId)
@@ -293,8 +331,24 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
+    fun saveExercise(exercise: ExerciseData, callback: (Boolean) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            firestore.collection("exercises")
+                .add(exercise)
+                .addOnSuccessListener {
+                    callback(true)
+                }
+                .addOnFailureListener {
+                    callback(false)
+                }
+        } else {
+            // Handle the case where the user is not authenticated
+            callback(false)
+        }
+    }
     // Update generateNewDailyQuest function
-    fun generateNewDailyQuest(userId: String, callback: (DailyQuest?) -> Unit) {
+    fun generateNewDailyQuest(userId: String, callback: (WorkoutData?) -> Unit) {
         Log.d("AuthManager", "Entra no generateNewDailyQuest")
 
         // Assuming you have a collection named "exercises" in your Firestore
@@ -317,18 +371,15 @@ class AuthManager(private val activity: Activity) {
                     Log.d("AuthManager", "selectedExercises, $selectedExercises")
 
                     // Create a new DailyQuest with the selected exercises
-                    val newDailyQuest = DailyQuest(
+                    val newDailyQuest = WorkoutData(
                         title = "Generated Daily Quest",
                         duration = "45 mins", // You can adjust this as needed
                         isCompleted = false,
                         image = R.drawable.pilates, // Replace with the appropriate image
                         exercises = selectedExercises,
-                        date = getCurrentFormattedDateDaily()
+                        date = getCurrentFormattedDateDaily(),
+                        isQuest = true
                     )
-
-                    Log.d("AuthManager", "newDailyQuest, $newDailyQuest")
-
-
                     // Save the DailyQuest to the user's document
                     saveDailyQuestForUser(userId, newDailyQuest) { success ->
                         if (success) {
@@ -353,4 +404,33 @@ class AuthManager(private val activity: Activity) {
         val currentTime = Calendar.getInstance().time
         return SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(currentTime)
     }
+
+    fun getDailyQuestForToday(callback: (WorkoutData?) -> Unit) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+            val currentDate = getCurrentFormattedDateDaily()
+
+            firestore.collection("users")
+                .document(userId)
+                .collection("dailyQuests")
+                .whereEqualTo("date", currentDate)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val dailyQuest = querySnapshot.documents[0].toObject(WorkoutData::class.java)
+                        callback(dailyQuest)
+                    } else {
+                        callback(null)
+                    }
+                }
+                .addOnFailureListener {
+                    callback(null)
+                }
+        } else {
+            callback(null)
+        }
+    }
+
 }

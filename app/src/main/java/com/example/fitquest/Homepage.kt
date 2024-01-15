@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -39,17 +38,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.fitquest.ui.theme.FitQuestTheme
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Date
 import java.util.Locale
 
 @Composable
@@ -275,7 +271,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
 }
 
 @Composable
-fun DailyQuests(navController: NavController) {
+fun DailyQuests(navController: NavController, dailyQuest: WorkoutData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -285,40 +281,37 @@ fun DailyQuests(navController: NavController) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Daily Quests", fontWeight = FontWeight.Bold, fontSize = 30.sp)
+            Text(text = "Daily Quest", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         }
 
-        sampleDailyQuests.forEachIndexed { index, quest ->
-            ClickableCardItem(quest = quest, onClick = {
-                // Navigate to friend's profile
-                navController.navigate("${Screens.DailyQuest.route}/${quest.title}")
-            })
-            if (index < sampleDailyQuests.size - 1) {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
+        ClickableCardItem(quest = dailyQuest, onClick = {
+            // Navigate to friend's profile
+            navController.navigate("${Screens.DailyQuest.route}/${dailyQuest.title}")
+        })
+
         }
-    }
+
 }
-data class DailyQuest(
-    val title: String,
-    val duration: String,
-    val isCompleted: Boolean = false,
-    val image: Int,
-    val exercises: List<ExerciseData>,
-    val date: String
-)
+//data class DailyQuest(
+//    val title: String,
+//    val duration: String,
+//    val isCompleted: Boolean = false,
+//    val image: Int,
+//    val exercises: List<ExerciseData>,
+//    val date: String
+//)
 
 val sampleDailyQuests = listOf(
-    DailyQuest("Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
+    WorkoutData("Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
     ),
-    DailyQuest("Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
+    WorkoutData("Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
     )
     // Add more DailyQuest instances as needed
 )
 
 
 @Composable
-fun ClickableCardItem(quest: DailyQuest, onClick: () -> Unit) {
+fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clickable { onClick.invoke() }
@@ -366,7 +359,7 @@ fun ClickableCardItem(quest: DailyQuest, onClick: () -> Unit) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Homepage(navController: NavController) {
+fun Homepage(navController: NavController, dailyQuest: WorkoutData) {
     Log.d("Homepage", "Estou na home")
     LazyColumn (
         modifier = Modifier
@@ -377,7 +370,7 @@ fun Homepage(navController: NavController) {
             Header(navController)
             Calendario()
             DailyProgress(steps = "3000 steps", caloriesBurned = "1200 cals", distance = "5 km")
-            DailyQuests(navController)
+            DailyQuests(navController, dailyQuest)
         }
     }
 }
