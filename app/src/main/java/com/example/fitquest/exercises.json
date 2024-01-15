@@ -410,18 +410,6 @@
       "target": "Legs"
     },
     {
-      "name": "Front Plank",
-      "duration": "45 seconds",
-      "imageResId": "R.drawable.front_plank",
-      "durationInSeconds": 45,
-      "suitableGender": ["Male", "Female"],
-      "suitableGoals": ["Maintain shape"],
-      "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
-      "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"],
-      "target": "Abs"
-    },
-    {
       "name": "Dumbbell Bench Press",
       "duration": "1 set of 12 reps",
       "imageResId": "R.drawable.dumbbell_bench_press",
@@ -444,18 +432,6 @@
       "suitablePushUps": ["5-10", "At least 10"],
       "suitableActivityLevels": ["Moderately active", "Very active"],
       "target": "Full Body"
-    },
-    {
-      "name": "Russian Twists",
-      "duration": "1 set of 20 reps",
-      "imageResId": "R.drawable.russian_twists",
-      "durationInSeconds": 60,
-      "suitableGender": ["Male", "Female"],
-      "suitableGoals": ["Maintain shape", "Build muscle"],
-      "suitableMotivations": ["Feel confident", "Relieve stress", "Improve health", "Increase energy"],
-      "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"],
-      "target": "Abs"
     },
     {
       "name": "Renegade Rows",
@@ -590,30 +566,6 @@
       "target": "Legs"
     },
     {
-      "name": "Plank to Push-up",
-      "duration": "1 set of 15 reps",
-      "imageResId": "R.drawable.plank_to_push_up",
-      "durationInSeconds": 45,
-      "suitableGender": ["Male", "Female"],
-      "suitableGoals": ["Build muscle", "Increase energy"],
-      "suitableMotivations": ["Feel confident", "Increase energy"],
-      "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"],
-      "target": "Full Body"
-    },
-    {
-      "name": "Mountain Climbers",
-      "duration": "1 set of 1 minute",
-      "imageResId": "R.drawable.mountain_climbers",
-      "durationInSeconds": 60,
-      "suitableGender": ["Male", "Female"],
-      "suitableGoals": ["Lose weight", "Increase energy"],
-      "suitableMotivations": ["Feel confident", "Relieve stress"],
-      "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"],
-      "target": "Cardio"
-    },
-    {
       "name": "Side Lunges",
       "duration": "1 set of 12 reps per leg",
       "imageResId": "R.drawable.side_lunges",
@@ -624,19 +576,6 @@
       "suitablePushUps": ["5-10", "At least 10"],
       "suitableActivityLevels": ["Moderately active", "Very active"],
       "target": "Legs"
-    },
-    {
-      "name": "Seated Leg Press",
-      "duration": "1 set of 15 reps",
-      "imageResId": "R.drawable.seated_leg_press",
-      "durationInSeconds": 45,
-      "suitableGender": ["Male", "Female"],
-      "suitableGoals": ["Build muscle", "Maintain shape"],
-      "suitableMotivations": ["Improve health", "Increase energy"],
-      "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"],
-      "target": "Legs"
     }
-
   ]
 }

@@ -48,9 +48,9 @@ class AuthManager(private val activity: Activity) {
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                             if (!hasDailyQuest) {
 //                                val newExercise = ExerciseData(
-//                                    name = "Lunges",
-//                                    duration = "1 set of 10 reps per leg",
-//                                    imageResId= R.drawable.abs_exercise,
+//                                    name = "Squats",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.squat,
 //                                    durationInSeconds = 40,
 //                                    suitableGender= listOf("Male", "Female"),
 //                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
@@ -60,6 +60,25 @@ class AuthManager(private val activity: Activity) {
 //                                    target= "Legs"
 //                                )
 //                                saveExercise(newExercise) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
+//                                val newExercise2 = ExerciseData(
+//                                    name = "Lunges",
+//                                    duration = "1 set of 10 reps per leg",
+//                                    imageResId= R.drawable.lunge,
+//                                    durationInSeconds = 35,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise2) { success ->
 //                                    if (success) {
 //                                        // Exercise saved successfully
 //                                    } else {
@@ -81,16 +100,16 @@ class AuthManager(private val activity: Activity) {
                                 }
                             } else {
 //                                val newExercise = ExerciseData(
-//                                    name = "Squats",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.abs_exercise,
-//                                    durationInSeconds = 40,
+//                                    name = "Jumping Jacks",
+//                                    duration = "1 minute",
+//                                    imageResId= R.drawable.jumping_jacks,
+//                                    durationInSeconds = 60,
 //                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableGoals= listOf("Lose weight", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Relieve stress", "Increase energy"),
+//                                    suitablePushUps = listOf("3-5", "5-10", "At least 10"),
 //                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
-//                                    target= "Legs"
+//                                    target= "Cardio"
 //                                )
 //                                saveExercise(newExercise) { success ->
 //                                    if (success) {
