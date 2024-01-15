@@ -9,7 +9,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Lunges",
@@ -20,7 +21,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Jumping Jacks",
@@ -31,7 +33,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Cardio"
     },
     {
       "name": "Plank",
@@ -42,7 +45,8 @@
       "suitableGoals": ["Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Mountain Climbers",
@@ -53,8 +57,10 @@
       "suitableGoals": ["Lose weight", "Build muscle"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Cardio"
     },
+
     {
       "name": "Burpees",
       "duration": "1 set of 8 reps",
@@ -64,7 +70,8 @@
       "suitableGoals": ["Lose weight", "Build muscle"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Push-ups",
@@ -75,7 +82,8 @@
       "suitableGoals": ["Lose weight", "Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Sedentary", "Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Sedentary", "Lightly active", "Moderately active", "Very active"],
+      "target": "Arms"
     },
     {
       "name": "Sit-ups",
@@ -86,7 +94,8 @@
       "suitableGoals": ["Lose weight", "Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Sedentary", "Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Sedentary", "Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Crunches",
@@ -97,7 +106,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Russian Twists",
@@ -108,7 +118,8 @@
       "suitableGoals": ["Maintain shape", "Build muscle"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "High Knees",
@@ -119,7 +130,8 @@
       "suitableGoals": ["Lose weight", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Relieve stress"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Cardio"
     },
     {
       "name": "Dumbbell Rows",
@@ -130,7 +142,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Back"
     },
     {
       "name": "Calf Raises",
@@ -141,7 +154,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Bicycle Crunches",
@@ -152,7 +166,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Tricep Dips",
@@ -163,7 +178,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Arms"
     },
     {
       "name": "Box Jumps",
@@ -174,7 +190,8 @@
       "suitableGoals": ["Build muscle", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Very active"]
+      "suitableActivityLevels": ["Very active"],
+      "target": "Legs"
     },
     {
       "name": "Lat Pulldowns",
@@ -185,7 +202,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Back"
     },
     {
       "name": "Side Plank",
@@ -196,7 +214,8 @@
       "suitableGoals": ["Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Leg Press",
@@ -207,7 +226,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Hammer Curls",
@@ -218,7 +238,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Arms"
     },
     {
       "name": "Deadlifts",
@@ -229,7 +250,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Very active"]
+      "suitableActivityLevels": ["Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Flutter Kicks",
@@ -240,7 +262,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Incline Bench Press",
@@ -251,7 +274,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Chest"
     },
     {
       "name": "Shoulder Press",
@@ -262,7 +286,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Shoulders"
     },
     {
       "name": "Kettlebell Swings",
@@ -273,7 +298,8 @@
       "suitableGoals": ["Build muscle", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Bent Over Rows",
@@ -284,7 +310,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Back"
     },
     {
       "name": "Bicep Curls",
@@ -295,7 +322,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Arms"
     },
     {
       "name": "Reverse Lunges",
@@ -306,7 +334,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Dumbbell Lunges",
@@ -317,7 +346,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Leg Curls",
@@ -328,7 +358,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "FLegs"
     },
     {
       "name": "Hanging Leg Raises",
@@ -339,7 +370,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Seated Shoulder Press",
@@ -350,7 +382,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Shoulders"
     },
     {
       "name": "Plank with Leg Lifts",
@@ -361,7 +394,8 @@
       "suitableGoals": ["Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Romanian Deadlifts",
@@ -372,7 +406,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Front Plank",
@@ -383,7 +418,8 @@
       "suitableGoals": ["Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Dumbbell Bench Press",
@@ -394,7 +430,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Chest"
     },
     {
       "name": "Medicine Ball Slams",
@@ -405,7 +442,8 @@
       "suitableGoals": ["Build muscle", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Russian Twists",
@@ -416,7 +454,8 @@
       "suitableGoals": ["Maintain shape", "Build muscle"],
       "suitableMotivations": ["Feel confident", "Relieve stress", "Improve health", "Increase energy"],
       "suitablePushUps": ["At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Renegade Rows",
@@ -427,7 +466,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Step-ups",
@@ -438,7 +478,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Single-Leg Deadlifts",
@@ -449,7 +490,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Reverse Crunches",
@@ -460,7 +502,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Side Lateral Raises",
@@ -471,7 +514,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Shoulders"
     },
     {
       "name": "Reverse Flyes",
@@ -482,7 +526,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Back"
     },
     {
       "name": "Jump Squats",
@@ -493,7 +538,8 @@
       "suitableGoals": ["Build muscle", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Cable Crunches",
@@ -504,7 +550,8 @@
       "suitableGoals": ["Lose weight", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"]
+      "suitableActivityLevels": ["Lightly active", "Moderately active", "Very active"],
+      "target": "Abs"
     },
     {
       "name": "Dips",
@@ -515,7 +562,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Arms"
     },
     {
       "name": "Hamstring Curls",
@@ -526,7 +574,8 @@
       "suitableGoals": ["Build muscle"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Leg Extensions",
@@ -537,7 +586,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Plank to Push-up",
@@ -548,7 +598,8 @@
       "suitableGoals": ["Build muscle", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Full Body"
     },
     {
       "name": "Mountain Climbers",
@@ -559,7 +610,8 @@
       "suitableGoals": ["Lose weight", "Increase energy"],
       "suitableMotivations": ["Feel confident", "Relieve stress"],
       "suitablePushUps": ["3-5", "5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Cardio"
     },
     {
       "name": "Side Lunges",
@@ -570,7 +622,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Feel confident", "Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     },
     {
       "name": "Seated Leg Press",
@@ -581,7 +634,8 @@
       "suitableGoals": ["Build muscle", "Maintain shape"],
       "suitableMotivations": ["Improve health", "Increase energy"],
       "suitablePushUps": ["5-10", "At least 10"],
-      "suitableActivityLevels": ["Moderately active", "Very active"]
+      "suitableActivityLevels": ["Moderately active", "Very active"],
+      "target": "Legs"
     }
 
   ]

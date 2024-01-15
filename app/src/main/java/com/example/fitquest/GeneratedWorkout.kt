@@ -49,30 +49,36 @@ import com.example.fitquest.ui.theme.FitQuestTheme
 data class Exercise(
     val name: String,
     val duration: String,
-    val imageResId: Int,
-    val durationInSeconds: Int
+    val imageResId: String,
+    val durationInSeconds: Int,
+    val suitableGender: List<String>,
+    val suitableGoals: List<String>,
+    val suitableMotivations: List<String>,
+    val suitablePushUps: List<String>,
+    val suitableActivityLevels: List<String>,
+    val target: String = ""
 )
 
 val sampleExercises = listOf(
-    Exercise("Abdominais", "1:00",  R.drawable.abs_exercise, 60),
-    Exercise("Flexoes", "1:00",  R.drawable.abs_exercise,60),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
-    Exercise("Core and Cardio", "1:00",  R.drawable.abs_exercise,60),
-    )
-
-val sampleExercises2 = listOf(
-    Exercise("Abdominais", "0:20",  R.drawable.abs_exercise, 5),
-    Exercise("Flexoes", "0:20",  R.drawable.abs_exercise,5),
-//    Exercise("Core and Cardio", "0:20",  R.drawable.abs_exercise,10),
+    ExerciseData("Abdominais", "1 set of 12 reps", "R.drawable.abs_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
+    ExerciseData("Flexoes", "1 set of 10 reps", "R.drawable.abs_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
+    ExerciseData("Core and Cardio", "1:00", "R.drawable.core_exercise", 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
+    ExerciseData("Another Exercise", "0:45", "R.drawable.another_exercise", 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
+    // Add more exercises as needed
 )
+
+//val sampleExercises2 = listOf(
+//    Exercise("Abdominais", "0:20", "R.drawable.abs_exercise", 20, listOf()),
+//    Exercise("Flexoes", "0:20", "R.drawable.abs_exercise", 20, listOf()),
+//    Exercise("Another Exercise", "0:20", "R.drawable.another_exercise", 20, listOf())
+//    // Add more exercises as needed
+//)
+
 
 var numSets = 2
 
 @Composable
-fun ExerciseItem(exercise: Exercise) {
+fun ExerciseItem(exercise: ExerciseData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,7 +104,7 @@ fun ExerciseItem(exercise: Exercise) {
                 horizontalAlignment = Alignment.End
             ) {
                 Image(
-                    painter = painterResource(id = exercise.imageResId),
+                    painter = painterResource(id = exercise.imageResId.toInt()),
                     contentDescription = "Image of: ${exercise.name}",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -122,7 +128,7 @@ fun StartWorkoutButton(navController: NavController) {
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.CountdownPage.route}/$sampleExercises2/$numSets")
+                navController.navigate("${Screens.CountdownPage.route}/$sampleExercises/$numSets")
             },
             modifier = Modifier
                 .padding(8.dp),

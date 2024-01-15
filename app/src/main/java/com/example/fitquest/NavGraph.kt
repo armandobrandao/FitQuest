@@ -150,7 +150,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
                 // Logic to convert the string into a List<Exercise>
                 // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises2
+                sampleExercises
             } ?: emptyList()
 
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
@@ -166,7 +166,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
                 // Logic to convert the string into a List<Exercise>
                 // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises2
+                sampleExercises
             } ?: emptyList()
 
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
@@ -182,7 +182,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val listExercises = backStackEntry.arguments?.getString("listExercises")?.let {
                 // Logic to convert the string into a List<Exercise>
                 // Example: it.split(",").map { exerciseString -> parseExerciseFromString(exerciseString) }
-                sampleExercises2
+                sampleExercises
             } ?: emptyList()
 
             FinishedWorkout(

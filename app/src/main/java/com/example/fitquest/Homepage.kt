@@ -49,6 +49,7 @@ import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import java.util.Date
 import java.util.Locale
 
 @Composable
@@ -298,18 +299,23 @@ fun DailyQuests(navController: NavController) {
         }
     }
 }
-
 data class DailyQuest(
     val title: String,
-    val difficulty: String,
     val duration: String,
-    val image: Int
+    val isCompleted: Boolean = false,
+    val image: Int,
+    val exercises: List<ExerciseData>,
+    val date: String
 )
 
 val sampleDailyQuests = listOf(
-    DailyQuest("Pilates Session", "Medium", "20 mins",  R.drawable.pilates),
-    DailyQuest("Cardio Session", "Medium", "30 mins",  R.drawable.pilates),
+    DailyQuest("Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
+    ),
+    DailyQuest("Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
     )
+    // Add more DailyQuest instances as needed
+)
+
 
 @Composable
 fun ClickableCardItem(quest: DailyQuest, onClick: () -> Unit) {
@@ -340,7 +346,6 @@ fun ClickableCardItem(quest: DailyQuest, onClick: () -> Unit) {
         ) {
             // Content
             Text(text = quest.title, fontSize = 20.sp, color = Color.White)
-            Text(text = quest.difficulty, fontSize = 16.sp, color = Color.White)
             Text(text = quest.duration, fontSize = 16.sp, color = Color.White)
 
             // Spacer for layout adjustment

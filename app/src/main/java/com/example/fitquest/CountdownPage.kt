@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun CountdownPage(navController: NavController, listExercises: List<Exercise>, numSets: Int) {
+fun CountdownPage(navController: NavController, listExercises: List<ExerciseData>, numSets: Int) {
     var secondsLeft by remember { mutableStateOf(3) }
     var secondsLeftDisplayed by remember { mutableStateOf(0) }
 

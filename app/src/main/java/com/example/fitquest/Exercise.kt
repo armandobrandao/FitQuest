@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Exercise(navController: NavController, listExercises: List<Exercise>, numSets: Int) {
+fun Exercise(navController: NavController, listExercises: List<ExerciseData>, numSets: Int) {
     var currentSet by remember { mutableStateOf(1) }
     var currentExercise by remember { mutableStateOf(0) }
     var timerRunning by remember { mutableStateOf(true) }
@@ -170,7 +170,7 @@ fun Exercise(navController: NavController, listExercises: List<Exercise>, numSet
                     fontWeight = FontWeight.Bold
                 )
                 Image(
-                    painter = painterResource(id = listExercises[currentExercise].imageResId),
+                    painter = painterResource(id = listExercises[currentExercise].imageResId.toInt()),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

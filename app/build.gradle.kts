@@ -105,4 +105,8 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
 
+    //Gson
+    implementation ("com.google.code.gson:gson:2.8.8")
+
+
 }

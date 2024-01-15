@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
-fun FinishedWorkout(navController: NavController, listExercises: List<Exercise>) {
+fun FinishedWorkout(navController: NavController, listExercises: List<ExerciseData>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
