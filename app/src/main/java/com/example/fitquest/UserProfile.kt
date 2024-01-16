@@ -1,5 +1,7 @@
 package com.example.fitquest
 
+import java.util.Date
+
 data class UserProfile(
     val username: String = "",
     val fullName: String = "",
@@ -25,4 +27,6 @@ data class UserProfile(
     val achievements: List<Achievement> = emptyList(),
     val progress: Int = 0,
     val uniqueCode: String = "",
+    val lastLoginDate: Date? = null, // Nullable Date for the last login date
+    val currentStreak: Int = 0,
 )

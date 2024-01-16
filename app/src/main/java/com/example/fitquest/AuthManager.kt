@@ -8,6 +8,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.absoluteValue
 
@@ -96,6 +97,16 @@ class AuthManager(private val activity: Activity) {
                                     } else {
                                         // Handle the case when there is an issue generating the DailyQuest
                                         callback(false, "Error generating DailyQuest")
+                                    }
+                                }
+
+                                updateLongestStreak(user.uid) { updateSuccess ->
+                                    if (updateSuccess) {
+                                        // Callback with sign-in success
+                                        callback(true, null)
+                                    } else {
+                                        // Callback with update failure
+                                        callback(false, "Error updating longest streak")
                                     }
                                 }
                             } else {
@@ -196,7 +207,8 @@ class AuthManager(private val activity: Activity) {
             achievements = emptyList(),
             progress = 0,
             uniqueCode = generateUniqueCode(username),
-
+            lastLoginDate = Calendar.getInstance().time,
+            currentStreak = 0,
         )
 
         saveUserProfile(user?.uid, userProfile, callback)
@@ -264,6 +276,8 @@ class AuthManager(private val activity: Activity) {
                                 achievements = userProfile.achievements,
                                 progress = userProfile.progress,
                                 uniqueCode = userProfile.uniqueCode,
+                                lastLoginDate = userProfile.lastLoginDate,
+                                currentStreak = userProfile.currentStreak,
                             )
                             updateCurrentUserProfile(user.uid, currentUser) {
                                 if (it) {
@@ -450,6 +464,76 @@ class AuthManager(private val activity: Activity) {
         } else {
             callback(null)
         }
+    }
+
+    //Sempre que faz log in faz check da streak!
+    fun updateLongestStreak(userId: String, callback: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        if (user != null) {
+            firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val userProfile = documentSnapshot.toObject(UserProfile::class.java)
+                        if (userProfile != null) {
+                            val currentDate = Date();
+                            Log.d("currentDate", "$currentDate")
+                            val lastLoginDate = userProfile.lastLoginDate
+                            Log.d("lastLoginDate", "$lastLoginDate")
+
+                            //Se o lastLoginDate for 1 dia antes da currentdate
+                            if (isOneDayBefore(lastLoginDate,currentDate)) {
+                                // User logged in today, update the streak
+                                val currentStreak = userProfile.currentStreak + 1
+                                val longestStreak = maxOf(currentStreak, userProfile.longestStreak)
+
+                                val updatedUser = userProfile.copy(
+                                    currentStreak = currentStreak,
+                                    longestStreak = longestStreak,
+                                    lastLoginDate = currentDate
+                                )
+
+                                updateCurrentUserProfile(userId, updatedUser) {
+                                    callback(it)
+                                }
+                            } else {
+                                // User didn't log in today, reset the streak
+                                val updatedUser = userProfile.copy(
+                                    currentStreak = 0,
+                                    lastLoginDate = currentDate
+                                )
+
+                                updateCurrentUserProfile(userId, updatedUser) {
+                                    callback(it)
+                                }
+                            }
+                        } else {
+                            callback(false)
+                        }
+                    } else {
+                        callback(false)
+                    }
+                }
+                .addOnFailureListener {
+                    callback(false)
+                }
+        } else {
+            callback(false)
+        }
+    }
+
+
+    private fun isOneDayBefore(date1: Date?, date2: Date): Boolean {
+
+        val cal1 = Calendar.getInstance()
+        cal1.time = date1
+        val cal2 = Calendar.getInstance()
+        cal2.time = date2
+
+        // Check if date1 is one day before date2
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) - 1
     }
 
 }
