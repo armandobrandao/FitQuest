@@ -49,15 +49,15 @@ class AuthManager(private val activity: Activity) {
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                             if (!hasDailyQuest) {
 //                                val newExercise = ExerciseData(
-//                                    name = "Squats",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.squat,
-//                                    durationInSeconds = 40,
+//                                    name = "Box Jumps",
+//                                    duration = "1 set of 10 jumps",
+//                                    imageResId= R.drawable.box_jumps,
+//                                    durationInSeconds = 30,
 //                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
+//                                    suitableGoals= listOf("Build muscle", "Increase energy"),
+//                                    suitableMotivations = listOf("Feel confident",  "Increase energy"),
+//                                    suitablePushUps = listOf("At least 10"),
+//                                    suitableActivityLevels= listOf("Very active"),
 //                                    target= "Legs"
 //                                )
 //                                saveExercise(newExercise) { success ->
@@ -68,22 +68,193 @@ class AuthManager(private val activity: Activity) {
 //                                    }
 //                                }
 //                                val newExercise2 = ExerciseData(
-//                                    name = "Lunges",
-//                                    duration = "1 set of 10 reps per leg",
-//                                    imageResId= R.drawable.lunge,
-//                                    durationInSeconds = 35,
+//                                    name = "Lat Pulldowns",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.lat_pulldowns,
+//                                    durationInSeconds = 40,
 //                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
-//                                    target= "Legs"
+//                                    suitableGoals= listOf( "Build muscle"),
+//                                    suitableMotivations = listOf("Increase energy", "Feel confident"),
+//                                    suitablePushUps = listOf( "5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf( "Moderately active", "Very active"),
+//                                    target= "Back"
 //                                )
 //                                saveExercise(newExercise2) { success ->
 //                                    if (success) {
 //                                        // Exercise saved successfully
 //                                    } else {
 //                                        // Failed to save exercise
+//                                    }
+//                                }
+//
+//                                val newExercise3 = ExerciseData(
+//                                    name = "Side Plank",
+//                                    duration = "30 seconds per side",
+//                                    imageResId= R.drawable.side_plank,
+//                                    durationInSeconds = 30,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf( "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("At least 10"),
+//                                    suitableActivityLevels= listOf( "Moderately active", "Very active"),
+//                                    target= "Abs"
+//                                )
+//                                saveExercise(newExercise3) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
+//
+//                                val newExercise4 = ExerciseData(
+//                                    name = "Leg Press",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.leg_press,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle"),
+//                                    suitableMotivations = listOf("Feel confident", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise4) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                        Log.d("EXERCISEEEEE", "saved")
+//                                    } else {
+//                                        // Failed to save exercise
+//                                        Log.d("EXERCISEEEEE", "not saved")
+//
+//                                    }
+//                                }
+//
+//                                // If no DailyQuest exists for the current day, generate a new one
+//                                generateNewDailyQuest(user.uid) { newDailyQuest ->
+//                                    if (newDailyQuest != null) {
+//                                        // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
+//                                        // ...
+//                                        Log.d("New daily quest", "$newDailyQuest")
+//                                        // Callback with sign-in success
+//                                        callback(true, null)
+//                                    } else {
+//                                        // Handle the case when there is an issue generating the DailyQuest
+//                                        callback(false, "Error generating DailyQuest")
+//                                    }
+//                                }
+
+                                updateLongestStreak(user.uid) { updateSuccess ->
+                                    if (updateSuccess) {
+                                        // Callback with sign-in success
+                                        callback(true, null)
+                                    } else {
+                                        // Callback with update failure
+                                        callback(false, "Error updating longest streak")
+                                    }
+                                }
+                            } else {
+//                                val newExercise = ExerciseData(
+//                                    name = "Cable Crunches",
+//                                    duration = "1 set of 20 reps",
+//                                    imageResId= R.drawable.cable_crunches,
+//                                    durationInSeconds = 60,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Lose weight", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("3-5", "5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
+//                                    target= "Abs"
+//                                )
+//                                saveExercise(newExercise) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
+//                                val newExercise2 = ExerciseData(
+//                                    name = "Dips",
+//                                    duration = "1 set of 15 reps",
+//                                    imageResId= R.drawable.dips,
+//                                    durationInSeconds = 45,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
+//                                    target= "Arms"
+//                                )
+//                                saveExercise(newExercise2) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
+//
+//                                val newExercise3 = ExerciseData(
+//                                    name = "Hamstring Curls",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.hamstring_curls,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle"),
+//                                    suitableMotivations = listOf("Feel confident", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise3) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                    } else {
+//                                        // Failed to save exercise
+//                                    }
+//                                }
+//
+//                                val newExercise4 = ExerciseData(
+//                                    name = "Leg Extensions",
+//                                    duration = "1 set of 12 reps",
+//                                    imageResId= R.drawable.leg_extensions,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise4) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                        Log.d("EXERCISEEEEE", "saved")
+//                                    } else {
+//                                        // Failed to save exercise
+//                                        Log.d("EXERCISEEEEE", "not saved")
+//
+//                                    }
+//                                }
+//                                val newExercise5 = ExerciseData(
+//                                    name = "Side Lunges",
+//                                    duration = "1 set of 12 reps per leg",
+//                                    imageResId= R.drawable.side_lunges,
+//                                    durationInSeconds = 40,
+//                                    suitableGender= listOf("Male", "Female"),
+//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
+//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
+//                                    suitablePushUps = listOf("5-10", "At least 10"),
+//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
+//                                    target= "Legs"
+//                                )
+//                                saveExercise(newExercise5) { success ->
+//                                    if (success) {
+//                                        // Exercise saved successfully
+//                                        Log.d("EXERCISEEEEE", "saved")
+//                                    } else {
+//                                        // Failed to save exercise
+//                                        Log.d("EXERCISEEEEE", "not saved")
+//
 //                                    }
 //                                }
                                 // If no DailyQuest exists for the current day, generate a new one
@@ -99,36 +270,6 @@ class AuthManager(private val activity: Activity) {
                                         callback(false, "Error generating DailyQuest")
                                     }
                                 }
-
-                                updateLongestStreak(user.uid) { updateSuccess ->
-                                    if (updateSuccess) {
-                                        // Callback with sign-in success
-                                        callback(true, null)
-                                    } else {
-                                        // Callback with update failure
-                                        callback(false, "Error updating longest streak")
-                                    }
-                                }
-                            } else {
-//                                val newExercise = ExerciseData(
-//                                    name = "Jumping Jacks",
-//                                    duration = "1 minute",
-//                                    imageResId= R.drawable.jumping_jacks,
-//                                    durationInSeconds = 60,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Lose weight", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Relieve stress", "Increase energy"),
-//                                    suitablePushUps = listOf("3-5", "5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
-//                                    target= "Cardio"
-//                                )
-//                                saveExercise(newExercise) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
                                 // If a DailyQuest already exists for the current day, proceed without generating a new one
                                 callback(true, null)
                             }
