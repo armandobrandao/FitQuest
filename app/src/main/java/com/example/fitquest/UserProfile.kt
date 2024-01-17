@@ -27,6 +27,6 @@ data class UserProfile(
     val achievements: List<Achievement> = emptyList(),
     val progress: Int = 0,
     val uniqueCode: String = "",
-    val lastLoginDate: Date? = null, // Nullable Date for the last login date
+    val lastLoginDate: Date? = Date(), // Nullable Date for the last login date
     val currentStreak: Int = 0,
 )

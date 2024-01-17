@@ -48,101 +48,28 @@ class AuthManager(private val activity: Activity) {
                         // Check if the user already has a DailyQuest for the current day
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                             if (!hasDailyQuest) {
-//                                val newExercise = ExerciseData(
-//                                    name = "Box Jumps",
-//                                    duration = "1 set of 10 jumps",
-//                                    imageResId= R.drawable.box_jumps,
-//                                    durationInSeconds = 30,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Increase energy"),
-//                                    suitableMotivations = listOf("Feel confident",  "Increase energy"),
-//                                    suitablePushUps = listOf("At least 10"),
-//                                    suitableActivityLevels= listOf("Very active"),
-//                                    target= "Legs"
-//                                )
-//                                saveExercise(newExercise) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//                                val newExercise2 = ExerciseData(
-//                                    name = "Lat Pulldowns",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.lat_pulldowns,
-//                                    durationInSeconds = 40,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf( "Build muscle"),
-//                                    suitableMotivations = listOf("Increase energy", "Feel confident"),
-//                                    suitablePushUps = listOf( "5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf( "Moderately active", "Very active"),
-//                                    target= "Back"
-//                                )
-//                                saveExercise(newExercise2) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//
-//                                val newExercise3 = ExerciseData(
-//                                    name = "Side Plank",
-//                                    duration = "30 seconds per side",
-//                                    imageResId= R.drawable.side_plank,
-//                                    durationInSeconds = 30,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf( "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("At least 10"),
-//                                    suitableActivityLevels= listOf( "Moderately active", "Very active"),
-//                                    target= "Abs"
-//                                )
-//                                saveExercise(newExercise3) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//
-//                                val newExercise4 = ExerciseData(
-//                                    name = "Leg Press",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.leg_press,
-//                                    durationInSeconds = 40,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle"),
-//                                    suitableMotivations = listOf("Feel confident", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
-//                                    target= "Legs"
-//                                )
-//                                saveExercise(newExercise4) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                        Log.d("EXERCISEEEEE", "saved")
-//                                    } else {
-//                                        // Failed to save exercise
-//                                        Log.d("EXERCISEEEEE", "not saved")
-//
-//                                    }
-//                                }
-//
-//                                // If no DailyQuest exists for the current day, generate a new one
-//                                generateNewDailyQuest(user.uid) { newDailyQuest ->
-//                                    if (newDailyQuest != null) {
-//                                        // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
-//                                        // ...
-//                                        Log.d("New daily quest", "$newDailyQuest")
-//                                        // Callback with sign-in success
-//                                        callback(true, null)
-//                                    } else {
-//                                        // Handle the case when there is an issue generating the DailyQuest
-//                                        callback(false, "Error generating DailyQuest")
-//                                    }
-//                                }
+                                // If no DailyQuest exists for the current day, generate a new one
+                                generateNewDailyQuest(user.uid) { newDailyQuest ->
+                                    if (newDailyQuest != null) {
+                                        // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
+                                        // ...
+                                        Log.d("New daily quest", "$newDailyQuest")
+
+                                        // Check for existing challenges and create them if needed
+                                        checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
+                                            if (challengeCreationSuccess) {
+                                                // Callback with sign-in success
+                                                callback(true, null)
+                                            } else {
+                                                // Handle the case when there is an issue creating challenges
+                                                callback(false, "Error creating challenges")
+                                            }
+                                        }
+                                    } else {
+                                        // Handle the case when there is an issue generating the DailyQuest
+                                        callback(false, "Error generating DailyQuest")
+                                    }
+                                }
 
                                 updateLongestStreak(user.uid) { updateSuccess ->
                                     if (updateSuccess) {
@@ -154,123 +81,18 @@ class AuthManager(private val activity: Activity) {
                                     }
                                 }
                             } else {
-//                                val newExercise = ExerciseData(
-//                                    name = "Cable Crunches",
-//                                    duration = "1 set of 20 reps",
-//                                    imageResId= R.drawable.cable_crunches,
-//                                    durationInSeconds = 60,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Lose weight", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("3-5", "5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Lightly active", "Moderately active", "Very active"),
-//                                    target= "Abs"
-//                                )
-//                                saveExercise(newExercise) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//                                val newExercise2 = ExerciseData(
-//                                    name = "Dips",
-//                                    duration = "1 set of 15 reps",
-//                                    imageResId= R.drawable.dips,
-//                                    durationInSeconds = 45,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
-//                                    target= "Arms"
-//                                )
-//                                saveExercise(newExercise2) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//
-//                                val newExercise3 = ExerciseData(
-//                                    name = "Hamstring Curls",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.hamstring_curls,
-//                                    durationInSeconds = 40,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle"),
-//                                    suitableMotivations = listOf("Feel confident", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
-//                                    target= "Legs"
-//                                )
-//                                saveExercise(newExercise3) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                    } else {
-//                                        // Failed to save exercise
-//                                    }
-//                                }
-//
-//                                val newExercise4 = ExerciseData(
-//                                    name = "Leg Extensions",
-//                                    duration = "1 set of 12 reps",
-//                                    imageResId= R.drawable.leg_extensions,
-//                                    durationInSeconds = 40,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
-//                                    target= "Legs"
-//                                )
-//                                saveExercise(newExercise4) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                        Log.d("EXERCISEEEEE", "saved")
-//                                    } else {
-//                                        // Failed to save exercise
-//                                        Log.d("EXERCISEEEEE", "not saved")
-//
-//                                    }
-//                                }
-//                                val newExercise5 = ExerciseData(
-//                                    name = "Side Lunges",
-//                                    duration = "1 set of 12 reps per leg",
-//                                    imageResId= R.drawable.side_lunges,
-//                                    durationInSeconds = 40,
-//                                    suitableGender= listOf("Male", "Female"),
-//                                    suitableGoals= listOf("Build muscle", "Maintain shape"),
-//                                    suitableMotivations = listOf("Feel confident", "Improve health", "Increase energy"),
-//                                    suitablePushUps = listOf("5-10", "At least 10"),
-//                                    suitableActivityLevels= listOf("Moderately active", "Very active"),
-//                                    target= "Legs"
-//                                )
-//                                saveExercise(newExercise5) { success ->
-//                                    if (success) {
-//                                        // Exercise saved successfully
-//                                        Log.d("EXERCISEEEEE", "saved")
-//                                    } else {
-//                                        // Failed to save exercise
-//                                        Log.d("EXERCISEEEEE", "not saved")
-//
-//                                    }
-//                                }
-                                // If no DailyQuest exists for the current day, generate a new one
-                                generateNewDailyQuest(user.uid) { newDailyQuest ->
-                                    if (newDailyQuest != null) {
-                                        // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
-                                        // ...
-                                        Log.d("New daily quest", "$newDailyQuest")
-                                        // Callback with sign-in success
-                                        callback(true, null)
-                                    } else {
-                                        // Handle the case when there is an issue generating the DailyQuest
-                                        callback(false, "Error generating DailyQuest")
-                                    }
-                                }
                                 // If a DailyQuest already exists for the current day, proceed without generating a new one
+
+                                // Check for existing challenges and create them if needed
+//                                checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
+//                                    if (challengeCreationSuccess) {
+//                                        // Callback with sign-in success
+//                                        callback(true, null)
+//                                    } else {
+//                                        // Handle the case when there is an issue creating challenges
+//                                        callback(false, "Error creating challenges")
+//                                    }
+//                                }
                                 callback(true, null)
                             }
                         }
@@ -285,7 +107,6 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
-    // Add this function to your AuthManager class
     private fun hasDailyQuestForToday(userId: String, callback: (Boolean) -> Unit) {
         // Get the current date
         val currentDate = getCurrentFormattedDateDaily()
@@ -490,7 +311,6 @@ class AuthManager(private val activity: Activity) {
     }
 
 
-    // Add this function to your AuthManager class
     fun saveDailyQuestForUser(userId: String, dailyQuest: WorkoutData, callback: (Boolean) -> Unit) {
         Log.d("AuthManager", "Entra no saveDailyQuestForUser")
         firestore.collection("users")
@@ -521,7 +341,24 @@ class AuthManager(private val activity: Activity) {
             callback(false)
         }
     }
-    // Update generateNewDailyQuest function
+
+    fun savePlace(place: PlaceData, callback: (Boolean) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            firestore.collection("places")
+                .add(place)
+                .addOnSuccessListener {
+                    callback(true)
+                }
+                .addOnFailureListener {
+                    callback(false)
+                }
+        } else {
+            // Handle the case where the user is not authenticated
+            callback(false)
+        }
+    }
+
     fun generateNewDailyQuest(userId: String, callback: (WorkoutData?) -> Unit) {
         Log.d("AuthManager", "Entra no generateNewDailyQuest")
 
@@ -552,7 +389,8 @@ class AuthManager(private val activity: Activity) {
                         image = R.drawable.pilates, // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
-                        isQuest = true
+                        isQuest = true,
+                        xp = 50
                     )
                     // Save the DailyQuest to the user's document
                     saveDailyQuestForUser(userId, newDailyQuest) { success ->
@@ -676,5 +514,201 @@ class AuthManager(private val activity: Activity) {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) - 1
     }
+
+    private fun checkAndCreateChallenges(userId: String, callback: (Boolean) -> Unit) {
+        // Check if the user already has challenges for the current week
+        hasChallengesForCurrentWeek(userId) { hasChallenges ->
+            if (!hasChallenges) {
+                // If no challenges for the current week, create new challenges
+                val currentDate = Calendar.getInstance().time
+                val endDate = getEndDateForCurrentWeek(currentDate)
+
+                createNewChallenges(userId, currentDate, endDate)
+
+                // Callback with success
+                callback(true)
+            } else {
+                // Challenges already exist for the current week, no need to create new ones
+                callback(true)
+            }
+        }
+    }
+
+    private fun hasChallengesForCurrentWeek(userId: String, callback: (Boolean) -> Unit) {
+        val currentDate = Calendar.getInstance().time
+
+        // Check if there are challenges for the current week
+        firestore.collection("users")
+            .document(userId)
+            .collection("challenges")
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                // Iterate through the challenges and check if any is for the current week
+                val hasChallengesForCurrentWeek = querySnapshot.documents.any { document ->
+                    val beginDate = document.getTimestamp("begin_date")?.toDate()
+                    val endDate = document.getTimestamp("end_date")?.toDate()
+
+                    if (beginDate != null && endDate != null) {
+                        currentDate >= beginDate && currentDate <= endDate
+                    } else {
+                        // Handle the case where begin_date or end_date is null
+                        false
+                    }
+                }
+
+                callback(hasChallengesForCurrentWeek)
+            }
+            .addOnFailureListener {
+                // Handle the failure to check for existing challenges in Firestore
+                callback(false)
+            }
+    }
+
+
+    private fun getEndDateForCurrentWeek(currentDate: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = currentDate
+        calendar.add(Calendar.DAY_OF_WEEK, 6) // Add 6 days to get the end of the week
+
+        return calendar.time
+    }
+
+    private fun createNewChallenges(userId: String, startDate: Date, endDate: Date) {
+        // Fetch exercises and places from the database
+        firestore.collection("exercises")
+            .get()
+            .addOnSuccessListener { exercisesQuerySnapshot ->
+                val exercisesList = mutableListOf<ExerciseData>()
+                val placesList = mutableListOf<PlaceData>()
+
+                // Convert documents to Exercise objects
+                for (document in exercisesQuerySnapshot.documents) {
+                    val exercise = document.toObject(ExerciseData::class.java)
+                    exercise?.let { exercisesList.add(it) }
+                }
+
+                // Fetch places from the database
+                firestore.collection("places")
+                    .get()
+                    .addOnSuccessListener { placesQuerySnapshot ->
+                        // Convert documents to Place objects
+                        for (document in placesQuerySnapshot.documents) {
+                            val place = document.toObject(PlaceData::class.java)
+                            place?.let { placesList.add(it) }
+                        }
+
+                        // Ensure that there are at least 3 exercises and 3 places in the collections
+                        if (exercisesList.size >= 3 && placesList.size >= 3) {
+                            // Shuffle the lists
+                            exercisesList.shuffle()
+                            placesList.shuffle()
+
+                            // Select the first three exercises and places
+                            val selectedExercises = exercisesList.subList(0, 3)
+                            val selectedPlaces = placesList.subList(0, 3)
+
+                            // Create challenges with checkpoints
+                            val challengeWithCheckpoints = createChallengeWithCheckpoints(
+                                "Challenge with Checkpoints",
+                                startDate,
+                                endDate,
+                                selectedExercises,
+                                selectedPlaces
+                            )
+
+                            // Create challenges without checkpoints
+                            val challengeWithoutCheckpoints1 = createChallengeWithoutCheckpoints(
+                                "Challenge without Checkpoints 1",
+                                startDate,
+                                endDate
+                            )
+
+                            val challengeWithoutCheckpoints2 = createChallengeWithoutCheckpoints(
+                                "Challenge without Checkpoints 2",
+                                startDate,
+                                endDate
+                            )
+
+                            // Save challenges to the user's document
+                            saveChallengeForUser(userId, challengeWithCheckpoints)
+                            saveChallengeForUser(userId, challengeWithoutCheckpoints1)
+                            saveChallengeForUser(userId, challengeWithoutCheckpoints2)
+                        } else {
+                            // Handle the case when there are not enough exercises or places in the collections
+                        }
+                    }
+                    .addOnFailureListener {
+                        // Handle the failure to retrieve places from Firestore
+                    }
+            }
+            .addOnFailureListener {
+                // Handle the failure to retrieve exercises from Firestore
+            }
+    }
+    private fun createChallengeWithCheckpoints(
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        selectedExercises: List<ExerciseData>,
+        selectedPlaces: List<PlaceData>
+    ): ChallengeData {
+        // Create 3 checkpoints with associated exercises and places
+        val checkpoints = (1..3).map { checkpointNumber ->
+            val checkpoint = CheckpointData(
+                name = "Checkpoint $checkpointNumber",
+                place = selectedPlaces[checkpointNumber - 1],
+                isCompleted = false,
+                exercises = selectedExercises
+            )
+            checkpoint
+        }
+
+        return ChallengeData(
+            title = title,
+            xp = 200,
+            type = "Location",
+            total_checkpoints = 3,
+            done_checkpoints = 0,
+            checkpoints = checkpoints,
+            begin_date = startDate,
+            end_date = endDate,
+            isCompleted = false
+        )
+    }
+    private fun createChallengeWithoutCheckpoints(
+        title: String,
+        startDate: Date,
+        endDate: Date
+    ): ChallengeData {
+        return ChallengeData(
+            title = title,
+            xp = 100,
+            type = "Steps",
+            begin_date = startDate,
+            end_date = endDate,
+            isCompleted = false
+        )
+    }
+
+    private fun saveChallengeForUser(userId: String, challenge: ChallengeData) {
+        firestore.collection("users")
+            .document(userId)
+            .collection("challenges")
+            .add(challenge)
+            .addOnSuccessListener {
+                // Challenge saved successfully
+            }
+            .addOnFailureListener {
+                // Failed to save challenge
+            }
+    }
+
+    private fun getEndDate(startDate: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = startDate
+        calendar.add(Calendar.DAY_OF_YEAR, 7) // Add 7 days for a week-long challenge
+        return calendar.time
+    }
+
 
 }
