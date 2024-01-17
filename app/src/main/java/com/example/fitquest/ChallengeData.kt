@@ -4,7 +4,7 @@ import java.util.Date
 
 data class ChallengeData(
     val title: String = "",
-    val description: String? = "", //caso NAO tenha checkpoints
+    val description: String? = null, //caso NAO tenha checkpoints
     val xp: Int = 0,
     val total_checkpoints: Int? = null, //caso tenha checkpoints
     val done_checkpoints: Int? = null, //caso tenha checkpoints

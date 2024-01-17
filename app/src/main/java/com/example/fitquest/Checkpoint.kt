@@ -57,7 +57,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
-fun MapSection(navController: NavController, focusCheckpoint: Place? = null) {
+fun MapSection(navController: NavController, focusCheckpoint: CheckpointData? = null) {
     Box(
         modifier = Modifier
             .height(500.dp)
@@ -70,7 +70,7 @@ fun MapSection(navController: NavController, focusCheckpoint: Place? = null) {
 
         var contextCurrent = LocalContext.current
 
-        var checkpointCoords = focusCheckpoint?.let { LatLng(it.lat, focusCheckpoint.long) }
+        var checkpointCoords = focusCheckpoint?.place?.let { LatLng(it.lat, it.long) }
         // Location-related variables
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(contextCurrent)
@@ -91,13 +91,15 @@ fun MapSection(navController: NavController, focusCheckpoint: Place? = null) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            GoogleMapWithMarker(
-                properties = properties,
-                cameraPositionState = cameraPositionState,
-                focusCheckpoint = focusCheckpoint,
-            ) { place ->
-                // Handle marker click, you can navigate or show more details
-                // about the clicked place
+            if (focusCheckpoint != null) {
+                GoogleMapWithMarker(
+                    properties = properties,
+                    cameraPositionState = cameraPositionState,
+                    focusCheckpoint = focusCheckpoint.place,
+                ) { place ->
+                    // Handle marker click, you can navigate or show more details
+                    // about the clicked place
+                }
             }
         }
 
@@ -122,7 +124,7 @@ fun MapSection(navController: NavController, focusCheckpoint: Place? = null) {
 fun GoogleMapWithMarker(
     properties: MapProperties,
     cameraPositionState: CameraPositionState,
-    focusCheckpoint: Place?, // Add the focusCheckpoint parameter
+    focusCheckpoint: PlaceData?, // Add the focusCheckpoint parameter
     onMarkerClick: (Place) -> Unit
 ) {
     GoogleMap(
@@ -145,9 +147,9 @@ fun GoogleMapWithMarker(
 
 
 @Composable
-fun CheckpointSection(navController: NavController, checkpoint: Place){
+fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
     // Calculate progress percentage
-    val progress = checkpoint.prog.toFloat()
+    val progress = if (checkpoint.isCompleted) 1.0f else 0.0f
 
     Column(
         modifier = Modifier
@@ -208,20 +210,26 @@ fun CheckpointSection(navController: NavController, checkpoint: Place){
             .padding(16.dp)
     ) {
         Column {
-            sampleExercises.forEachIndexed { index, exercise ->
-                ExerciseItem(exercise = exercise)
-                if (index < sampleExercises.size - 1) {
-                    Divider()
+            if (checkpoint.workout?.exercises?.isNotEmpty() == true) {
+                checkpoint.workout.exercises.forEachIndexed { index, exercise ->
+                    ExerciseItem(exercise = exercise)
+                    if (index < checkpoint.workout.exercises.size - 1) {
+                        Divider()
+                    }
                 }
+            } else {
+                // Handle the case when there are no exercises in checkpoint.workout
+                Text(text = "No exercises available.")
             }
         }
+
     }
 }
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Checkpoint(navController: NavController, checkpoint: Place) {
+fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -239,5 +247,6 @@ fun Checkpoint(navController: NavController, checkpoint: Place) {
             }
         }
 //        StartWorkoutButton(navController)
+        StartWorkoutButton(navController = navController, isQuest = false, checkpoint = checkpoint.name)
     }
 }

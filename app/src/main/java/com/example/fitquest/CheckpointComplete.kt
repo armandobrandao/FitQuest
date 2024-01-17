@@ -85,7 +85,7 @@ fun PhotosSection(){
     }
 }
 @Composable
-fun CheckpointComplete(navController: NavController) {
+fun CheckpointComplete(navController: NavController, workout: WorkoutData, challenge: ChallengeData) {
     LazyColumn {
         item {
             Box(

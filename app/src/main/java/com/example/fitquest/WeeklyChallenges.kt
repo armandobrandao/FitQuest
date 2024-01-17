@@ -93,7 +93,7 @@ fun CompletionInfo(completion: Float, currentDay: DayOfWeek, timeUntilMidnight: 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: () -> Unit) {
+fun ChallengeItem(challenge: ChallengeData, isGroupChallenge: Boolean = false, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,9 +107,9 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: ()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = if (challenge is Challenge) challenge.name else (challenge as GroupChallenge).name, fontWeight = FontWeight.Bold)
+            Text(text = challenge.title, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "200 XP", fontWeight = FontWeight.Bold)
+            Text(text =  challenge.xp.toString() + " XP", fontWeight = FontWeight.Bold)
         }
 
         if (isGroupChallenge) {
@@ -121,15 +121,20 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: ()
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "1/3 checkpoints done")
+                if(challenge.done_checkpoints != null) {
+                    Text(text = challenge.done_checkpoints.toString() + "/" + challenge.total_checkpoints.toString() + " checkpoints done")
+                }
+                else{
+                    Text(text= challenge.description.toString())
+                }
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = (challenge as GroupChallenge).profileImage),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                )
+//                Image(
+//                    painter = painterResource(id = (challenge as GroupChallenge).profileImage),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .size(50.dp)
+//                        .clip(CircleShape)
+//                )
             }
         }
         else{
@@ -140,7 +145,11 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: ()
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "1/3 checkpoints done" )
+                if(challenge.done_checkpoints != null) {
+                    Text(text = challenge.done_checkpoints.toString() + "/" + challenge.total_checkpoints.toString() + " checkpoints done")
+                }else{
+                    Text(text= challenge.description.toString())
+                }
             }
         }
 
@@ -151,23 +160,66 @@ fun ChallengeItem(challenge: Any, isGroupChallenge: Boolean = false, onClick: ()
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LinearProgressIndicator(
-                progress = 0.3f,
-                color = Color(0xFFE66353),
-                modifier = Modifier
-                    .height(8.dp)
-            )
-            Spacer(modifier = Modifier.width(3.dp))
-            Text(text = "33%", fontSize = 10.sp)
+            if(challenge.done_checkpoints != null) {
+                ChallengeCheckpointProgress(challenge)
+            }
+            else{
+                // TODO funcao para ver quando o progresso não é por checkpoints
+                ChallengeProgress(challenge)
+            }
+
         }
-
-
     }
 }
 
+@Composable
+fun ChallengeCheckpointProgress(challenge: ChallengeData) {
+    val progress = challenge.done_checkpoints?.toFloat() ?: 0f
+    val totalCheckpoints = challenge.total_checkpoints ?: 0
+
+    val percentage = if (totalCheckpoints > 0) {
+        ((progress / totalCheckpoints) * 100).toInt()
+    } else {
+        0
+    }
+
+    LinearProgressIndicator(
+        progress = progress / totalCheckpoints,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .height(8.dp)
+    )
+
+    Spacer(modifier = Modifier.width(3.dp))
+    Text(text = "$percentage%", fontSize = 10.sp)
+}
+
+@Composable
+fun ChallengeProgress(challenge: ChallengeData) {
+    val progress = challenge.goal?.toFloat() ?: 0f
+
+
+//    val percentage = if (totalCheckpoints > 0) {
+//        ((progress / totalCheckpoints) * 100).toInt()
+//    } else {
+//        0
+//    }
+
+//    LinearProgressIndicator(
+//        progress = progress / totalCheckpoints,
+//        color = MaterialTheme.colorScheme.primary,
+//        modifier = Modifier
+//            .height(8.dp)
+//    )
+
+    Spacer(modifier = Modifier.width(3.dp))
+//    Text(text = "$percentage%", fontSize = 10.sp)
+}
+
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeeklyChallenges(navController: NavHostController) {
+fun WeeklyChallenges(navController: NavHostController, challenges : List<ChallengeData?>) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     val colorText =
@@ -217,15 +269,15 @@ fun WeeklyChallenges(navController: NavHostController) {
 
         // Display content based on the selected tab
         when (selectedTabIndex) {
-            0 -> IndividualChallenges(navController)
-            1 -> GroupChallenges(navController)
+            0 -> IndividualChallenges(navController, challenges)
+            1 -> GroupChallenges(navController, challenges)
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun IndividualChallenges(navController: NavController) {
+fun IndividualChallenges(navController: NavController, challenges : List<ChallengeData?>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -281,12 +333,18 @@ fun IndividualChallenges(navController: NavController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
             ) {
                 Column {
-                    sampleChallenges.forEachIndexed { index, challenge ->
-                        ChallengeItem(challenge = challenge, onClick = {
-                            // Navigate to friend's profile
-                            navController.navigate("${Screens.LocationChallenge.route}/${challenge.name}")
-                        })
-                        if (index < sampleChallenges.size - 1) {
+                    challenges.forEachIndexed { index, challenge ->
+                        if (challenge != null) {
+                            ChallengeItem(challenge = challenge) {
+                                // Navigate to friend's profile
+                                if(challenge.done_checkpoints != null) {
+                                    navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")
+                                }else{
+                                    navController.navigate("${Screens.Challenge.route}/${challenge.title}")
+                                }
+                            }
+                        }
+                        if (index < challenges.size - 1) {
                             Divider()
                         }
                     }
@@ -299,7 +357,7 @@ fun IndividualChallenges(navController: NavController) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GroupChallenges(navController: NavController) {
+fun GroupChallenges(navController: NavController, challenges : List<ChallengeData?>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -355,12 +413,14 @@ fun GroupChallenges(navController: NavController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
             ) {
                 Column {
-                    sampleGroupChallenges.forEachIndexed { index, challenge ->
-                        ChallengeItem(challenge = challenge, isGroupChallenge = true, onClick = {
-                            // Navigate to friend's profile
-                            navController.navigate("${Screens.LocationChallenge.route}/${challenge.name}")
-                        })
-                        if (index < sampleGroupChallenges.size - 1) {
+                    challenges.forEachIndexed { index, challenge ->
+                        if (challenge != null && challenge.isGroup) {
+                            ChallengeItem(challenge = challenge, isGroupChallenge = true) {
+                                // Navigate to friend's profile
+                                navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")
+                            }
+                        }
+                        if (index < challenges.size - 1) {
                             Divider()
                         }
                     }

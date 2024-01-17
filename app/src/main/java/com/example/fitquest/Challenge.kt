@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun Challenge(navController: NavHostController) {
+fun Challenge(navController: NavHostController, challenge: ChallengeData) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,11 +76,19 @@ fun Challenge(navController: NavHostController) {
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        Text(
-                            text = "Group Challenge",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                        )
+                        if (challenge.isGroup) {
+                            Text(
+                                text = "Group Challenge",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                            )
+                        } else {
+                            Text(
+                                text = "Challenge",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                            )
+                        }
                         Spacer(modifier = Modifier.height(20.dp))
                         Row(
                             modifier = Modifier
@@ -89,24 +97,26 @@ fun Challenge(navController: NavHostController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Insane Walkers",
+                                text = challenge.title,
                                 fontSize = 25.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "150 XP",
+                                text = challenge.xp.toString() + " XP",
                                 fontSize = 25.sp,
                                 textAlign = TextAlign.Center
                             )
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = "Complete 85 000 steps",
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        )
+                        challenge.description?.let {
+                            Text(
+                                text = it,
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier
@@ -115,17 +125,7 @@ fun Challenge(navController: NavHostController) {
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val currentValue = 50 // Replace with your actual current value
-                            val goalValue = 100
-                            LinearProgressIndicator(
-                                progress = calculateProgress(currentValue, goalValue),
-                                color = Color(0xFFE66353),
-                                modifier = Modifier
-                                    .padding(start = 16.dp, end = 16.dp)
-                                    .height(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Text(text = "100%", fontSize = 10.sp)
+                            ChallengeProgress(challenge)
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         Text(
@@ -139,34 +139,36 @@ fun Challenge(navController: NavHostController) {
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center
                         )
-
-                        Text(
-                            text = "Josh completed: 39 800 steps",
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(text = "Friend", fontSize = 25.sp)
-                        Spacer(modifier = Modifier.weight(1f))
-                        Row(
-                            modifier = Modifier
-                                .padding(vertical = 2.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.profile_image),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape)
+                        if (challenge.isGroup) {
+                            Text(
+                                text = "Josh completed: 39 800 steps",
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center
                             )
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Text(text = "Friend", fontSize = 25.sp)
+                            Spacer(modifier = Modifier.weight(1f))
+                            Row(
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.profile_image),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .clip(CircleShape)
+                                )
+                            }
                         }
                     }
                 }
             }
         }
         // Placeholder CreateWorkoutButton
-//        StartWorkoutButton(navController)
+
+//        StartWorkoutButton(navController = navController, workout = checkpoint.exercises, isQuest = true)
     }
 }

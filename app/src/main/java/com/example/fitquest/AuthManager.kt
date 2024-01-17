@@ -445,6 +445,42 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
+    fun getChallengesForCurrentWeek(callback: (List<ChallengeData?>) -> Unit) {
+        val currentDate = Calendar.getInstance().time
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+
+            // Get challenges for the current week
+            firestore.collection("users")
+                .document(userId)
+                .collection("challenges")
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    // Filter challenges based on the current week
+                    val challengesForCurrentWeek = querySnapshot.documents
+                        .filter { document ->
+                            val beginDate = document.getTimestamp("begin_date")?.toDate()
+                            val endDate = document.getTimestamp("end_date")?.toDate()
+
+                            beginDate != null && endDate != null && currentDate >= beginDate && currentDate <= endDate
+                        }
+                        .mapNotNull { document ->
+                            document.toObject(ChallengeData::class.java)
+                        }
+
+                    callback(challengesForCurrentWeek)
+                }
+                .addOnFailureListener {
+                    // Handle the failure to retrieve challenges from Firestore
+                    callback(emptyList())
+                }
+        }else{
+            callback(emptyList())
+        }
+    }
+
     //Sempre que faz log in faz check da streak!
     fun updateLongestStreak(userId: String, callback: (Boolean) -> Unit) {
         val user = auth.currentUser
@@ -609,7 +645,7 @@ class AuthManager(private val activity: Activity) {
 
                             // Create challenges with checkpoints
                             val challengeWithCheckpoints = createChallengeWithCheckpoints(
-                                "Challenge with Checkpoints",
+                                "Challenge w Checkpoints",
                                 startDate,
                                 endDate,
                                 selectedExercises,
@@ -618,13 +654,13 @@ class AuthManager(private val activity: Activity) {
 
                             // Create challenges without checkpoints
                             val challengeWithoutCheckpoints1 = createChallengeWithoutCheckpoints(
-                                "Challenge without Checkpoints 1",
+                                "Challenge wo Checkpoints 1",
                                 startDate,
                                 endDate
                             )
 
                             val challengeWithoutCheckpoints2 = createChallengeWithoutCheckpoints(
-                                "Challenge without Checkpoints 2",
+                                "Challenge wo Checkpoints 2",
                                 startDate,
                                 endDate
                             )
@@ -658,7 +694,16 @@ class AuthManager(private val activity: Activity) {
                 name = "Checkpoint $checkpointNumber",
                 place = selectedPlaces[checkpointNumber - 1],
                 isCompleted = false,
-                exercises = selectedExercises
+                workout = WorkoutData(
+                    title = "",
+                    duration = "45 mins", // You can adjust this as needed
+                    isCompleted = false,
+                    image = R.drawable.pilates, // Replace with the appropriate image
+                    exercises = selectedExercises,
+                    date = getCurrentFormattedDateDaily(),
+                    isQuest = false, // Set to false for challenges
+                    xp = 50
+                )
             )
             checkpoint
         }
@@ -672,7 +717,7 @@ class AuthManager(private val activity: Activity) {
             checkpoints = checkpoints,
             begin_date = startDate,
             end_date = endDate,
-            isCompleted = false
+            isCompleted = false,
         )
     }
     private fun createChallengeWithoutCheckpoints(
@@ -686,7 +731,8 @@ class AuthManager(private val activity: Activity) {
             type = "Steps",
             begin_date = startDate,
             end_date = endDate,
-            isCompleted = false
+            isCompleted = false,
+            description = "Complete 40 000 steps"
         )
     }
 

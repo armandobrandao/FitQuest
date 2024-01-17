@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: Int, isQuest: Boolean) {
+fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: Int, isQuest: Boolean, checkpointName : String?) {
     var currentSet by remember { mutableStateOf(1) }
     var currentExercise by remember { mutableStateOf(0) }
     var timerRunning by remember { mutableStateOf(true) }
@@ -53,7 +53,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
 
                 override fun onFinish() {
                     if(currentExercise == listExercises.exercises.size-1 && currentSet >= numSets ){
-                        navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest")
+                        navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest/$checkpointName")
                     }else {
                         // Exercise timer completed, start the break timer
                         isBreak = true

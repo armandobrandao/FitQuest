@@ -20,6 +20,8 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var currentUser by remember { mutableStateOf<UserProfile?>(null) }
     var userKey by remember { mutableStateOf(0) }
     var dailyQuest by remember { mutableStateOf<WorkoutData?>(null) }
+    var challenges by remember { mutableStateOf<List<ChallengeData?>>(emptyList()) }
+
     LaunchedEffect(authManager, userKey) {
         authManager.getCurrentUser { user ->
             if (user != null) {
@@ -32,6 +34,9 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
         authManager.getDailyQuestForToday { result ->
             dailyQuest = result
+        }
+        authManager.getChallengesForCurrentWeek { result ->
+            challenges = result
         }
     }
     NavHost(
@@ -55,7 +60,11 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
         composable(Screens.Challenges.route) {
             Log.d("NavGraph", "Navigating to Challenges")
-            WeeklyChallenges(navController = navController)
+            challenges?.let {
+                WeeklyChallenges(navController = navController, challenges = challenges)
+            } ?: run {
+                // Handle the case where challenges is null
+            }
         }
         composable(Screens.Profile.route) {
             Log.d("NavGraph", "Navigating to Profile")
@@ -122,111 +131,163 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             GenerateWorkout(navController = navController)
         }
 
-        composable(Screens.CheckpointComplete.route) {
-            CheckpointComplete(navController = navController)
+//        composable(Screens.CheckpointComplete.route) {
+//            CheckpointComplete(navController = navController)
+//        }
+
+        composable("${Screens.Challenge.route}/{challengeName}") { backStackEntry ->
+            val challengeName = backStackEntry.arguments?.getString("challengeName")
+            if (challengeName != null) {
+                val challenge = challenges.find { it?.title == challengeName }
+                Log.d("NavGraph", "Navigating to DailyQuest for $challengeName")
+                if (challenge != null) {
+                    Challenge(navController = navController, challenge)
+                } else {
+                    // Handle the case where the challenge is null (e.g., challenge not found)
+                }
+            } else {
+                // Handle the case where challengeName is null or not provided
+            }
+
         }
 
         composable("${Screens.LocationChallenge.route}/{challengeName}") { backStackEntry ->
             val challengeName = backStackEntry.arguments?.getString("challengeName")
             if (challengeName != null) {
-                val challenge = sampleChallenges.find { it.name == challengeName }
+                val challenge = challenges.find { it?.title == challengeName }
                 Log.d("NavGraph", "Navigating to DailyQuest for $challengeName")
                 if (challenge != null) {
                     LocationChallenge(navController = navController, challenge)
-                }else {
-                    // Handle the case where friend is null (e.g., username not found)
+                } else {
+                    // Handle the case where the challenge is null (e.g., challenge not found)
                 }
             } else {
-                // Handle the case where friendUsername is null or not provided
+                // Handle the case where challengeName is null or not provided
             }
         }
 
-        composable("${Screens.Checkpoint.route}/{checkpointName}") { backStackEntry ->
+
+        composable("${Screens.Checkpoint.route}/{challengeTitle}/{checkpointName}") { backStackEntry ->
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
-            if (checkpointName != null) {
-                val checkpoint = samplePlaces.find { it.name == checkpointName }
-                Log.d("NavGraph", "Navigating to DailyQuest for $checkpointName")
+            val challengeTitle = backStackEntry.arguments?.getString("challengeTitle")
+
+            if (checkpointName != null && challengeTitle != null) {
+                val challenge = challenges.find { it!!.title == challengeTitle }
+                val checkpoint = challenge?.checkpoints?.find { it!!.name == checkpointName }
+                Log.d("NavGraph", "Navigating to Checkpoint for $checkpointName")
                 if (checkpoint != null) {
+                    Log.d("NavGraph", "Entra no if para navegar")
                     Checkpoint(navController = navController, checkpoint)
-                }else {
-                    // Handle the case where friend is null (e.g., username not found)
+                } else {
+                    // Handle the case where checkpoint is null (e.g., checkpoint not found)
                 }
             } else {
-                // Handle the case where friendUsername is null or not provided
+                // Handle the case where checkpointName or challengeTitle is null or not provided
             }
         }
 
-        composable("${Screens.CountdownPage.route}/{workout}/{numSets}/{isQuest}") { backStackEntry ->
-            val workout = backStackEntry.arguments?.getString("workout")
+
+
+        composable("${Screens.CountdownPage.route}/{numSets}/{isQuest}/{checkpointName}") { backStackEntry ->
+            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
             if(isQuest != null) {
-                if (workout != null) {
-                    if(isQuest) {
-                        // Retrieve the DailyQuest based on the title
-                        val exercises = dailyQuest
-                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
-                        if (exercises != null) {
-                            Log.d("NAVGRAPH", "exercises, $exercises")
-                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                if(isQuest) {
+                    // Retrieve the DailyQuest based on the title
+                    val exercises = dailyQuest
+                    Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                    if (exercises != null) {
+                        Log.d("NAVGRAPH", "exercises, $exercises")
+                        // Pass the retrieved DailyQuest to the DailyQuest composable
+                        CountdownPage(
+                            navController = navController,
+                            exercises = exercises,
+                            numSets = numSets,
+                            isQuest = true,
+                            checkpointName = null
+                        )
+                    } else {
+
+                        // Handle the case where the retrieved DailyQuest is null
+                    }
+                } else {
+                    // Look for the checkpoint in challenges and get exercises
+                    val checkpoint = challenges
+                        .flatMap { it?.checkpoints.orEmpty() }
+                        .find { it?.name == checkpointName }
+
+                    if (checkpoint != null) {
+                        // Pass the exercises from the checkpoint to the CountdownPage composable
+                        checkpoint.workout?.let {
                             CountdownPage(
                                 navController = navController,
-                                exercises = exercises,
+                                exercises = it,
                                 numSets = numSets,
-                                isQuest = true
+                                isQuest = false,
+                                checkpointName = checkpointName
                             )
-                        } else {
-                            // Handle the case where the retrieved DailyQuest is null
                         }
                     } else {
-                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                        // Handle the case when checkpoint is not found
                     }
-                }else{
-
                 }
             }else{
 
             }
         }
 
-        composable("${Screens.Exercise.route}/{exercises}/{numSets}/{isQuest}") { backStackEntry ->
-            val workout = backStackEntry.arguments?.getString("exercises")
+        composable("${Screens.Exercise.route}/{numSets}/{isQuest}/{checkpointName}") { backStackEntry ->
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
+            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
 
             if(isQuest != null) {
-                if (workout != null) {
-                    if(isQuest) {
-                        // Retrieve the DailyQuest based on the title
-                        val exercises = dailyQuest
-                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
-                        if (exercises != null) {
-                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                if (isQuest) {
+                    // Retrieve the DailyQuest based on the title
+                    val exercises = dailyQuest
+                    Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                    if (exercises != null) {
+                        // Pass the retrieved DailyQuest to the DailyQuest composable
+                        Exercise(
+                            navController = navController,
+                            listExercises = exercises,
+                            numSets = numSets,
+                            isQuest = true,
+                            checkpointName = null
+
+                        )
+                    } else {
+                        // Handle the case where the retrieved DailyQuest is null
+                    }
+                } else {
+                    // Look for the checkpoint in challenges and get exercises
+                    val checkpoint = challenges
+                        .flatMap { it?.checkpoints.orEmpty() }
+                        .find { it?.name == checkpointName }
+
+                    if (checkpoint != null) {
+                        // Pass the exercises from the checkpoint to the CountdownPage composable
+                        checkpoint.workout?.let {
                             Exercise(
                                 navController = navController,
-                                listExercises = exercises,
+                                listExercises = it,
                                 numSets = numSets,
-                                isQuest = true
+                                isQuest = true,
+                                checkpointName = checkpointName
                             )
-                        } else {
-                            // Handle the case where the retrieved DailyQuest is null
                         }
-                    } else {
-                        // TODO: LIDAR QUANDO NAO É UM QUEST
                     }
-                }else{
-
                 }
-            }else{
-
             }
-
         }
 
-        composable("${Screens.FinishedWorkout.route}/{listExercises}/{isQuest}") { backStackEntry ->
+        composable("${Screens.FinishedWorkout.route}/{listExercises}/{isQuest}/{checkpointName}") { backStackEntry ->
             val workout = backStackEntry.arguments?.getString("listExercises")
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
+            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
+
 
             if(isQuest != null) {
                 if (workout != null) {
@@ -245,7 +306,25 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                             // Handle the case where the retrieved DailyQuest is null
                         }
                     } else {
-                        // TODO: LIDAR QUANDO NAO É UM QUEST
+                        val checkpoint = challenges
+                            .flatMap { it?.checkpoints.orEmpty() }
+                            .find { it?.name == checkpointName }
+                        // TODO aumentar na bd o numero de done_checkpoints quando é concluido
+
+                        if (checkpoint != null) {
+                            // Pass the exercises from the checkpoint to the CheckpointComplete composable
+                            checkpoint.workout?.let { workout ->
+                                val challenge = challenges.find { it?.checkpoints?.contains(checkpoint) == true }
+
+                                if (challenge != null) {
+                                    CheckpointComplete(
+                                        navController = navController,
+                                        workout = workout,
+                                        challenge = challenge
+                                    )
+                                }
+                            }
+                        }
                     }
                 }else{
 

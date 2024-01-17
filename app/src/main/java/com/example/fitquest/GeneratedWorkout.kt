@@ -113,7 +113,7 @@ fun ExerciseItem(exercise: ExerciseData) {
 }
 
 @Composable
-fun StartWorkoutButton(navController: NavController, workout: WorkoutData, isQuest: Boolean) {
+fun StartWorkoutButton(navController: NavController, isQuest: Boolean, checkpoint: String?) {
     Log.d("StartWorkoutButton", "isQuest, $isQuest")
     Column(
         modifier = Modifier
@@ -125,7 +125,7 @@ fun StartWorkoutButton(navController: NavController, workout: WorkoutData, isQue
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.CountdownPage.route}/$workout/$numSets/$isQuest")
+                navController.navigate("${Screens.CountdownPage.route}/$numSets/$isQuest/$checkpoint")
             },
             modifier = Modifier
                 .padding(8.dp),

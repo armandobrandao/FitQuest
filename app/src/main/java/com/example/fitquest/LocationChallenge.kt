@@ -78,7 +78,7 @@ val samplePlaces = listOf(
 
 
 @Composable
-fun MapsActivity(navController: NavController) {
+fun MapsActivity(navController: NavController, challenge: ChallengeData) {
     Box(
         modifier = Modifier
             .height(500.dp)
@@ -126,8 +126,10 @@ fun MapsActivity(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
+            val placesFromChallenge = getPlacesFromChallenge(challenge)
+
             GoogleMapWithMarkers(
-                places = samplePlaces,
+                places = placesFromChallenge,
                 properties = properties,
                 currentLocation = currentLocation,
                 cameraPositionState = cameraPositionState,
@@ -155,14 +157,29 @@ fun MapsActivity(navController: NavController) {
     }
 }
 
+fun getPlacesFromChallenge(challenge: ChallengeData): List<PlaceData> {
+    val places = mutableListOf<PlaceData>()
+
+    challenge.checkpoints?.forEach { checkpoint ->
+        if (checkpoint != null) {
+            checkpoint.place?.let { place ->
+                places.add(place)
+            }
+        }
+    }
+
+    return places
+}
+
+
 @Composable
 fun GoogleMapWithMarkers(
-    places: List<Place>,
+    places: List<PlaceData>,
     properties: MapProperties,
     currentLocation: LatLng?,
     cameraPositionState: CameraPositionState,
-    focusCheckpoint: Place?, // Add the focusCheckpoint parameter
-    onMarkerClick: (Place) -> Unit
+    focusCheckpoint: PlaceData?, // Add the focusCheckpoint parameter
+    onMarkerClick: (PlaceData) -> Unit
 ) {
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
@@ -295,7 +312,7 @@ fun getCurrentLocation(
 
 
 @Composable
-fun CheckpointItem(checkpoint: Place, checkpointNumber: Int, onClick: () -> Unit) {
+fun CheckpointItem(checkpoint: CheckpointData, checkpointNumber: Int, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,7 +333,7 @@ fun CheckpointItem(checkpoint: Place, checkpointNumber: Int, onClick: () -> Unit
                 Spacer(modifier = Modifier.weight(1f))
 
                 // Display check mark if the checkpoint is done
-                if (checkpoint.done) {
+                if (checkpoint.isCompleted) {
                     Image(
                         painter = painterResource(id = R.drawable.check_mark),
                         contentDescription = "Check mark icon",
@@ -330,16 +347,17 @@ fun CheckpointItem(checkpoint: Place, checkpointNumber: Int, onClick: () -> Unit
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = checkpoint.name)
+                checkpoint.place?.let { Text(text = it.name) }
             }
         }
     }
 }
 
 @Composable
-fun InfoSection(navController: NavController, challenge: Challenge) {
+fun InfoSection(navController: NavController, challenge: ChallengeData) {
     // Extract checkpoint information from the challenge
-    val (completedCheckpoints, totalCheckpoints) = challenge.checkpoints.split("/").map { it.toIntOrNull() ?: 0 }
+    val completedCheckpoints = challenge.done_checkpoints?.toFloat() ?: 0f
+    val totalCheckpoints = challenge.total_checkpoints ?: 0
 
     // Calculate progress percentage
     val progress = if (totalCheckpoints > 0) {
@@ -358,9 +376,9 @@ fun InfoSection(navController: NavController, challenge: Challenge) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = challenge.name, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            Text(text = challenge.title, fontWeight = FontWeight.Bold, fontSize = 25.sp)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "200 XP", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(text = challenge.xp.toString(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }
     }
     Spacer(modifier = Modifier.height(8.dp))
@@ -387,7 +405,7 @@ fun InfoSection(navController: NavController, challenge: Challenge) {
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "${completedCheckpoints}/${totalCheckpoints} checkpoints done")
+        Text(text = "${challenge.done_checkpoints}/${challenge.total_checkpoints} checkpoints done")
     }
 
     Spacer(modifier = Modifier.height(8.dp))
@@ -398,12 +416,14 @@ fun InfoSection(navController: NavController, challenge: Challenge) {
             .padding(16.dp)
     ) {
         Column {
-            samplePlaces.forEachIndexed { index, checkpoint ->
-                CheckpointItem(checkpoint = checkpoint, checkpointNumber = index + 1, onClick = {
-                    // Navigate to friend's profile
-                    navController.navigate("${Screens.Checkpoint.route}/${checkpoint.name}")
-                })
-                if (index < samplePlaces.size - 1) {
+            challenge.checkpoints.forEachIndexed { index, checkpoint ->
+                if (checkpoint != null) {
+                    CheckpointItem(checkpoint = checkpoint, checkpointNumber = index + 1, onClick = {
+                        // Navigate to friend's profile
+                        navController.navigate("${Screens.Checkpoint.route}/${challenge.title}/${checkpoint.name}")
+                    })
+                }
+                if (index < challenge.checkpoints.size - 1) {
                     Divider()
                 }
             }
@@ -413,11 +433,11 @@ fun InfoSection(navController: NavController, challenge: Challenge) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LocationChallenge(navController: NavController, challenge: Challenge) {
+fun LocationChallenge(navController: NavController, challenge: ChallengeData) {
     LazyColumn {
         item {
             // Map section
-            MapsActivity(navController)
+            MapsActivity(navController, challenge)
         }
         stickyHeader {
             // Info section
