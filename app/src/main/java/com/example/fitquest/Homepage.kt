@@ -302,9 +302,9 @@ fun DailyQuests(navController: NavController, dailyQuest: WorkoutData) {
 //)
 
 val sampleDailyQuests = listOf(
-    WorkoutData("Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
+    WorkoutData(null,"Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
     ),
-    WorkoutData("Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
+    WorkoutData(null,"Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
     )
     // Add more DailyQuest instances as needed
 )

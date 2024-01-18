@@ -1,5 +1,6 @@
 package com.example.fitquest
 data class WorkoutData(
+    val id: String? = null,
     val title: String = "",
     val duration: String = "",
     val isCompleted: Boolean = false,

@@ -214,6 +214,7 @@ class AuthManager(private val activity: Activity) {
                             val currentLevelData = calculateUserLevel(userProfile.xp_total)
                             val currentLevelXpData = calculateUserLevelXp(userProfile.xp_total)
                             val currentUser = UserProfile(
+                                id = user.uid,
                                 username = userProfile.username,
                                 fullName = userProfile.fullName,
                                 profileImage = userProfile.profileImage,
@@ -431,8 +432,13 @@ class AuthManager(private val activity: Activity) {
                 .get()
                 .addOnSuccessListener { querySnapshot ->
                     if (!querySnapshot.isEmpty) {
-                        val dailyQuest = querySnapshot.documents[0].toObject(WorkoutData::class.java)
-                        callback(dailyQuest)
+                        val dailyQuestDocument = querySnapshot.documents[0]
+                        val dailyQuestId = dailyQuestDocument.id
+                        val dailyQuest = dailyQuestDocument.toObject(WorkoutData::class.java)
+
+                        // Create a new WorkoutData object with the dailyQuest's ID
+                        val workoutDataWithId = dailyQuest?.copy(id = dailyQuestId)
+                        callback(workoutDataWithId)
                     } else {
                         callback(null)
                     }
@@ -444,6 +450,7 @@ class AuthManager(private val activity: Activity) {
             callback(null)
         }
     }
+
 
     fun getChallengesForCurrentWeek(callback: (List<ChallengeData?>) -> Unit) {
         val currentDate = Calendar.getInstance().time
@@ -467,7 +474,10 @@ class AuthManager(private val activity: Activity) {
                             beginDate != null && endDate != null && currentDate >= beginDate && currentDate <= endDate
                         }
                         .mapNotNull { document ->
-                            document.toObject(ChallengeData::class.java)
+                            // Retrieve the challenge ID
+                            val challengeId = document.id
+                            // Convert the document to ChallengeData and include the ID
+                            document.toObject(ChallengeData::class.java)?.copy(id = challengeId)
                         }
 
                     callback(challengesForCurrentWeek)
@@ -476,10 +486,69 @@ class AuthManager(private val activity: Activity) {
                     // Handle the failure to retrieve challenges from Firestore
                     callback(emptyList())
                 }
-        }else{
+        } else {
             callback(emptyList())
         }
     }
+    fun updateCheckpointAndChallenge(
+        challengeId: String,
+        checkpointName: String,
+        callback: (Boolean) -> Unit
+    ) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+
+            // Get the reference to the user's challenge document
+            val challengeRef = firestore.collection("users")
+                .document(userId)
+                .collection("challenges")
+                .document(challengeId)
+
+            // Update the checkpoint and challenge in a transaction
+            firestore.runTransaction { transaction ->
+                val challengeDoc = transaction.get(challengeRef)
+
+                // Check if the challenge document exists
+                if (challengeDoc.exists()) {
+                    val challenge = challengeDoc.toObject(ChallengeData::class.java)
+
+                    // Find the checkpoint in the challenge
+                    val updatedCheckpoints = challenge?.checkpoints?.map { checkpoint ->
+                        if (checkpoint?.name == checkpointName) {
+                            checkpoint.isCompleted = true
+                        }
+                        checkpoint
+                    }
+
+                    // Update the challenge with the modified checkpoints
+                    challenge?.done_checkpoints = (challenge?.done_checkpoints ?: 0) + 1
+                    if (updatedCheckpoints != null) {
+                        challenge?.checkpoints = updatedCheckpoints
+                    }
+
+                    // Save the updated challenge back to Firestore
+                    transaction.set(challengeRef, challenge!!)
+                    true
+                } else {
+                    false
+                }
+            }
+                .addOnSuccessListener {
+                    // Update successful
+                    callback(true)
+                }
+                .addOnFailureListener { e ->
+                    // Update failed
+                    callback(false)
+                }
+        } else {
+            // User is not signed in
+            callback(false)
+        }
+    }
+
 
     //Sempre que faz log in faz check da streak!
     fun updateLongestStreak(userId: String, callback: (Boolean) -> Unit) {
@@ -639,8 +708,7 @@ class AuthManager(private val activity: Activity) {
                             exercisesList.shuffle()
                             placesList.shuffle()
 
-                            // Select the first three exercises and places
-                            val selectedExercises = exercisesList.subList(0, 3)
+                            // Select the first three places
                             val selectedPlaces = placesList.subList(0, 3)
 
                             // Create challenges with checkpoints
@@ -648,7 +716,11 @@ class AuthManager(private val activity: Activity) {
                                 "Challenge w Checkpoints",
                                 startDate,
                                 endDate,
-                                selectedExercises,
+                                listOf(
+                                    exercisesList.subList(0, 3),
+                                    exercisesList.subList(3, 6),
+                                    exercisesList.subList(6, 9)
+                                ),
                                 selectedPlaces
                             )
 
@@ -685,14 +757,14 @@ class AuthManager(private val activity: Activity) {
         title: String,
         startDate: Date,
         endDate: Date,
-        selectedExercises: List<ExerciseData>,
+        selectedExercisesList: List<List<ExerciseData>>, // List of lists of exercises
         selectedPlaces: List<PlaceData>
     ): ChallengeData {
-        // Create 3 checkpoints with associated exercises and places
-        val checkpoints = (1..3).map { checkpointNumber ->
+        // Create checkpoints with associated exercises and places
+        val checkpoints = selectedExercisesList.mapIndexed { index, selectedExercises ->
             val checkpoint = CheckpointData(
-                name = "Checkpoint $checkpointNumber",
-                place = selectedPlaces[checkpointNumber - 1],
+                name = "Checkpoint ${index + 1}",
+                place = selectedPlaces[index],
                 isCompleted = false,
                 workout = WorkoutData(
                     title = "",
@@ -712,7 +784,7 @@ class AuthManager(private val activity: Activity) {
             title = title,
             xp = 200,
             type = "Location",
-            total_checkpoints = 3,
+            total_checkpoints = selectedExercisesList.size,
             done_checkpoints = 0,
             checkpoints = checkpoints,
             begin_date = startDate,
@@ -720,6 +792,7 @@ class AuthManager(private val activity: Activity) {
             isCompleted = false,
         )
     }
+
     private fun createChallengeWithoutCheckpoints(
         title: String,
         startDate: Date,
@@ -748,6 +821,8 @@ class AuthManager(private val activity: Activity) {
                 // Failed to save challenge
             }
     }
+
+
 
     private fun getEndDate(startDate: Date): Date {
         val calendar = Calendar.getInstance()

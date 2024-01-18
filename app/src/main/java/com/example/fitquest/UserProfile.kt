@@ -3,6 +3,7 @@ package com.example.fitquest
 import java.util.Date
 
 data class UserProfile(
+    val id: String? = null,
     val username: String = "",
     val fullName: String = "",
     val profileImage: Int = R.drawable.default_profile_image,

@@ -129,7 +129,7 @@ fun CheckpointComplete(navController: NavController, workout: WorkoutData, chall
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "1/3",
+                            text = "${challenge.done_checkpoints} / ${challenge.total_checkpoints}",
                             fontSize = 100.sp,
                             textAlign = TextAlign.Center
                         )

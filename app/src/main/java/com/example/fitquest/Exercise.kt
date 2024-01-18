@@ -53,7 +53,11 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
 
                 override fun onFinish() {
                     if(currentExercise == listExercises.exercises.size-1 && currentSet >= numSets ){
-                        navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest/$checkpointName")
+                        if(isQuest) {
+                            navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest/$checkpointName")
+                        }else{
+                            navController.navigate("${Screens.CheckpointComplete.route}/$listExercises/$isQuest/$checkpointName")
+                        }
                     }else {
                         // Exercise timer completed, start the break timer
                         isBreak = true
@@ -175,7 +179,8 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(300.dp)
+                        .width(400.dp)
+                        .height(300.dp) // Set your desired height limit here
                 )
             }
         }

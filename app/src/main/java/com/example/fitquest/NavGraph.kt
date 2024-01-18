@@ -131,9 +131,48 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             GenerateWorkout(navController = navController)
         }
 
-//        composable(Screens.CheckpointComplete.route) {
-//            CheckpointComplete(navController = navController)
-//        }
+        composable("${Screens.CheckpointComplete.route}/{listExercises}/{isQuest}/{checkpointName}") { backStackEntry ->
+            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
+
+            val checkpoint = challenges
+                .flatMap { it?.checkpoints.orEmpty() }
+                .find { it?.name == checkpointName }
+
+            if (checkpoint != null) {
+                // Get the challengeId from the parent challenge
+                val challengeId = challenges
+                    .find { it?.checkpoints?.contains(checkpoint) == true }
+                    ?.id
+
+                LaunchedEffect(challengeId) {
+                    // TODO: Add update logic here before navigating to CheckpointComplete
+                    if (challengeId != null && checkpointName != null) {
+                        authManager.updateCheckpointAndChallenge(challengeId, checkpointName) { success ->
+                            if (success) {
+                                // TODO: Logic after successful update
+
+                            } else {
+                                // TODO: Logic if update fails
+                            }
+                        }
+                    }
+                }
+                // Pass the exercises from the checkpoint to the CheckpointComplete composable
+                checkpoint.workout?.let { workout ->
+                    val challenge = challenges.find { it?.checkpoints?.contains(checkpoint) == true }
+
+                    if (challenge != null) {
+                        CheckpointComplete(
+                            navController = navController,
+                            workout = workout,
+                            challenge = challenge
+                        )
+                    }
+                }
+            }
+        }
+
+
 
         composable("${Screens.Challenge.route}/{challengeName}") { backStackEntry ->
             val challengeName = backStackEntry.arguments?.getString("challengeName")
@@ -192,7 +231,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
-
+            Log.d("NavGraph COUNTDOWNPAGE", "isQuest, $isQuest")
             if(isQuest != null) {
                 if(isQuest) {
                     // Retrieve the DailyQuest based on the title
@@ -242,6 +281,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
+            Log.d("NavGraph EXERCISE", "isQuest, $isQuest")
 
             if(isQuest != null) {
                 if (isQuest) {
@@ -274,7 +314,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                                 navController = navController,
                                 listExercises = it,
                                 numSets = numSets,
-                                isQuest = true,
+                                isQuest = false,
                                 checkpointName = checkpointName
                             )
                         }
@@ -287,7 +327,6 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val workout = backStackEntry.arguments?.getString("listExercises")
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
-
 
             if(isQuest != null) {
                 if (workout != null) {
@@ -306,25 +345,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                             // Handle the case where the retrieved DailyQuest is null
                         }
                     } else {
-                        val checkpoint = challenges
-                            .flatMap { it?.checkpoints.orEmpty() }
-                            .find { it?.name == checkpointName }
-                        // TODO aumentar na bd o numero de done_checkpoints quando é concluido
 
-                        if (checkpoint != null) {
-                            // Pass the exercises from the checkpoint to the CheckpointComplete composable
-                            checkpoint.workout?.let { workout ->
-                                val challenge = challenges.find { it?.checkpoints?.contains(checkpoint) == true }
-
-                                if (challenge != null) {
-                                    CheckpointComplete(
-                                        navController = navController,
-                                        workout = workout,
-                                        challenge = challenge
-                                    )
-                                }
-                            }
-                        }
                     }
                 }else{
 

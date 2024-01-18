@@ -3,11 +3,12 @@ package com.example.fitquest
 import java.util.Date
 
 data class ChallengeData(
+    val id: String? = null,
     val title: String = "",
     val description: String? = null, //caso NAO tenha checkpoints
     val xp: Int = 0,
     val total_checkpoints: Int? = null, //caso tenha checkpoints
-    val done_checkpoints: Int? = null, //caso tenha checkpoints
+    var done_checkpoints: Int? = null, //caso tenha checkpoints
     var checkpoints : List<CheckpointData?> = emptyList(), //caso tenha checkpoints
     val goal: Int? = null, //caso NAO tenha checkpoints
     val type: String = "",
