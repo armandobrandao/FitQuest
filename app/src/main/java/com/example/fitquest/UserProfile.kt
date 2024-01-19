@@ -25,6 +25,7 @@ data class UserProfile(
     val longestStreak: Int = 0,
     val places: Int = 0,
     val friends: List<UserProfile> = emptyList(),
+    val friend_reqs: List<UserProfile> = emptyList(),
     val achievements: List<Achievement> = emptyList(),
     val progress: Int = 0,
     val uniqueCode: String = "",

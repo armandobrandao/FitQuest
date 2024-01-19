@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,7 +37,7 @@ val searchList = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchFriend(navController: NavController, user: UserProfile, userList: List<UserProfile>) {
+fun SearchFriend(navController: NavController, currentUser: UserProfile, userList: List<UserProfile>, authManager: AuthManager) {
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
@@ -94,10 +95,10 @@ fun SearchFriend(navController: NavController, user: UserProfile, userList: List
         if (isSearching) {
             // Display the filtered user list
             filteredUserList.forEach { user ->
-                UserListItem(user = user, onClick = {
+                UserListItem(currentUser = currentUser, user = user, onClick = {
                     // Navigate to friend's profile
                     navController.navigate("${Screens.Friend.route}/${user.username}")
-                })
+                }, authManager = authManager)
             }
         }
     }
@@ -107,7 +108,7 @@ fun SearchFriend(navController: NavController, user: UserProfile, userList: List
 
 
 @Composable
-fun UserListItem(user: UserProfile, onClick: () -> Unit) {
+fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Unit, authManager: AuthManager) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -136,10 +137,19 @@ fun UserListItem(user: UserProfile, onClick: () -> Unit) {
             Spacer(modifier = Modifier.weight(1f))
 
             // Send Friend Request Button
+
             Button(
                 onClick = {
-                    // Handle send friend request button click
-                    // You can perform the necessary actions here
+                    authManager.sendFriendRequest(currentUser, user) { success ->
+                        Log.d("AddFriend", "sendFriendRequest currentUser + $currentUser + user $user")
+
+                        if (success) {
+                            // Handle the case when the friend request is sent successfully
+                            Log.d("AddFriend", "deu certo?")
+                        } else {
+                            // Handle the case when there is an issue sending the friend request
+                        }
+                    }
                 },
                 modifier = Modifier
                     .padding(8.dp)
@@ -241,13 +251,13 @@ fun ShareCode(user: UserProfile){
 data class User(val username: String, val profileImage: Int, val userUnder: String)  // Sample user data class
 
 @Composable
-fun AddFriend(user: UserProfile, navController: NavController, usersList: List<UserProfile>) {
+fun AddFriend(user: UserProfile, navController: NavController, usersList: List<UserProfile>, authManager: AuthManager) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         item {
-            SearchFriend(navController, user, usersList)
+            SearchFriend(navController, user, usersList, authManager)
             ShareCode(user)
         }
     }

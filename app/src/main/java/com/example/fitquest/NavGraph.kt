@@ -83,13 +83,17 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             }
         }
         composable(Screens.Notifications.route) {
-            Notifications(navController = navController)
+            currentUser?.let {
+                Notifications(user = it, navController = navController, authManager)
+            } ?: run {
+                // Handle the case where currentUser is null
+            }
         }
 
         composable(Screens.AddFriends.route) {
             //AddFriend(user= Harry, navController = navController)
             currentUser?.let {
-                AddFriend(user = it, navController = navController, usersList)
+                AddFriend(user = it, navController = navController, usersList, authManager)
             } ?: run {
                 // Handle the case where currentUser is null
             }
@@ -102,7 +106,9 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                 val friend = sampleFriends.find { it.username == friendUsername }
                 val request = requestList.find { it.username == friendUsername }
                 val search = usersList.find { it.username == friendUsername }
-                    Log.d("NavGraph", "Navigating to FriendProfile for $friendUsername")
+                Log.d("NavGraph", "Navigating to FriendProfile for $friendUsername")
+                Log.d("NavGraph", "search $search")
+
 //                if (friend != null) {
 //                    Friend(user = friend, navController = navController)
 //                }
@@ -110,6 +116,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 //                    Friend(user = request, navController = navController)
 //                }
                 if (search != null) {
+                    Log.d("NavGraph", "Entra no search != null ")
                     Friend(user = search, navController = navController)
                 }else {
                     // Handle the case where friend is null (e.g., username not found)

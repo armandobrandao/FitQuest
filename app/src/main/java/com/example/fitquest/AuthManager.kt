@@ -166,6 +166,7 @@ class AuthManager(private val activity: Activity) {
             longestStreak = 0,
             places = 0,
             friends = emptyList(),
+            friend_reqs = emptyList(),
             achievements = emptyList(),
             progress = 0,
             uniqueCode = generateUniqueCode(username),
@@ -236,6 +237,7 @@ class AuthManager(private val activity: Activity) {
                                 longestStreak = userProfile.longestStreak,
                                 places = userProfile.places,
                                 friends = userProfile.friends,
+                                friend_reqs= userProfile.friend_reqs,
                                 achievements = userProfile.achievements,
                                 progress = userProfile.progress,
                                 uniqueCode = userProfile.uniqueCode,
@@ -831,7 +833,7 @@ class AuthManager(private val activity: Activity) {
         return calendar.time
     }
 
-    public fun fetchUserListFromFirestore(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
+    fun fetchUserListFromFirestore(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
         // Replace "users" with the actual collection name in your Firestore
         firestore.collection("users").get()
             .addOnSuccessListener { querySnapshot ->
@@ -852,5 +854,70 @@ class AuthManager(private val activity: Activity) {
                 callback(emptyList())
             }
     }
+
+    fun sendFriendRequest(currentUser: UserProfile, userFriend: UserProfile, callback: (Boolean) -> Unit) {
+        // Add currentUser to userFriend's friend_reqs list
+        val updatedFriendReqs = userFriend.friend_reqs.toMutableList().apply {
+            add(currentUser)
+        }
+        Log.d("AuthManager", "sendFriendRequest currentUser + $currentUser + userFriend $userFriend")
+
+        // Update userFriend's friend_reqs in Firestore
+        firestore.collection("users")
+            .document(userFriend.id!!)
+            .update("friend_reqs", updatedFriendReqs)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
+    fun acceptFriendRequest(currentUser: UserProfile, friend: UserProfile, callback: (Boolean) -> Unit) {
+        // Add friend to currentUser's friends list
+        val updatedCurrentUserFriends = currentUser.friends.toMutableList().apply {
+            add(friend)
+        }
+
+        // Remove friend from currentUser's friend requests
+        val updatedCurrentUserFriendReqs = currentUser.friend_reqs.toMutableList().apply {
+            remove(friend)
+        }
+
+        // Add currentUser to friend's friends list
+        val updatedFriendFriends = friend.friends.toMutableList().apply {
+            add(currentUser)
+        }
+
+        // Remove currentUser from friend's friend requests
+        val updatedFriendFriendReqs = friend.friend_reqs.toMutableList().apply {
+            remove(currentUser)
+        }
+
+        // Update currentUser's friends and friend_reqs in Firestore
+        firestore.collection("users")
+            .document(currentUser.id!!)
+            .update("friends", updatedCurrentUserFriends, "friend_reqs", updatedCurrentUserFriendReqs)
+            .addOnSuccessListener {
+                // Update friend's friends and friend_reqs in Firestore
+                firestore.collection("users")
+                    .document(friend.id!!)
+                    .update("friends", updatedFriendFriends, "friend_reqs", updatedFriendFriendReqs)
+                    .addOnSuccessListener {
+                        callback(true)
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
+
+
+
 
 }

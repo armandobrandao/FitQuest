@@ -74,7 +74,7 @@ val requestList = listOf(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendRequests(navController: NavHostController) {
+fun FriendRequests(navController: NavHostController, currentUser: UserProfile, authManager: AuthManager) {
     // Sample list of users for demonstration
 
     Column(
@@ -95,11 +95,12 @@ fun FriendRequests(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        requestList.forEach { user ->
-            FriendsRequestListItem(user = user, onClick = {
+        currentUser.friend_reqs.forEach { user ->
+            FriendsRequestListItem(currentUser =currentUser, user = user, onClick = {
                 // Navigate to friend's profile
+                Log.d("Notifications", "Deteta o onClick")
                 navController.navigate("${Screens.Friend.route}/${user.username}")
-            })
+            }, authManager = authManager)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -148,12 +149,12 @@ fun NotificationsContainer(){
     }
 }
 @Composable
-fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
+fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Unit,  authManager: AuthManager) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onClick}
+            .clickable { onClick()}
     ) {
         Row(
             modifier = Modifier
@@ -172,7 +173,7 @@ fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
             )
 
             // User's name
-            Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            Text(text = user.fullName, fontSize = 15.sp, fontWeight = FontWeight.Bold)
 
             // Buttons container
             Row(
@@ -184,8 +185,16 @@ fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
                 ClickableButton(
                     text = "Add",
                     onClick = {
+                        Log.d("Notifications", "Deteta o onClick Add")
                         // Handle send friend request button click
                         // You can perform the necessary actions here
+                        authManager.acceptFriendRequest(currentUser, user) { success ->
+                            if (success) {
+                                // Handle the case when the friend request is accepted successfully
+                            } else {
+                                // Handle the case when there is an issue accepting the friend request
+                            }
+                        }
                     },
                     backgroundColor = Color(0xFFE66353)
                 )
@@ -193,6 +202,7 @@ fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
                 ClickableButton(
                     text = "Delete",
                     onClick = {
+                        Log.d("Notifications", "Deteta o onClick Delete")
                         // Handle send friend request button click
                         // You can perform the necessary actions here
                     },
@@ -205,14 +215,13 @@ fun FriendsRequestListItem(user: User, onClick: () -> Unit) {
 
 
 @Composable
-fun Notifications (navController: NavHostController) {
-    Log.d("Notifications", "Estou na Notifications")
+fun Notifications (user: UserProfile, navController: NavHostController, authManager: AuthManager) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         item {
-            FriendRequests(navController)
+            FriendRequests(navController, user, authManager)
         }
     }
 }
