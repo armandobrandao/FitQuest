@@ -831,5 +831,26 @@ class AuthManager(private val activity: Activity) {
         return calendar.time
     }
 
+    public fun fetchUserListFromFirestore(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
+        // Replace "users" with the actual collection name in your Firestore
+        firestore.collection("users").get()
+            .addOnSuccessListener { querySnapshot ->
+                val userList = mutableListOf<UserProfile>()
+                for (document in querySnapshot) {
+                    // Assuming you have a data class or model class named UserProfile to map the document data
+                    val userProfile = document.toObject(UserProfile::class.java)
+
+                    // Check if the user is not the current user
+                    if (userProfile.id != currentUser.id) {
+                        userList.add(userProfile)
+                    }
+                }
+                callback(userList)
+            }
+            .addOnFailureListener { exception ->
+                // Handle the failure case, for now, using an empty list as a placeholder
+                callback(emptyList())
+            }
+    }
 
 }

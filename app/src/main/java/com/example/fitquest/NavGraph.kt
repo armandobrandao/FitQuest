@@ -21,6 +21,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var userKey by remember { mutableStateOf(0) }
     var dailyQuest by remember { mutableStateOf<WorkoutData?>(null) }
     var challenges by remember { mutableStateOf<List<ChallengeData?>>(emptyList()) }
+    var usersList by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
 
     LaunchedEffect(authManager, userKey) {
         authManager.getCurrentUser { user ->
@@ -37,6 +38,12 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
         authManager.getChallengesForCurrentWeek { result ->
             challenges = result
+        }
+
+        currentUser?.let {
+            authManager.fetchUserListFromFirestore(it) { fetchedUserList ->
+                usersList = fetchedUserList
+            }
         }
     }
     NavHost(
@@ -78,10 +85,11 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         composable(Screens.Notifications.route) {
             Notifications(navController = navController)
         }
+
         composable(Screens.AddFriends.route) {
             //AddFriend(user= Harry, navController = navController)
             currentUser?.let {
-                AddFriend(user = it, navController = navController)
+                AddFriend(user = it, navController = navController, usersList)
             } ?: run {
                 // Handle the case where currentUser is null
             }
@@ -93,14 +101,14 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             if (friendUsername != null) {
                 val friend = sampleFriends.find { it.username == friendUsername }
                 val request = requestList.find { it.username == friendUsername }
-                val search = searchList.find { it.username == friendUsername }
+                val search = usersList.find { it.username == friendUsername }
                     Log.d("NavGraph", "Navigating to FriendProfile for $friendUsername")
-                if (friend != null) {
-                    Friend(user = friend, navController = navController)
-                }
-                if (request != null){
-                    Friend(user = request, navController = navController)
-                }
+//                if (friend != null) {
+//                    Friend(user = friend, navController = navController)
+//                }
+//                if (request != null){
+//                    Friend(user = request, navController = navController)
+//                }
                 if (search != null) {
                     Friend(user = search, navController = navController)
                 }else {
@@ -145,14 +153,13 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                     ?.id
 
                 LaunchedEffect(challengeId) {
-                    // TODO: Add update logic here before navigating to CheckpointComplete
                     if (challengeId != null && checkpointName != null) {
                         authManager.updateCheckpointAndChallenge(challengeId, checkpointName) { success ->
                             if (success) {
-                                // TODO: Logic after successful update
+
 
                             } else {
-                                // TODO: Logic if update fails
+
                             }
                         }
                     }

@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.firestore.FirebaseFirestore
 
 // Sample list of users for demonstration
 val searchList = listOf(
@@ -35,8 +36,22 @@ val searchList = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchFriend(navController: NavController) {
+fun SearchFriend(navController: NavController, user: UserProfile, userList: List<UserProfile>) {
     var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
+
+    // Filter the user list based on the search query
+    val filteredUserList = if (searchQuery.isNotBlank()) {
+        isSearching = true
+        userList.filter { user ->
+            user.fullName.contains(searchQuery, ignoreCase = true) ||
+            user.username.contains(searchQuery, ignoreCase = true) ||
+            user.uniqueCode.contains(searchQuery, ignoreCase = true)
+        }
+    } else {
+        isSearching = false
+        emptyList()
+    }
 
     Column(
         modifier = Modifier
@@ -76,16 +91,23 @@ fun SearchFriend(navController: NavController) {
             )
         )
 
-        searchList.forEach { user ->
-            UserListItem(user = user, onClick = {
-                // Navigate to friend's profile
-                navController.navigate("${Screens.Friend.route}/${user.username}")
-            })
+        if (isSearching) {
+            // Display the filtered user list
+            filteredUserList.forEach { user ->
+                UserListItem(user = user, onClick = {
+                    // Navigate to friend's profile
+                    navController.navigate("${Screens.Friend.route}/${user.username}")
+                })
+            }
         }
     }
 }
+
+// Function to fetch the user list from Firestore
+
+
 @Composable
-fun UserListItem(user: User, onClick: () -> Unit) {
+fun UserListItem(user: UserProfile, onClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,7 +131,7 @@ fun UserListItem(user: User, onClick: () -> Unit) {
             )
 
             // User's name
-            Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            Text(text = user.fullName, fontSize = 15.sp, fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -160,7 +182,7 @@ fun ShareCode(user: UserProfile){
             ) {
                 // Round profile image
                 Image(
-                    painter = painterResource(id = R.drawable.profile_image),
+                    painter = painterResource(id = user.profileImage),
                     contentDescription = null,
                     modifier = Modifier
                         .size(120.dp)
@@ -219,13 +241,13 @@ fun ShareCode(user: UserProfile){
 data class User(val username: String, val profileImage: Int, val userUnder: String)  // Sample user data class
 
 @Composable
-fun AddFriend(user: UserProfile, navController: NavController) {
+fun AddFriend(user: UserProfile, navController: NavController, usersList: List<UserProfile>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         item {
-            SearchFriend(navController)
+            SearchFriend(navController, user, usersList)
             ShareCode(user)
         }
     }

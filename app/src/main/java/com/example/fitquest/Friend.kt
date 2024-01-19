@@ -39,7 +39,7 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainCardFriend(user: User, navController: NavController) {
+fun MainCardFriend(user: UserProfile, navController: NavController) {
     val addFriendIcon =
         if (isSystemInDarkTheme()) painterResource(id = R.drawable.add_user_2)
         else painterResource(id = R.drawable.add_user)
@@ -72,15 +72,15 @@ fun MainCardFriend(user: User, navController: NavController) {
                         .weight(1f)
                         .padding(horizontal = 16.dp) // Add padding here
                 ) {
-                    Text(text = user.username, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Text(text = user.fullName, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
                     Spacer(modifier = Modifier.height(4.dp)) // Add more space here
 
-                    Text(text = user.userUnder, fontSize = 18.sp)
+                    Text(text = user.username, fontSize = 18.sp)
 
                     Spacer(modifier = Modifier.height(8.dp)) // Add more space here
 
-                    Text(text = "Joined in June 2020", fontSize = 12.sp)
+                    Text(text =  "Joined in " + user.joinDate, fontSize = 12.sp)
                     Spacer(modifier = Modifier.height(2.dp)) // Add more space here
                     Text(text = "Portugal", fontSize = 12.sp)
                 }
@@ -107,9 +107,9 @@ fun MainCardFriend(user: User, navController: NavController) {
                         .padding(horizontal = 32.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Lvl 1", fontWeight = FontWeight.Bold)
+                    Text(text = "Lvl. " + (user.level).toString(), fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(text = "100/200", fontWeight = FontWeight.Bold)
+                    Text(text = (user.xp_level).toString() + "/200", fontWeight = FontWeight.Bold)
                 }
                 Row(
                     modifier = Modifier
@@ -118,7 +118,7 @@ fun MainCardFriend(user: User, navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     LinearProgressIndicator(
-                        progress = 0.5f,
+                        progress = calculateProgress(user.xp_level, 200 ),
                         color = Color(0xFFE66353),
                         modifier = Modifier
                             .fillMaxWidth() // Adjust the width here
@@ -154,7 +154,7 @@ fun MainCardFriend(user: User, navController: NavController) {
     }
 }
 @Composable
-fun Friend(user: User, navController: NavController) {
+fun Friend(user: UserProfile, navController: NavController) {
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
