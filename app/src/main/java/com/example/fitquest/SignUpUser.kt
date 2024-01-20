@@ -244,7 +244,8 @@ class SignUpUser : AppCompatActivity() {
                     // Call the signUpUser function with the additional values
                     authManager.signUpUser(
                         name, username, gender, age, weight, height,
-                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside
+                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+                        null
                     ) { success, errorMessage ->
                         if (success) {
                             Log.d("SignUpUser", "User created successfully")

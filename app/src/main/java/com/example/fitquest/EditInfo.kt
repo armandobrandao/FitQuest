@@ -1,26 +1,22 @@
 package com.example.fitquest
 
-import Questionary
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.NumberPicker
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.fitquest.databinding.EditInfoBinding
-import com.example.fitquest.databinding.UserSignUpBinding
 
 class EditInfo : AppCompatActivity() {
 
@@ -66,7 +62,11 @@ class EditInfo : AppCompatActivity() {
     private lateinit var textFirstDay: TextView
     private lateinit var errorMessageSubmitTextView : TextView
 
+    private lateinit var imageViewProfilePhoto: ImageView
+    private lateinit var buttonSelectPhoto: Button
+
     private lateinit var currentUser : UserProfile
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +90,8 @@ class EditInfo : AppCompatActivity() {
         buttonContinue = findViewById(R.id.buttonContinue)
         errorMessageTextView = findViewById(R.id.errorMessageTextView)
 
-
+        imageViewProfilePhoto = findViewById(R.id.imageViewProfilePhoto)
+        buttonSelectPhoto = findViewById(R.id.buttonSelectPhoto)
 
         // Set up gender spinner
         val genderOptions = arrayOf("Male", "Female", "Other")
@@ -125,6 +126,14 @@ class EditInfo : AppCompatActivity() {
         )
         adapterDay.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFirstDay.adapter = adapterDay
+
+        buttonSelectPhoto.setOnClickListener {
+            // Handle photo selection here (open gallery, camera, etc.)
+            // For simplicity, let's assume you're opening a gallery intent
+
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
+        }
 
         authManager.getCurrentUser { userProfile ->
             userProfile?.let {
@@ -210,6 +219,8 @@ class EditInfo : AppCompatActivity() {
             editWeight.visibility = View.GONE
             textViewGenderLabel.visibility = View.GONE
             errorMessageTextView.visibility = View.GONE
+            imageViewProfilePhoto.visibility = View.GONE
+            buttonSelectPhoto.visibility = View.GONE
 
             // Show questionary elements
             buttonBack.visibility = View.VISIBLE
@@ -270,6 +281,8 @@ class EditInfo : AppCompatActivity() {
             editWeight.visibility = View.VISIBLE
             textViewGenderLabel.visibility = View.VISIBLE
             errorMessageTextView.visibility = View.VISIBLE
+            imageViewProfilePhoto.visibility = View.VISIBLE
+            buttonSelectPhoto.visibility = View.VISIBLE
         }
 
         // Handle Sign Up and Questionary Submit button clicks
@@ -307,6 +320,8 @@ class EditInfo : AppCompatActivity() {
                     val trainingDays = findViewById<RadioButton>(trainingDaysValue).text.toString()
                     val sessionsOutside = findViewById<RadioButton>(sessionsOutsideValue).text.toString()
 
+                    val profileImageUri = selectedImageUri
+
                     // Create a UserProfile object
                     val updatedUserProfile = UserProfile(
                         username = username,
@@ -322,11 +337,12 @@ class EditInfo : AppCompatActivity() {
                         firstDayOfWeek = firstDay,
                         trainingDays = trainingDays,
                         sessionsOutside = sessionsOutside,
+                        profileImageUrl = profileImageUri.toString()
                     )
 
                     // Call the updateCurrentUserProfile function with the UserProfile object
                     currentUser.id?.let { it1 ->
-                        authManager.updateCurrentUserProfile(it1, updatedUserProfile) { success ->
+                        authManager.updateCurrentUserProfile(it1, updatedUserProfile, profileImageUri) { success ->
                             if (success) {
                                 // Profile updated successfully
                                 Log.d("UpdateUserProfile", "User profile updated successfully")
@@ -345,7 +361,8 @@ class EditInfo : AppCompatActivity() {
                     // Call the signUpUser function with the additional values
                     authManager.signUpUser(
                         name, username, gender, age, weight, height,
-                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside
+                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+                        profileImageUri
                     ) { success, errorMessage ->
                         if (success) {
                             Log.d("SignUpUser", "User created successfully")
@@ -373,40 +390,19 @@ class EditInfo : AppCompatActivity() {
             }
         }
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedImageUri = data.data
+            Log.d("EditInfo", "selectedImageUri: $selectedImageUri")
 
-//        buttonSubmit.setOnClickListener {
-//            val name = TextName.text.toString()
-//            val username = TextUsername.text.toString()
-//            val gender = spinnerGender.selectedItem.toString()
-//            val age = findViewById<EditText>(R.id.editAge).text.toString().toIntOrNull()
-//            val weight = findViewById<EditText>(R.id.editWeight).text.toString().toDoubleOrNull()
-//            val height = findViewById<EditText>(R.id.editHeight).text.toString().toDoubleOrNull()
-//
-//            if (name.isNotBlank() && username.isNotBlank() && gender.isNotBlank() && age != null && weight != null && height != null) {
-//                // All required fields are filled
-//
-//                // Call the signUpUser function with the additional values
-//                authManager.signUpUser(name, username, gender, age, weight, height) { success, errorMessage ->
-//                    if (success) {
-//                        Log.d("SignUpUser", "User criado com sucesso")
-//
-//                        val intent = Intent(this@SignUpUser, Questionary::class.java)
-//                        startActivity(intent)
-//                        finish()
-//                    } else {
-//                        errorMessage?.let {
-//                            // Your existing error handling logic
-//                            textViewDescription.text = "Erro ao criar o usuário"
-//                            textViewDescription.visibility = View.VISIBLE
-//                        }
-//                    }
-//                }
-//            } else {
-//                // Show an error message if any of the required fields are empty
-//                textViewDescription.text = "Please fill in all required fields"
-//                textViewDescription.visibility = View.VISIBLE
-//            }
-//        }
+            // Set the selected image to the ImageView
+            imageViewProfilePhoto.setImageURI(selectedImageUri)
+        }
+    }
 
+    companion object {
+        private const val PICK_IMAGE_REQUEST = 1
     }
 }

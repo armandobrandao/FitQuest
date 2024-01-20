@@ -91,13 +91,31 @@
             android:textSize="15dp"
          />
 
+        <ImageView
+            android:id="@+id/imageViewProfilePhoto"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@id/editTextUsername"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+             /> <!-- Set a placeholder image or leave it empty -->
+
+        <Button
+            android:id="@+id/buttonSelectPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageViewProfilePhoto"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="Select Photo"
+            android:onClick="onSelectPhotoClick" />
 
         <TextView
             android:id="@+id/textViewAgeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Age:"
-            android:layout_below="@id/editTextUsername"
+            android:layout_below="@id/buttonSelectPhoto"
             android:layout_marginTop="46dp"
             android:textSize = "19dp"
          />

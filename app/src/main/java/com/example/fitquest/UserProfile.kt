@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.net.Uri
 import java.util.Date
 
 data class UserProfile(
@@ -31,4 +32,5 @@ data class UserProfile(
     val uniqueCode: String = "",
     val lastLoginDate: Date? = Date(), // Nullable Date for the last login date
     val currentStreak: Int = 0,
+    var profileImageUrl: String? = null,
 )

@@ -77,7 +77,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             Log.d("NavGraph", "Navigating to Profile")
             //Profile( user = Harry2, navController = navController)
             currentUser?.let {
-                Profile(user = it, navController = navController)
+                Profile(user = it, navController = navController, authManager = authManager)
             } ?: run {
                 // Handle the case where currentUser is null
             }

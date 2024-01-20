@@ -1,6 +1,8 @@
 package com.example.fitquest
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,12 +12,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.absoluteValue
 
 class AuthManager(private val activity: Activity) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+//    private val storage = FirebaseStorage.getInstance()
 
     fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -141,40 +145,90 @@ class AuthManager(private val activity: Activity) {
         firstDay: String,
         trainingDays: String,
         sessionsOutside: String,
+        profileImageUri: Uri?,
         callback: (Boolean, String?) -> Unit
     ) {
         val user = auth.currentUser
-        val userProfile = UserProfile(
-            username = username,
-            fullName = name,
-            profileImage = R.drawable.default_profile_image,
-            gender = gender,
-            age = age,
-            weight = weight,
-            height = height,
-            goal = goal,
-            motivation = motivation,
-            pushUps = pushUps,
-            firstDayOfWeek = firstDay,
-            trainingDays = trainingDays,
-            activityLevel = activityLevel,
-            sessionsOutside = sessionsOutside,
-            xp_total = 0,
-            xp_level = 0,
-            level = 0,
-            joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
-            longestStreak = 0,
-            places = 0,
-            friends = emptyList(),
-            friend_reqs = emptyList(),
-            achievements = emptyList(),
-            progress = 0,
-            uniqueCode = generateUniqueCode(username),
-            lastLoginDate = Calendar.getInstance().time,
-            currentStreak = 0,
-        )
+//        if (profileImageUri != null) {
+//            val storageRef = storage.reference
+//            val imageRef = storageRef.child("profile_images/${user?.uid}.jpg")
+//
+//            imageRef.putFile(profileImageUri)
+//                .addOnSuccessListener { _ ->
+//                    // Image uploaded successfully, get the download URL
+//                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+//                        // Create UserProfile with the image URL
+//                        val userProfile = UserProfile(
+//                            username = username,
+//                            fullName = name,
+//                            profileImage = R.drawable.default_profile_image,
+//                            gender = gender,
+//                            age = age,
+//                            weight = weight,
+//                            height = height,
+//                            goal = goal,
+//                            motivation = motivation,
+//                            pushUps = pushUps,
+//                            firstDayOfWeek = firstDay,
+//                            trainingDays = trainingDays,
+//                            activityLevel = activityLevel,
+//                            sessionsOutside = sessionsOutside,
+//                            xp_total = 0,
+//                            xp_level = 0,
+//                            level = 0,
+//                            joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
+//                            longestStreak = 0,
+//                            places = 0,
+//                            friends = emptyList(),
+//                            friend_reqs = emptyList(),
+//                            achievements = emptyList(),
+//                            progress = 0,
+//                            uniqueCode = generateUniqueCode(username),
+//                            lastLoginDate = Calendar.getInstance().time,
+//                            currentStreak = 0,
+//                            profileImageUrl = uri.toString()
+//                        )
+//
+//                        // Save UserProfile to Firestore
+//                        saveUserProfile(user?.uid, userProfile, callback)
+//                    }
+//                }
+//                .addOnFailureListener { e ->
+//                    callback(false, "Error uploading profile image: $e")
+//                }
+//        }else {
+            val userProfile = UserProfile(
+                username = username,
+                fullName = name,
+                profileImage = R.drawable.default_profile_image,
+                gender = gender,
+                age = age,
+                weight = weight,
+                height = height,
+                goal = goal,
+                motivation = motivation,
+                pushUps = pushUps,
+                firstDayOfWeek = firstDay,
+                trainingDays = trainingDays,
+                activityLevel = activityLevel,
+                sessionsOutside = sessionsOutside,
+                xp_total = 0,
+                xp_level = 0,
+                level = 0,
+                joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
+                longestStreak = 0,
+                places = 0,
+                friends = emptyList(),
+                friend_reqs = emptyList(),
+                achievements = emptyList(),
+                progress = 0,
+                uniqueCode = generateUniqueCode(username),
+                lastLoginDate = Calendar.getInstance().time,
+                currentStreak = 0,
+            )
 
-        saveUserProfile(user?.uid, userProfile, callback)
+            saveUserProfile(user?.uid, userProfile, callback)
+//        }
     }
 
 
@@ -237,14 +291,14 @@ class AuthManager(private val activity: Activity) {
                                 longestStreak = userProfile.longestStreak,
                                 places = userProfile.places,
                                 friends = userProfile.friends,
-                                friend_reqs= userProfile.friend_reqs,
+                                friend_reqs = userProfile.friend_reqs,
                                 achievements = userProfile.achievements,
                                 progress = userProfile.progress,
                                 uniqueCode = userProfile.uniqueCode,
                                 lastLoginDate = userProfile.lastLoginDate,
                                 currentStreak = userProfile.currentStreak,
                             )
-                            updateCurrentUserProfile(user.uid, currentUser) {
+                            updateCurrentUserProfile(user.uid, currentUser, null) {
                                 if (it) {
                                     callback(currentUser)
                                 } else {
@@ -266,17 +320,59 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-    fun updateCurrentUserProfile(userId: String, userProfile: UserProfile, callback: (Boolean) -> Unit) {
-        firestore.collection("users")
-            .document(userId)
-            .set(userProfile)
-            .addOnSuccessListener {
-                callback(true)
-            }
-            .addOnFailureListener {
-                callback(false)
-            }
+    fun updateCurrentUserProfile(
+        userId: String,
+        userProfile: UserProfile,
+        imageUri: Uri?,
+        callback: (Boolean) -> Unit
+    ) {
+//        if (imageUri != null) {
+//            val storageRef = storage.reference
+//            val imageName = "${UUID.randomUUID()}_${System.currentTimeMillis()}.jpg"
+//            val imageRef = storageRef.child("profile_images").child(imageName)
+//
+//            imageRef.putFile(imageUri)
+//                .addOnCompleteListener { task ->
+//                    if (task.isSuccessful) {
+//                        // Get the download URL
+//                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+//                            // Save the download URL in UserProfile
+//                            userProfile.profileImageUrl = uri.toString()
+//
+//                            // Save the updated UserProfile in Firestore
+//                            firestore.collection("users")
+//                                .document(userId)
+//                                .set(userProfile)
+//                                .addOnSuccessListener {
+//                                    callback(true)
+//                                }
+//                                .addOnFailureListener {
+//                                    callback(false)
+//                                }
+//                        }.addOnFailureListener {
+//                            callback(false)
+//                        }
+//                    } else {
+//                        callback(false)
+//                    }
+//                }
+//        } else {
+            // If no image is selected, directly save the UserProfile in Firestore
+            firestore.collection("users")
+                .document(userId)
+                .set(userProfile)
+                .addOnSuccessListener {
+                    callback(true)
+                }
+                .addOnFailureListener {
+                    callback(false)
+                }
+//        }
     }
+
+
+
+
 
     fun signOut() {
         auth.signOut()
@@ -580,7 +676,7 @@ class AuthManager(private val activity: Activity) {
                                     lastLoginDate = currentDate
                                 )
 
-                                updateCurrentUserProfile(userId, updatedUser) {
+                                updateCurrentUserProfile(userId, updatedUser, null) {
                                     callback(it)
                                 }
                             } else {
@@ -590,7 +686,7 @@ class AuthManager(private val activity: Activity) {
                                     lastLoginDate = currentDate
                                 )
 
-                                updateCurrentUserProfile(userId, updatedUser) {
+                                updateCurrentUserProfile(userId, updatedUser, null) {
                                     callback(it)
                                 }
                             }

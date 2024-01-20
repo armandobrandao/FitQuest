@@ -44,7 +44,7 @@ val sampleAchievement = listOf(
     Achievement("Streak Marathoner", R.drawable.bell, "Unstoppable! You achieved a remarkable 200-day streak of daily workouts, consistency is yor superpower"),
 )
 @Composable
-fun MainCard(user: UserProfile) {
+fun MainCard(user: UserProfile, authManager: AuthManager) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxSize()
@@ -81,13 +81,13 @@ fun MainCard(user: UserProfile) {
                     .weight(1f)
                     .padding(horizontal = 16.dp) // Add padding here
             ) {
-                Image(
-                    painter = painterResource(id = user.profileImage),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                )
+//                Image(
+//                    painter = painterResource(id = user.profileImage),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .size(120.dp)
+//                        .clip(CircleShape)
+//                )
             }
         }
 
@@ -130,6 +130,15 @@ fun MainCard(user: UserProfile) {
                         context.startActivity(Intent(context, EditInfo::class.java))
                     }) {
                     Text("Edit Profile")
+                }
+                Spacer(modifier = Modifier.weight(0.5f)) // Adjust spacing as needed
+                Button(
+                    colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
+                    onClick = {
+                        authManager.signOut()
+                        context.startActivity(Intent(context, WelcomeActivity::class.java))
+                    }) {
+                    Text("Log out")
                 }
             }
         }
@@ -370,14 +379,14 @@ fun AchievementItem(achievement: Achievement) {
     }
 }
 @Composable
-fun Profile(user: UserProfile, navController: NavController) {
+fun Profile(user: UserProfile, navController: NavController, authManager: AuthManager) {
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 80.dp)
     ){
         item {
-            MainCard(user)
+            MainCard(user, authManager)
             Spacer(modifier = Modifier.height(16.dp))
             StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))
