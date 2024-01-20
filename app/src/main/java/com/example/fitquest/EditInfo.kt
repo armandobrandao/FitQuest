@@ -16,6 +16,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.example.fitquest.databinding.EditInfoBinding
 
 class EditInfo : AppCompatActivity() {
@@ -147,6 +148,12 @@ class EditInfo : AppCompatActivity() {
 
                 spinnerGender.setSelection(adapterGender.getPosition(userProfile.gender))
 
+                // Load user's profile image using Coil
+                val profileImageUri = Uri.parse(userProfile.profileImageUrl)
+                imageViewProfilePhoto.load(profileImageUri) {
+                    placeholder(R.drawable.default_profile_image)
+                }
+
                 val goalOptions = arrayOf("Lose weight", "Build muscle", "Maintain shape")  // Replace with your actual goal options
                 val goalIndex = goalOptions.indexOf(userProfile.goal)
 
@@ -196,6 +203,7 @@ class EditInfo : AppCompatActivity() {
                     val radioButtonId = radioGroupSessionsOutside.getChildAt(sessionsOutsideIndex).id
                     radioGroupSessionsOutside.check(radioButtonId)
                 }
+
             }
         }
 
@@ -359,25 +367,25 @@ class EditInfo : AppCompatActivity() {
                     }
 
                     // Call the signUpUser function with the additional values
-                    authManager.signUpUser(
-                        name, username, gender, age, weight, height,
-                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
-                        profileImageUri
-                    ) { success, errorMessage ->
-                        if (success) {
-                            Log.d("SignUpUser", "User created successfully")
-
-                            val intent = Intent(this@EditInfo, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            errorMessage?.let {
-                                // Your existing error handling logic
-                                errorMessageSubmitTextView.text = "Error creating user"
-                                errorMessageSubmitTextView.visibility = View.VISIBLE
-                            }
-                        }
-                    }
+//                    authManager.signUpUser(
+//                        name, username, gender, age, weight, height,
+//                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+//                        profileImageUri
+//                    ) { success, errorMessage ->
+//                        if (success) {
+//                            Log.d("SignUpUser", "User created successfully")
+//
+//                            val intent = Intent(this@EditInfo, MainActivity::class.java)
+//                            startActivity(intent)
+//                            finish()
+//                        } else {
+//                            errorMessage?.let {
+//                                // Your existing error handling logic
+//                                errorMessageSubmitTextView.text = "Error creating user"
+//                                errorMessageSubmitTextView.visibility = View.VISIBLE
+//                            }
+//                        }
+//                    }
                 } else {
                     // Show an error message if any of the questionnaire fields are empty
                     errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"

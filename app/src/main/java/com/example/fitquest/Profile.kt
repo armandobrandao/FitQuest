@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,12 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+//import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+//import coil.request.ImageRequest
 
 data class Statistic(val value: String, val icon: Int, val title: String)  // Sample user data class
 
@@ -81,13 +86,21 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                     .weight(1f)
                     .padding(horizontal = 16.dp) // Add padding here
             ) {
-//                Image(
-//                    painter = painterResource(id = user.profileImage),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .size(120.dp)
-//                        .clip(CircleShape)
-//                )
+                Log.d("Profile", "user.profileImageUrl, ${user.profileImageUrl}")
+                Image(
+                    painter = rememberImagePainter(
+                        data = user.profileImageUrl,
+                        builder = {
+                            crossfade(false)
+                            placeholder(R.drawable.default_profile_image)
+                        }
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "${user.fullName}'s profile photo",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                )
             }
         }
 
@@ -144,6 +157,7 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
         }
     }
 }
+
 @Composable
 fun StatisticsSection(user: UserProfile) {
     val statisticsList1 = listOf(
