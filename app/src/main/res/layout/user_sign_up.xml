@@ -23,7 +23,7 @@
             android:id="@+id/textViewnameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name:"
+            android:text="Name: *"
             android:layout_below="@id/textViewTitle"
             android:layout_marginTop="16dp"
             android:textSize = "19dp"
@@ -45,11 +45,11 @@
             android:id="@+id/textViewUsernameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username:"
+            android:text="Username: *"
             android:layout_below="@id/editTextName"
             android:layout_marginTop="16dp"
             android:textSize = "19dp"
-            android:visibility="gone"/>
+            />
 
         <EditText
             android:id="@+id/editTextUsername"
@@ -61,13 +61,24 @@
             android:minHeight="48dp"
             android:textSize="15dp"
          />
+        <TextView
+            android:id="@+id/errorMessageTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:layout_below="@id/editTextUsername"
+            />
 
 
         <TextView
             android:id="@+id/textViewAgeLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Age:"
+            android:text="Age: *"
             android:layout_below="@id/editTextUsername"
             android:layout_marginTop="46dp"
             android:textSize = "19dp"
@@ -89,7 +100,7 @@
             android:id="@+id/textViewHeightLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Height:"
+            android:text="Height: *"
             android:layout_below="@id/editAge"
             android:layout_marginTop="16dp"
             android:textSize = "19dp"
@@ -110,7 +121,7 @@
             android:id="@+id/textViewWeightLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weight:"
+            android:text="Weight: *"
             android:layout_below="@id/editHeight"
             android:layout_marginTop="16dp"
             android:textSize = "19dp"
@@ -132,7 +143,7 @@
             android:id="@+id/textViewGenderLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select your gender:"
+            android:text="Select your gender: *"
             android:layout_below="@id/editWeight"
             android:layout_marginTop="16dp"
             android:textSize = "19dp"
@@ -154,7 +165,7 @@
             android:layout_height="wrap_content"
             android:text="Continue"
             android:layout_below="@id/spinnerGender"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="32dp"
      />
 
 
@@ -174,7 +185,7 @@
             android:id="@+id/textGoalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="What are your main goals?"
+            android:text="What are your main goals? *"
             android:layout_below="@id/textViewTitle2"
             android:layout_marginTop="16dp"
             android:textSize="19dp"
@@ -214,7 +225,7 @@
             android:id="@+id/textMotivationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="What motivates you the most?"
+            android:text="What motivates you the most? *"
             android:layout_below="@id/radioGroupGoal"
             android:layout_marginTop="16dp"
             android:textSize="19dp"
@@ -261,7 +272,7 @@
             android:id="@+id/textPushUpsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="How many push-ups can you do without stopping?"
+            android:text="How many push-ups can you do without stopping? *"
             android:layout_below="@id/radioGroupMotivation"
             android:layout_marginTop="16dp"
             android:textSize="19dp"
@@ -303,7 +314,7 @@
             android:id="@+id/textActivityLevelLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="What is your level of physical activity?"
+            android:text="What is your level of physical activity? *"
             android:layout_below="@id/radioGroupPushUps"
             android:layout_marginTop="16dp"
             android:textSize="19dp"
@@ -349,9 +360,10 @@
             android:id="@+id/textWeeklyGoalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Define your weekly goal (for better results, we recommend at least 3 workout days per week):"
+            android:text="Define your weekly goal (for better results, we recommend at least 3 workout days per week): *"
             android:layout_below="@id/radioGroupActivityLevel"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
             android:textSize="19dp"
             android:visibility="gone"
       />
@@ -361,7 +373,7 @@
             android:id="@+id/textTrainingDays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Training days (1 to 7):"
+            android:text="Training days (1 to 7): "
             android:textSize="16dp"
             android:layout_below="@id/textWeeklyGoalLabel"
             android:visibility="gone"
@@ -373,7 +385,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_below="@id/textTrainingDays"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_marginBottom="10dp">
 
             <RadioButton
                 android:id="@+id/radioButtonTraining1"
@@ -431,6 +444,7 @@
             android:orientation="horizontal"
             android:layout_below="@id/radioGroupTrainingDays"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="30dp"
           >
 
             <TextView
@@ -440,6 +454,7 @@
                 android:text="First day of the week:"
                 android:textSize="16dp"
                 android:visibility="gone"
+
       />
 
             <Spinner
@@ -458,7 +473,7 @@
             android:id="@+id/textSessionsOutside"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="How many session can you do outside?"
+            android:text="How many session can you do outside? "
             android:textSize="16dp"
             android:layout_below="@id/linearLayoutFirstDay"
             android:visibility="gone"
@@ -520,61 +535,53 @@
 
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/errorMessageSubmitTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:layout_below="@id/radioGroupSessionsOutside"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/radioGroupSessionsOutside"
+            android:layout_below="@id/errorMessageSubmitTextView"
             android:layout_gravity="center_horizontal"
+            android:id="@+id/layoutbuttons"
            >
 
             <!-- First Button and TextView pair -->
             <Button
                 android:id="@+id/buttonBack"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Back"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="12dp"
                 android:visibility="gone"
+                android:layout_gravity="left"
             />
 
-            <TextView
-                android:id="@+id/errorMessageTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/red"
-                android:textSize="16sp"
-                android:visibility="invisible"
-                android:layout_below="@id/buttonBack"
-         />
+
 
             <!-- Second Button and TextView pair -->
             <Button
                 android:id="@+id/buttonSubmit"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Submit"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="12dp"
                 android:visibility="gone"
+                android:layout_gravity="right"
              />
 
-            <TextView
-                android:id="@+id/errorMessageSubmitTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/red"
-                android:textSize="16sp"
-                android:visibility="invisible"
-                android:layout_below="@id/buttonSubmit"/>
+
         </LinearLayout>
 
 
