@@ -16,6 +16,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.example.fitquest.databinding.EditInfoBinding
 
 class EditInfo : AppCompatActivity() {
@@ -147,6 +148,12 @@ class EditInfo : AppCompatActivity() {
 
                 spinnerGender.setSelection(adapterGender.getPosition(userProfile.gender))
 
+                // Load user's profile image using Coil
+                val profileImageUri = Uri.parse(userProfile.profileImageUrl)
+                imageViewProfilePhoto.load(profileImageUri) {
+                    placeholder(R.drawable.default_profile_image)
+                }
+
                 val goalOptions = arrayOf("Lose weight", "Build muscle", "Maintain shape")  // Replace with your actual goal options
                 val goalIndex = goalOptions.indexOf(userProfile.goal)
 
@@ -196,6 +203,7 @@ class EditInfo : AppCompatActivity() {
                     val radioButtonId = radioGroupSessionsOutside.getChildAt(sessionsOutsideIndex).id
                     radioGroupSessionsOutside.check(radioButtonId)
                 }
+
             }
         }
 
