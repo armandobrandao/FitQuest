@@ -21,26 +21,78 @@ class AuthManager(private val activity: Activity) {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 //    private val storage = FirebaseStorage.getInstance()
 
+    //fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+    //    auth.createUserWithEmailAndPassword(email, password)
+    //        .addOnCompleteListener(activity) { task ->
+    //            if (task.isSuccessful) {
+    //                // If sign-up is successful, the signIn function will take care of creating a new DailyQuest
+    //                signIn(email, password) { signInSuccess, signInError ->
+    //                    if (signInSuccess) {
+    //                        // Callback with sign-up success
+    //                        callback(true, null)
+    //                    } else {
+    //                        // Callback with sign-up failure
+    //                        callback(false, signInError ?: "Error signing in after sign-up")
+    //                    }
+    //                }
+    //            } else {
+    //                // Callback with sign-up failure
+    //                callback(false, task.exception?.message)
+    //            }
+    //        }
+    //}
+
+
+
     fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful) {
-                    // If sign-up is successful, the signIn function will take care of creating a new DailyQuest
-                    signIn(email, password) { signInSuccess, signInError ->
-                        if (signInSuccess) {
-                            // Callback with sign-up success
-                            callback(true, null)
+        // Check if the email is already in use using Firestore
+        val usersCollection = FirebaseFirestore.getInstance().collection("users")
+
+        usersCollection.whereEqualTo("e-mail", email)
+            .get()
+            .addOnCompleteListener { queryTask ->
+                if (queryTask.isSuccessful) {
+                    val querySnapshot = queryTask.result
+                    Log.d("querySnapshot", "$querySnapshot")
+                    if (querySnapshot != null && !querySnapshot.isEmpty) {
+                        // Email is already in use in Firestore, callback with failure
+                        callback(false, "The email address is already in use by another account.")
+                    } else {
+                        // Check password length
+                        if (password.length >= 6) {
+                            // Password has more than 6 characters, proceed with Firebase Authentication
+                            auth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(activity) { task ->
+                                    if (task.isSuccessful) {
+                                        signIn(email, password) { signInSuccess, signInError ->
+                                            if (signInSuccess) {
+                                                callback(true, null)
+                                            } else {
+                                                callback(false, signInError ?: "Error signing in after sign-up")
+                                            }
+                                        }
+                                    } else {
+                                        callback(false, task.exception?.message)
+                                    }
+                                }
                         } else {
-                            // Callback with sign-up failure
-                            callback(false, signInError ?: "Error signing in after sign-up")
+                            // Password is too short, callback with failure
+                            callback(false, "Your password needs to be at least 6 characters long")
                         }
                     }
                 } else {
-                    // Callback with sign-up failure
-                    callback(false, task.exception?.message)
+                    // Error occurred while checking email existence in Firestore, callback with failure
+                    callback(false, queryTask.exception?.message)
                 }
             }
     }
+
+
+
+
+
+
+
 
 
     fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
