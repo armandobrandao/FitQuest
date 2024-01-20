@@ -94,13 +94,27 @@ fun FriendRequests(navController: NavHostController, currentUser: UserProfile, a
         Text("Friend Requests", fontWeight = FontWeight.Bold, fontSize = 25.sp)
 
         Spacer(modifier = Modifier.height(8.dp))
-
-        currentUser.friend_reqs.forEach { user ->
-            FriendsRequestListItem(currentUser =currentUser, user = user, onClick = {
-                // Navigate to friend's profile
-                Log.d("Notifications", "Deteta o onClick")
-                navController.navigate("${Screens.Friend.route}/${user.username}")
-            }, authManager = authManager)
+        if (currentUser.friend_reqs.isNotEmpty()) {
+            currentUser.friend_reqs.forEach { user ->
+                FriendsRequestListItem(currentUser = currentUser, user = user, onClick = {
+                    // Navigate to friend's profile
+                    Log.d("Notifications", "Deteta o onClick")
+                    navController.navigate("${Screens.Friend.route}/${user.username}")
+                }, authManager = authManager)
+            }
+        }else{
+            ElevatedCard(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                    //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
+                )  {
+                    Text("Your friend requests will appear here", fontSize = 15.sp)
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -205,6 +219,13 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
                         Log.d("Notifications", "Deteta o onClick Delete")
                         // Handle send friend request button click
                         // You can perform the necessary actions here
+                        authManager.deleteFriendRequest(currentUser, user) { success ->
+                            if (success) {
+                                // Handle the case when the friend request is accepted successfully
+                            } else {
+                                // Handle the case when there is an issue accepting the friend request
+                            }
+                        }
                     },
                     backgroundColor = Color.Gray
                 )

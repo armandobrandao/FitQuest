@@ -15,6 +15,10 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.fitquest.databinding.EditInfoBinding
 import com.example.fitquest.databinding.UserSignUpBinding
 
@@ -62,12 +66,13 @@ class EditInfo : AppCompatActivity() {
     private lateinit var textFirstDay: TextView
     private lateinit var errorMessageSubmitTextView : TextView
 
-
+    private lateinit var currentUser : UserProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = EditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         //First
         textViewFirstTitle = findViewById(R.id.textViewTitle)
         textViewnameLabel = findViewById(R.id.textViewnameLabel)
@@ -114,8 +119,6 @@ class EditInfo : AppCompatActivity() {
         buttonSubmitQuestionary = findViewById(R.id.buttonSubmit)
         errorMessageSubmitTextView = findViewById(R.id.errorMessageSubmitTextView)
 
-
-
         // Set up Spinner for days of the week
         val adapterDay = ArrayAdapter.createFromResource(
             this, R.array.days_of_week, android.R.layout.simple_spinner_item
@@ -123,6 +126,69 @@ class EditInfo : AppCompatActivity() {
         adapterDay.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFirstDay.adapter = adapterDay
 
+        authManager.getCurrentUser { userProfile ->
+            userProfile?.let {
+                // Populate UI elements with user data
+                currentUser = userProfile
+                TextName.setText(userProfile.fullName)
+                TextUsername.setText(userProfile.username)
+                editAge.setText(userProfile.age.toString())
+                editHeight.setText(userProfile.height.toString())
+                editWeight.setText(userProfile.weight.toString())
+
+                spinnerGender.setSelection(adapterGender.getPosition(userProfile.gender))
+
+                val goalOptions = arrayOf("Lose weight", "Build muscle", "Maintain shape")  // Replace with your actual goal options
+                val goalIndex = goalOptions.indexOf(userProfile.goal)
+
+                if (goalIndex != -1) {
+                    val radioButtonId = radioGroupGoal.getChildAt(goalIndex).id
+                    radioGroupGoal.check(radioButtonId)
+                }
+
+                val motivationOptions = arrayOf("Feel confident", "Relieve stress", "Improve health", "Increase energy")
+                val motivationIndex = motivationOptions.indexOf(userProfile.motivation)
+
+                if (motivationIndex != -1) {
+                    val radioButtonId = radioGroupMotivation.getChildAt(motivationIndex).id
+                    radioGroupMotivation.check(radioButtonId)
+                }
+
+                val pushupOptions = arrayOf("3-5", "5-10 ", "At least 10")
+                val pushupIndex = pushupOptions.indexOf(userProfile.pushUps)
+
+                if (pushupIndex != -1) {
+                    val radioButtonId = radioGroupPushUps.getChildAt(pushupIndex).id
+                    radioGroupPushUps.check(radioButtonId)
+                }
+
+                val activityOptions = arrayOf("Sedentary", "Lightly active", "Moderately active", "Very active")
+                val activityIndex = activityOptions.indexOf(userProfile.activityLevel)
+
+                if (activityIndex != -1) {
+                    val radioButtonId = radioGroupActivityLevel.getChildAt(activityIndex).id
+                    radioGroupActivityLevel.check(radioButtonId)
+                }
+
+                val trainingDaysOptions = arrayOf("1", "2", "3", "4", "5", "6", "7")
+                val trainingDaysIndex = trainingDaysOptions.indexOf(userProfile.trainingDays)
+
+                if (trainingDaysIndex != -1) {
+                    val radioButtonId = radioGroupTrainingDays.getChildAt(trainingDaysIndex).id
+                    radioGroupTrainingDays.check(radioButtonId)
+                }
+
+                spinnerFirstDay.setSelection(adapterDay.getPosition(userProfile.firstDayOfWeek))
+
+                val sessionsOutsideOptions = arrayOf("1", "2", "3", "4", "5", "6", "7")
+                val sessionsOutsideIndex = sessionsOutsideOptions.indexOf(userProfile.sessionsOutside)
+
+                if (sessionsOutsideIndex != -1) {
+                    val radioButtonId = radioGroupSessionsOutside.getChildAt(sessionsOutsideIndex).id
+                    radioGroupSessionsOutside.check(radioButtonId)
+                }
+            }
+        }
 
         // Handle Continue button click
         buttonContinue.setOnClickListener {
@@ -241,6 +307,40 @@ class EditInfo : AppCompatActivity() {
                     val trainingDays = findViewById<RadioButton>(trainingDaysValue).text.toString()
                     val sessionsOutside = findViewById<RadioButton>(sessionsOutsideValue).text.toString()
 
+                    // Create a UserProfile object
+                    val updatedUserProfile = UserProfile(
+                        username = username,
+                        fullName = name,
+                        gender = gender,
+                        age = age,
+                        weight = weight,
+                        height = height,
+                        goal = goal,
+                        motivation = motivation,
+                        pushUps = pushUps,
+                        activityLevel = activityLevel,
+                        firstDayOfWeek = firstDay,
+                        trainingDays = trainingDays,
+                        sessionsOutside = sessionsOutside,
+                    )
+
+                    // Call the updateCurrentUserProfile function with the UserProfile object
+                    currentUser.id?.let { it1 ->
+                        authManager.updateCurrentUserProfile(it1, updatedUserProfile) { success ->
+                            if (success) {
+                                // Profile updated successfully
+                                Log.d("UpdateUserProfile", "User profile updated successfully")
+
+                                val intent = Intent(this@EditInfo, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            } else {
+                                // Handle update failure, show error message, etc.
+                                errorMessageSubmitTextView.text = "Error updating user profile"
+                                errorMessageSubmitTextView.visibility = View.VISIBLE
+                            }
+                        }
+                    }
 
                     // Call the signUpUser function with the additional values
                     authManager.signUpUser(

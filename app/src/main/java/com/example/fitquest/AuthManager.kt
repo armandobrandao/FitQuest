@@ -266,7 +266,7 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-    private fun updateCurrentUserProfile(userId: String, userProfile: UserProfile, callback: (Boolean) -> Unit) {
+    fun updateCurrentUserProfile(userId: String, userProfile: UserProfile, callback: (Boolean) -> Unit) {
         firestore.collection("users")
             .document(userId)
             .set(userProfile)
@@ -915,6 +915,39 @@ class AuthManager(private val activity: Activity) {
                 callback(false)
             }
     }
+
+    fun deleteFriendRequest(currentUser: UserProfile, friend: UserProfile, callback: (Boolean) -> Unit) {
+        // Remove friend from currentUser's friend requests
+        val updatedCurrentUserFriendReqs = currentUser.friend_reqs.toMutableList().apply {
+            remove(friend)
+        }
+
+        // Remove currentUser from friend's friend requests
+        val updatedFriendFriendReqs = friend.friend_reqs.toMutableList().apply {
+            remove(currentUser)
+        }
+
+        // Update currentUser's friend_reqs in Firestore
+        firestore.collection("users")
+            .document(currentUser.id!!)
+            .update("friend_reqs", updatedCurrentUserFriendReqs)
+            .addOnSuccessListener {
+                // Update friend's friend_reqs in Firestore
+                firestore.collection("users")
+                    .document(friend.id!!)
+                    .update("friend_reqs", updatedFriendFriendReqs)
+                    .addOnSuccessListener {
+                        callback(true)
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
 
 
 

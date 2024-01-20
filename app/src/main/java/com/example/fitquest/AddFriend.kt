@@ -109,6 +109,8 @@ fun SearchFriend(navController: NavController, currentUser: UserProfile, userLis
 
 @Composable
 fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Unit, authManager: AuthManager) {
+    var friendRequestSent by remember { mutableStateOf(false) }
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -137,30 +139,26 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
             Spacer(modifier = Modifier.weight(1f))
 
             // Send Friend Request Button
-
             Button(
                 onClick = {
                     authManager.sendFriendRequest(currentUser, user) { success ->
-                        Log.d("AddFriend", "sendFriendRequest currentUser + $currentUser + user $user")
-
                         if (success) {
-                            // Handle the case when the friend request is sent successfully
-                            Log.d("AddFriend", "deu certo?")
-                        } else {
-                            // Handle the case when there is an issue sending the friend request
+                            // Update the friendRequestSent variable
+                            friendRequestSent = true
                         }
                     }
                 },
                 modifier = Modifier
                     .padding(8.dp)
                     .widthIn(min = 80.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
+                colors = ButtonDefaults.buttonColors(if (friendRequestSent) Color.Gray else Color(0xFFE66353))
             ) {
-                Text("Add")
+                Text(if (friendRequestSent) "Sent" else "Add")
             }
         }
     }
 }
+
 
 @Composable
 fun ShareCode(user: UserProfile){
