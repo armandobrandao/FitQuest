@@ -97,16 +97,14 @@ fun ExerciseItem(exercise: ExerciseData) {
                     .weight(1f),
                 horizontalAlignment = Alignment.End
             ) {
-                Image(
-                    painter = painterResource(id = exercise.imageResId),
-                    contentDescription = "Image of: ${exercise.name}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                )
-
-
+//                Image(
+//                    painter = painterResource(id = exercise.imageResId),
+//                    contentDescription = "Image of: ${exercise.name}",
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier
+//                        .size(100.dp)
+//                        .clip(MaterialTheme.shapes.medium)
+//                )
             }
         }
     }

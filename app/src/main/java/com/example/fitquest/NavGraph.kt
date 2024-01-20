@@ -146,9 +146,8 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             GenerateWorkout(navController = navController)
         }
 
-        composable("${Screens.CheckpointComplete.route}/{listExercises}/{isQuest}/{checkpointName}") { backStackEntry ->
+        composable("${Screens.CheckpointComplete.route}/{checkpointName}") { backStackEntry ->
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
-
             val checkpoint = challenges
                 .flatMap { it?.checkpoints.orEmpty() }
                 .find { it?.name == checkpointName }
@@ -161,10 +160,21 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 
                 LaunchedEffect(challengeId) {
                     if (challengeId != null && checkpointName != null) {
-                        authManager.updateCheckpointAndChallenge(challengeId, checkpointName) { success ->
+                        authManager.updateCheckpointAndChallenge(challengeId, checkpointName
+                        ) { success ->
                             if (success) {
 
+                            } else {
 
+                            }
+                        }
+                    }
+                }
+                LaunchedEffect(checkpointName){
+                    checkpoint.place?.let {
+                        authManager.updatePlaces(it) { success ->
+                            if (success) {
+                                Log.d("NavGraph","deu certo")
                             } else {
 
                             }

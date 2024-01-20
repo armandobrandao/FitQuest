@@ -420,7 +420,11 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
                 if (checkpoint != null) {
                     CheckpointItem(checkpoint = checkpoint, checkpointNumber = index + 1, onClick = {
                         // Navigate to friend's profile
-                        navController.navigate("${Screens.Checkpoint.route}/${challenge.title}/${checkpoint.name}")
+                        if(checkpoint.isCompleted) {
+                            navController.navigate("${Screens.CheckpointComplete.route}/${checkpoint.name}")
+                        }else{
+                            navController.navigate("${Screens.Checkpoint.route}/${challenge.title}/${checkpoint.name}")
+                        }
                     })
                 }
                 if (index < challenge.checkpoints.size - 1) {
