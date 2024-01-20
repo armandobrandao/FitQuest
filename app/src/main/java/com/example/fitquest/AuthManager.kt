@@ -1172,7 +1172,28 @@ class AuthManager(private val activity: Activity) {
 
 
 
+    fun checkUsernameAvailability(username: String, callback: (Boolean, String?) -> Unit) {
+        val usersCollection = FirebaseFirestore.getInstance().collection("users")
 
+        usersCollection.whereEqualTo("username", username)
+            .get()
+            .addOnCompleteListener { queryTask ->
+                if (queryTask.isSuccessful) {
+                    val querySnapshot = queryTask.result
+
+                    if (querySnapshot != null && !querySnapshot.isEmpty) {
+                        // Username is already taken in Firestore, callback with failure
+                        callback(false, "Username is already taken")
+                    } else {
+                        // Username is not taken in Firestore, callback with success
+                        callback(true, null)
+                    }
+                } else {
+                    // Error occurred while checking username existence in Firestore, callback with failure
+                    callback(false, queryTask.exception?.message)
+                }
+            }
+    }
 
 
 }
