@@ -359,25 +359,25 @@ class EditInfo : AppCompatActivity() {
                     }
 
                     // Call the signUpUser function with the additional values
-                    authManager.signUpUser(
-                        name, username, gender, age, weight, height,
-                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
-                        profileImageUri
-                    ) { success, errorMessage ->
-                        if (success) {
-                            Log.d("SignUpUser", "User created successfully")
-
-                            val intent = Intent(this@EditInfo, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            errorMessage?.let {
-                                // Your existing error handling logic
-                                errorMessageSubmitTextView.text = "Error creating user"
-                                errorMessageSubmitTextView.visibility = View.VISIBLE
-                            }
-                        }
-                    }
+//                    authManager.signUpUser(
+//                        name, username, gender, age, weight, height,
+//                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+//                        profileImageUri
+//                    ) { success, errorMessage ->
+//                        if (success) {
+//                            Log.d("SignUpUser", "User created successfully")
+//
+//                            val intent = Intent(this@EditInfo, MainActivity::class.java)
+//                            startActivity(intent)
+//                            finish()
+//                        } else {
+//                            errorMessage?.let {
+//                                // Your existing error handling logic
+//                                errorMessageSubmitTextView.text = "Error creating user"
+//                                errorMessageSubmitTextView.visibility = View.VISIBLE
+//                            }
+//                        }
+//                    }
                 } else {
                     // Show an error message if any of the questionnaire fields are empty
                     errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"

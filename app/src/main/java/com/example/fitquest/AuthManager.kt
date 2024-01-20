@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
@@ -19,7 +20,7 @@ class AuthManager(private val activity: Activity) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-//    private val storage = FirebaseStorage.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     //fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
     //    auth.createUserWithEmailAndPassword(email, password)
@@ -349,6 +350,7 @@ class AuthManager(private val activity: Activity) {
                                 uniqueCode = userProfile.uniqueCode,
                                 lastLoginDate = userProfile.lastLoginDate,
                                 currentStreak = userProfile.currentStreak,
+                                profileImageUrl = userProfile.profileImageUrl
                             )
                             updateCurrentUserProfile(user.uid, currentUser, null) {
                                 if (it) {
@@ -375,51 +377,61 @@ class AuthManager(private val activity: Activity) {
     fun updateCurrentUserProfile(
         userId: String,
         userProfile: UserProfile,
-        imageUri: Uri?,
+        imageUri: Uri?, // Pass the image URI to the function
         callback: (Boolean) -> Unit
     ) {
-//        if (imageUri != null) {
-//            val storageRef = storage.reference
-//            val imageName = "${UUID.randomUUID()}_${System.currentTimeMillis()}.jpg"
-//            val imageRef = storageRef.child("profile_images").child(imageName)
-//
-//            imageRef.putFile(imageUri)
-//                .addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        // Get the download URL
-//                        imageRef.downloadUrl.addOnSuccessListener { uri ->
-//                            // Save the download URL in UserProfile
-//                            userProfile.profileImageUrl = uri.toString()
-//
-//                            // Save the updated UserProfile in Firestore
-//                            firestore.collection("users")
-//                                .document(userId)
-//                                .set(userProfile)
-//                                .addOnSuccessListener {
-//                                    callback(true)
-//                                }
-//                                .addOnFailureListener {
-//                                    callback(false)
-//                                }
-//                        }.addOnFailureListener {
-//                            callback(false)
-//                        }
-//                    } else {
-//                        callback(false)
-//                    }
-//                }
-//        } else {
+        // Step 1: Upload the image to Firebase Storage
+        val storageRef = storage.reference
+        val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}") // Unique path for each image
+        if(imageUri != null){
+            val uploadTask = imageRef.putFile(imageUri)
+            Log.d("AuthManager", "uploadTask: $uploadTask")
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                Log.d("AuthManager", "Deve ter passado")
+                // Continue with the task to get the download URL
+                imageRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Step 2: Get the download URL and save it in UserProfile
+                    val downloadUri = task.result
+                    Log.d("AuthManager", "downloadUri: $downloadUri")
+                    userProfile.profileImageUrl = downloadUri.toString()
+
+                    // Step 3: Save the updated UserProfile in Firestore
+                    firestore.collection("users")
+                        .document(userId)
+                        .set(userProfile)
+                        .addOnSuccessListener {
+                            Log.d("AuthManager", "entra na firestore.collection certa")
+                            callback(true)
+                        }
+                        .addOnFailureListener {
+                            callback(false)
+                        }
+                } else {
+                    callback(false)
+                }
+            }
+        } else {
+            Log.d("AuthManager", "entra no else MAL")
+
             // If no image is selected, directly save the UserProfile in Firestore
             firestore.collection("users")
                 .document(userId)
                 .set(userProfile)
                 .addOnSuccessListener {
+                    Log.d("AuthManager", "entra na firestore.collection errada")
                     callback(true)
                 }
                 .addOnFailureListener {
                     callback(false)
                 }
-//        }
+        }
     }
 
 
