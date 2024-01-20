@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+/.vs/FitQuest/v17/.wsuo
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
