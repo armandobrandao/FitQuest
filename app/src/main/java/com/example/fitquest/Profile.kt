@@ -153,7 +153,7 @@ fun StatisticsSection(user: UserProfile) {
 
     val statisticsList2 = listOf(
         Statistic((user.progress).toString() + "%", R.drawable.bell, "Progress"),
-        Statistic((user.places).toString(), R.drawable.bell, "Places"),
+        Statistic((user.places.size).toString(), R.drawable.bell, "Places"),
     )
 
     Column(modifier = Modifier.padding(horizontal=16.dp)) {

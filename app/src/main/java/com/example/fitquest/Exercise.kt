@@ -56,7 +56,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                         if(isQuest) {
                             navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest/$checkpointName")
                         }else{
-                            navController.navigate("${Screens.CheckpointComplete.route}/$listExercises/$isQuest/$checkpointName")
+                            navController.navigate("${Screens.CheckpointComplete.route}/$checkpointName")
                         }
                     }else {
                         // Exercise timer completed, start the break timer
@@ -174,14 +174,14 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Image(
-                    painter = painterResource(id = listExercises.exercises[currentExercise].imageResId),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(400.dp)
-                        .height(300.dp) // Set your desired height limit here
-                )
+//                Image(
+//                    painter = painterResource(id = listExercises.exercises[currentExercise].imageResId),
+//                    contentDescription = null,
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier
+//                        .width(400.dp)
+//                        .height(300.dp) // Set your desired height limit here
+//                )
             }
         }
 

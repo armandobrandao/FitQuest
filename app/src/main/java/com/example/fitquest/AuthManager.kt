@@ -178,7 +178,7 @@ class AuthManager(private val activity: Activity) {
 //                            level = 0,
 //                            joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
 //                            longestStreak = 0,
-//                            places = 0,
+//                            places = emptyList(),
 //                            friends = emptyList(),
 //                            friend_reqs = emptyList(),
 //                            achievements = emptyList(),
@@ -217,7 +217,7 @@ class AuthManager(private val activity: Activity) {
                 level = 0,
                 joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
                 longestStreak = 0,
-                places = 0,
+                places = emptyList(),
                 friends = emptyList(),
                 friend_reqs = emptyList(),
                 achievements = emptyList(),
@@ -630,6 +630,68 @@ class AuthManager(private val activity: Activity) {
                     transaction.set(challengeRef, challenge!!)
                     true
                 } else {
+                    false
+                }
+            }
+                .addOnSuccessListener {
+                    // Update successful
+                    callback(true)
+                }
+                .addOnFailureListener { e ->
+                    // Update failed
+                    callback(false)
+                }
+        } else {
+            // User is not signed in
+            callback(false)
+        }
+    }
+
+    fun updatePlaces(place: PlaceData, callback: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        Log.d("AuthManager","entra na updatePlaces")
+        if (user != null) {
+            val userId = user.uid
+
+            // Get the reference to the user's document
+            val userRef = firestore.collection("users")
+                .document(userId)
+
+            // Update the places in a transaction
+            firestore.runTransaction { transaction ->
+                val userDoc = transaction.get(userRef)
+
+                // Check if the user document exists
+                if (userDoc.exists()) {
+                    val userProfile = userDoc.toObject(UserProfile::class.java)
+                    Log.d("AuthManager","userProfile: $userProfile")
+                    // Check if the place is already in the user's places
+                    val hasPlace = userProfile?.places?.any { it.name == place.name } ?: false
+                    Log.d("AuthManager","hasPlace: $hasPlace")
+
+                    if (!hasPlace) {
+                        // Add the new place to the list
+                        userProfile?.places = userProfile?.places?.plus(place) ?: listOf(place)
+                        Log.d("AuthManager","userProfile 2: $userProfile")
+                        // Save the updated user profile back to Firestore
+                        if (userProfile != null) {
+                            firestore.collection("users")
+                                .document(userId)
+                                .set(userProfile)
+                                .addOnSuccessListener {
+                                    callback(true)
+                                }
+                                .addOnFailureListener {
+                                    callback(false)
+                                }
+                        }
+                        true
+                    } else {
+                        // Place already exists, no need to update
+                        true
+                    }
+                } else {
+                    // User document not found
                     false
                 }
             }
