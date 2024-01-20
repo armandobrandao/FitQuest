@@ -15,7 +15,9 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.example.fitquest.databinding.UserSignUpBinding
+import kotlin.properties.Delegates
 
 class SignUpUser : AppCompatActivity() {
 
@@ -60,7 +62,7 @@ class SignUpUser : AppCompatActivity() {
     private lateinit var textTrainingDays: TextView
     private lateinit var textFirstDay: TextView
     private lateinit var errorMessageSubmitTextView : TextView
-
+    private var visibility by Delegates.notNull<Int>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +86,31 @@ class SignUpUser : AppCompatActivity() {
         buttonContinue = findViewById(R.id.buttonContinue)
         errorMessageTextView = findViewById(R.id.errorMessageTextView)
 
+        TextUsername.addTextChangedListener { editable ->
+            val username = editable.toString()
 
+            if (username.isNotBlank()) {
+                authManager.checkUsernameAvailability(username) { isAvailable, errorMessage ->
+                    runOnUiThread {
+                        if (isAvailable) {
+                            // Username is available, you can update the UI as needed
+                            visibility = View.GONE
+                            errorMessageTextView.visibility = visibility
+                        } else {
+                            visibility = View.VISIBLE
+                            // Username is not available, show an error message
+                            errorMessageTextView.text = errorMessage
+                            errorMessageTextView.visibility = visibility
+
+
+                        }
+                    }
+                }
+            } else {
+                // Clear error message and hide the view if the username is blank
+                errorMessageTextView.visibility = View.GONE
+            }
+        }
 
         // Set up gender spinner
         val genderOptions = arrayOf("Male", "Female", "Other")
@@ -163,6 +189,7 @@ class SignUpUser : AppCompatActivity() {
             radioGroupTrainingDays.visibility = View.VISIBLE
             radioGroupSessionsOutside.visibility = View.VISIBLE
             textSessionsOutside.visibility = View.VISIBLE
+            errorMessageSubmitTextView.visibility= View.VISIBLE
 
         }
 
@@ -186,6 +213,8 @@ class SignUpUser : AppCompatActivity() {
             radioGroupTrainingDays.visibility = View.GONE
             radioGroupSessionsOutside.visibility = View.GONE
             textSessionsOutside.visibility = View.GONE
+            errorMessageSubmitTextView.visibility = View.GONE
+            errorMessageTextView.visibility = visibility
 
             // Show initial elements
             buttonContinue.visibility = View.VISIBLE
@@ -202,7 +231,7 @@ class SignUpUser : AppCompatActivity() {
             textViewWeightLabel.visibility = View.VISIBLE
             editWeight.visibility = View.VISIBLE
             textViewGenderLabel.visibility = View.VISIBLE
-            errorMessageTextView.visibility = View.VISIBLE
+
         }
 
         // Handle Sign Up and Questionary Submit button clicks
@@ -217,54 +246,67 @@ class SignUpUser : AppCompatActivity() {
             if (name.isNotBlank() && username.isNotBlank() && gender.isNotBlank() && age != null && weight != null && height != null) {
                 // All required fields are filled
 
-                // Check if the questionnaire fields are filled
-                val goalSelectedId = radioGroupGoal.checkedRadioButtonId
-                val motivationSelectedId = radioGroupMotivation.checkedRadioButtonId
-                val pushUpsSelectedId = radioGroupPushUps.checkedRadioButtonId
-                val activityLevelSelectedId = radioGroupActivityLevel.checkedRadioButtonId
-                val firstDaySelectedPosition = spinnerFirstDay.selectedItemPosition
-                val trainingDaysValue = radioGroupTrainingDays.checkedRadioButtonId
-                val sessionsOutsideValue = radioGroupSessionsOutside.checkedRadioButtonId
+                // Check if the username is valid
+                authManager.checkUsernameAvailability(username) { isAvailable, errorMessage ->
+                    if (isAvailable) {
+                        errorMessageTextView.visibility = View.GONE
+                        // Username is available, proceed with checking other questionnaire fields
+                        val goalSelectedId = radioGroupGoal.checkedRadioButtonId
+                        val motivationSelectedId = radioGroupMotivation.checkedRadioButtonId
+                        val pushUpsSelectedId = radioGroupPushUps.checkedRadioButtonId
+                        val activityLevelSelectedId = radioGroupActivityLevel.checkedRadioButtonId
+                        val firstDaySelectedPosition = spinnerFirstDay.selectedItemPosition
+                        val trainingDaysValue = radioGroupTrainingDays.checkedRadioButtonId
+                        val sessionsOutsideValue = radioGroupSessionsOutside.checkedRadioButtonId
 
-                if (goalSelectedId != -1 && motivationSelectedId != -1 && pushUpsSelectedId != -1
-                    && activityLevelSelectedId != -1 && firstDaySelectedPosition != AdapterView.INVALID_POSITION) {
+                        if (goalSelectedId != -1 && motivationSelectedId != -1 && pushUpsSelectedId != -1
+                            && activityLevelSelectedId != -1 && firstDaySelectedPosition != AdapterView.INVALID_POSITION) {
 
-                    // All questionnaire fields are filled
+                            // All questionnaire fields are filled
 
-                    // Retrieve the selected values from radio buttons and spinners
-                    val goal = findViewById<RadioButton>(goalSelectedId).text.toString()
-                    val motivation = findViewById<RadioButton>(motivationSelectedId).text.toString()
-                    val pushUps = findViewById<RadioButton>(pushUpsSelectedId).text.toString()
-                    val activityLevel = findViewById<RadioButton>(activityLevelSelectedId).text.toString()
-                    val firstDay = resources.getStringArray(R.array.days_of_week)[firstDaySelectedPosition]
-                    val trainingDays = findViewById<RadioButton>(trainingDaysValue).text.toString()
-                    val sessionsOutside = findViewById<RadioButton>(sessionsOutsideValue).text.toString()
+                            // Retrieve the selected values from radio buttons and spinners
+                            val goal = findViewById<RadioButton>(goalSelectedId).text.toString()
+                            val motivation = findViewById<RadioButton>(motivationSelectedId).text.toString()
+                            val pushUps = findViewById<RadioButton>(pushUpsSelectedId).text.toString()
+                            val activityLevel = findViewById<RadioButton>(activityLevelSelectedId).text.toString()
+                            val firstDay = resources.getStringArray(R.array.days_of_week)[firstDaySelectedPosition]
+                            val trainingDays = findViewById<RadioButton>(trainingDaysValue).text.toString()
+                            val sessionsOutside = findViewById<RadioButton>(sessionsOutsideValue).text.toString()
 
+                            // Call the signUpUser function with the additional values
+                            authManager.signUpUser(
+                                name, username, gender, age, weight, height,
+                                goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+                                null
+                            ) { success, errorMessage ->
+                                if (success) {
+                                    Log.d("SignUpUser", "User created successfully")
 
-                    // Call the signUpUser function with the additional values
-                    authManager.signUpUser(
-                        name, username, gender, age, weight, height,
-                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
-                        null
-                    ) { success, errorMessage ->
-                        if (success) {
-                            Log.d("SignUpUser", "User created successfully")
-
-                            val intent = Intent(this@SignUpUser, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            errorMessage?.let {
-                                // Your existing error handling logic
-                                errorMessageSubmitTextView.text = "Error creating user"
-                                errorMessageSubmitTextView.visibility = View.VISIBLE
+                                    val intent = Intent(this@SignUpUser, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                } else {
+                                    errorMessage?.let {
+                                        // Your existing error handling logic
+                                        errorMessageSubmitTextView.text = "Error creating user"
+                                        errorMessageSubmitTextView.visibility = View.VISIBLE
+                                    }
+                                }
                             }
+                        } else {
+                            // Show an error message if any of the questionnaire fields are empty
+                            errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"
+                            errorMessageSubmitTextView.visibility = View.VISIBLE
+
+
+
                         }
+                    } else {
+                        // Username is not available, show an error message
+                        errorMessageSubmitTextView.text = errorMessage
+                        errorMessageSubmitTextView.visibility = visibility
+
                     }
-                } else {
-                    // Show an error message if any of the questionnaire fields are empty
-                    errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"
-                    errorMessageSubmitTextView.visibility = View.VISIBLE
                 }
             } else {
                 // Show an error message if any of the required fields are empty
