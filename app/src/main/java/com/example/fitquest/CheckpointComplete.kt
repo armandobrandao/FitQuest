@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -85,7 +86,7 @@ fun PhotosSection(){
     }
 }
 @Composable
-fun CheckpointComplete(navController: NavController, workout: WorkoutData, challenge: ChallengeData) {
+fun CheckpointComplete(navController: NavController, workout: WorkoutData, challenge: ChallengeData, authManager: AuthManager, userId: String) {
     LazyColumn {
         item {
             Box(
@@ -152,7 +153,15 @@ fun CheckpointComplete(navController: NavController, workout: WorkoutData, chall
 
                     Spacer(modifier = Modifier.weight(1f))
                     // Placeholder CreateWorkoutButton
-                    TakePhotoButton(context = LocalContext.current)
+                    TakePhotoButton { photoUri ->
+                        // Handle the captured photo URI here
+                        Log.d("DailyQuestComplete", "Photo captured: $photoUri")
+                        // If you want to upload the photo to Firestore, call the upload function here
+                        authManager.uploadPhotoToFirestore(photoUri, userId) { downloadUri ->
+                            // Handle the download URI if needed
+                            Log.d("DailyQuestComplete", "Download URI: $downloadUri")
+                        }
+                    }
                 }
             }
         }

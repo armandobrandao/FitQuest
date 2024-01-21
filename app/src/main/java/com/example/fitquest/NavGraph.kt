@@ -186,11 +186,15 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                     val challenge = challenges.find { it?.checkpoints?.contains(checkpoint) == true }
 
                     if (challenge != null) {
-                        CheckpointComplete(
-                            navController = navController,
-                            workout = workout,
-                            challenge = challenge
-                        )
+                        currentUser?.id?.let {
+                            CheckpointComplete(
+                                navController = navController,
+                                workout = workout,
+                                challenge = challenge,
+                                authManager = authManager,
+                                userId = it
+                            )
+                        }
                     }
                 }
             }
@@ -396,11 +400,15 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                     Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
                     if (exercises != null) {
                         // Pass the retrieved DailyQuest to the DailyQuest composable
-                        DailyQuestComplete(
-                            navController = navController,
-                            listExercises = exercises,
-                            isQuest = true
-                        )
+                        currentUser?.id?.let {
+                            DailyQuestComplete(
+                                navController = navController,
+                                listExercises = exercises,
+                                isQuest = true,
+                                authManager = authManager,
+                                userId = it
+                            )
+                        }
                     } else {
                         // Handle the case where the retrieved DailyQuest is null
                     }

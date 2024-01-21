@@ -386,7 +386,7 @@ class AuthManager(private val activity: Activity) {
         val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}") // Unique path for each image
         if(imageUri != null){
             val uploadTask = imageRef.putFile(imageUri)
-            Log.d("AuthManager", "uploadTask: $uploadTask")
+//            Log.d("AuthManager", "uploadTask: $uploadTask")
             uploadTask.continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {
@@ -419,14 +419,13 @@ class AuthManager(private val activity: Activity) {
                 }
             }
         } else {
-            Log.d("AuthManager", "entra no else MAL")
-
+//            Log.d("AuthManager", "entra no else MAL")
             // If no image is selected, directly save the UserProfile in Firestore
             firestore.collection("users")
                 .document(userId)
                 .set(userProfile)
                 .addOnSuccessListener {
-                    Log.d("AuthManager", "entra na firestore.collection errada")
+//                    Log.d("AuthManager", "entra na firestore.collection errada")
                     callback(true)
                 }
                 .addOnFailureListener {
@@ -436,7 +435,67 @@ class AuthManager(private val activity: Activity) {
     }
 
 
+    fun uploadPhotoToFirestore(imageUri: Uri?, userId: String, callback: (Uri?) -> Unit) {
+        if (imageUri != null) {
+            val storageRef = storage.reference
+            val imageRef = storageRef.child("post_workout_images/${UUID.randomUUID()}")
 
+            val uploadTask = imageRef.putFile(imageUri)
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+
+                    // Save the reference to the user's subcollection dailyQuests document
+                    savePhotoReferenceToDailyQuest(userId, downloadUri)
+
+                    // Return the download URI
+                    callback(downloadUri)
+                } else {
+                    callback(null)
+                }
+            }
+        } else {
+            callback(null)
+        }
+    }
+
+    private fun savePhotoReferenceToDailyQuest(userId: String, photoUri: Uri?) {
+        val currentDate = getCurrentFormattedDateDaily()
+
+        // Query the dailyQuests collection to get the document for today
+        firestore.collection("users")
+            .document(userId)
+            .collection("dailyQuests")
+            .whereEqualTo("date", currentDate)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val dailyQuestDocument = querySnapshot.documents[0]
+
+                    // Update the dailyQuest document with the photo reference
+                    dailyQuestDocument.reference
+                        .update("post_photo", photoUri.toString())
+                        .addOnSuccessListener {
+                            // Successfully updated the dailyQuest document with the photo reference
+                        }
+                        .addOnFailureListener {
+                            // Handle the failure to update the dailyQuest document
+                        }
+                } else {
+                    // Handle the case where there is no dailyQuest document for today
+                }
+            }
+            .addOnFailureListener {
+                // Handle the failure to query the dailyQuests collection
+            }
+    }
 
 
     fun signOut() {
@@ -781,7 +840,7 @@ class AuthManager(private val activity: Activity) {
     }
 
     fun updateDailyQuest(exercises: WorkoutData, callback: (Boolean) -> Unit) {
-        Log.d("AuthManager", "Entering updateDailyQuest")
+//        Log.d("AuthManager", "Entering updateDailyQuest")
         val user = auth.currentUser
 
         if (user != null) {
@@ -791,7 +850,7 @@ class AuthManager(private val activity: Activity) {
             val dailyQuestsRef = firestore.collection("users")
                 .document(userId)
                 .collection("dailyQuests")
-            Log.d("AuthManager", "dailyQuestsRef: $dailyQuestsRef")
+//            Log.d("AuthManager", "dailyQuestsRef: $dailyQuestsRef")
 
             // Query the dailyQuests subcollection to find the document with matching date
             dailyQuestsRef.whereEqualTo("date", exercises.date).get()
@@ -799,36 +858,34 @@ class AuthManager(private val activity: Activity) {
                     if (!querySnapshot.isEmpty) {
                         // If there is a matching document, update its isCompleted field to true
                         val dailyQuestDoc = querySnapshot.documents[0]
-                        Log.d("AuthManager", "dailyQuestDoc: $dailyQuestDoc")
+//                        Log.d("AuthManager", "dailyQuestDoc: $dailyQuestDoc")
 
                         val daily = dailyQuestDoc.toObject(WorkoutData::class.java)
-                        Log.d("AuthManager", "daily: $daily")
-
-
+//                        Log.d("AuthManager", "daily: $daily")
                         // Update isCompleted field
                         daily?.completed = true
 
                         // Save the updated document back to Firestore
                         dailyQuestDoc.reference.set(daily!!)
                             .addOnSuccessListener {
-                                // Update successful
-                                // Retrieve XP from the exercises
-                                val xp = exercises.xp
-
-                                // Update XP using the existing updateXP function
-                                updateXP(xp) { success ->
-                                    if (success) {
-                                        Log.d("AuthManager", "Entra no success do updateXP")
-                                        callback(true)
-                                    } else {
-                                        callback(false)
-                                    }
-                                }
+                                callback(true)
                             }
                             .addOnFailureListener {
                                 // Update failed
                                 callback(false)
                             }
+
+                        val xp = exercises.xp
+
+                        // Update XP using the existing updateXP function
+                        updateXP(xp) { success ->
+                            if (success) {
+                                Log.d("AuthManager", "Entra no success do updateXP")
+                                callback(true)
+                            } else {
+                                callback(false)
+                            }
+                        }
                     } else {
                         // No matching document found
                         callback(false)
@@ -844,11 +901,9 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-
-
     fun updatePlaces(place: PlaceData, callback: (Boolean) -> Unit) {
         val user = auth.currentUser
-        Log.d("AuthManager","entra na updatePlaces")
+//        Log.d("AuthManager","entra na updatePlaces")
         if (user != null) {
             val userId = user.uid
 
@@ -863,15 +918,15 @@ class AuthManager(private val activity: Activity) {
                 // Check if the user document exists
                 if (userDoc.exists()) {
                     val userProfile = userDoc.toObject(UserProfile::class.java)
-                    Log.d("AuthManager","userProfile: $userProfile")
+//                    Log.d("AuthManager","userProfile: $userProfile")
                     // Check if the place is already in the user's places
                     val hasPlace = userProfile?.places?.any { it.name == place.name } ?: false
-                    Log.d("AuthManager","hasPlace: $hasPlace")
+//                    Log.d("AuthManager","hasPlace: $hasPlace")
 
                     if (!hasPlace) {
                         // Add the new place to the list
                         userProfile?.places = userProfile?.places?.plus(place) ?: listOf(place)
-                        Log.d("AuthManager","userProfile 2: $userProfile")
+//                        Log.d("AuthManager","userProfile 2: $userProfile")
                         // Save the updated user profile back to Firestore
                         if (userProfile != null) {
                             firestore.collection("users")

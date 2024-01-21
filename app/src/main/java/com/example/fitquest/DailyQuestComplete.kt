@@ -2,7 +2,12 @@ package com.example.fitquest
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +30,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -37,13 +46,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.example.fitquest.ui.theme.FitQuestTheme
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Objects
+import android.Manifest
+import android.util.Log
 
 
 @Composable
-fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData, isQuest: Boolean) {
+fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData, isQuest: Boolean, authManager: AuthManager, userId: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,49 +126,101 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "20 XP",
+                            text = "${listExercises.xp} XP",
                             fontSize = 100.sp,
                             textAlign = TextAlign.Center
                         )
                     }
                     Spacer(modifier = Modifier.height(26.dp))
-                    Text(
-                        text = "This is your 25º FitQuest workout!",
-                        fontSize = 25.sp,
-                    )
+//                    Text(
+//                        text = "This is your 25º FitQuest workout!",
+//                        fontSize = 25.sp,
+//                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
     }
     // Placeholder CreateWorkoutButton
-    TakePhotoButton(context = LocalContext.current)
+        TakePhotoButton { photoUri ->
+            // Handle the captured photo URI here
+            Log.d("DailyQuestComplete", "Photo captured: $photoUri")
+            // If you want to upload the photo to Firestore, call the upload function here
+            authManager.uploadPhotoToFirestore(photoUri, userId) { downloadUri ->
+                // Handle the download URI if needed
+                Log.d("DailyQuestComplete", "Download URI: $downloadUri")
+            }
+        }
     }
 }
 @Composable
-fun TakePhotoButton(context: Context) {
+fun TakePhotoButton(onPhotoCaptured: (Uri?) -> Unit) {
+    val context = LocalContext.current
+    val file = context.createImageFile()
+
+    var capturedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isTaken ->
+        if (isTaken) {
+            onPhotoCaptured(capturedImageUri)
+        } else {
+            Toast.makeText(context, "Photo capture failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (it) {
+            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+            val uri = FileProvider.getUriForFile(
+                context,
+                "com.example.fitquest.provider",
+                file
+            )
+            capturedImageUri = uri
+            cameraLauncher.launch(uri)
+        } else {
+            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(80.dp), // Adjust the height as needed
+            .height(80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Button(
-            onClick = {
-                // Open the camera app
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                context.startActivity(intent)
-            },
-            modifier = Modifier
-                .padding(8.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Text("Take a Photo!",  fontSize = 20.sp)
+        Button(onClick = {
+            val permissionCheckResult =
+                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            } else {
+                // Request a permission
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }) {
+            Text(text = "Take a Photo!")
         }
     }
+}
+
+fun Context.createImageFile(): File {
+    // Create an image file name
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val imageFileName = "JPEG_" + timeStamp + "_"
+    val image = File.createTempFile(
+        imageFileName, /* prefix */
+        ".jpg", /* suffix */
+        externalCacheDir      /* directory */
+    )
+    Log.d("DailyQuesComplete", "image: $image")
+    return image
 }
 
 //@Preview(showBackground = true)
