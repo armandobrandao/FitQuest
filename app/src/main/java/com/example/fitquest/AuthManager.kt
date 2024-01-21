@@ -251,6 +251,7 @@ class AuthManager(private val activity: Activity) {
 //                }
 //        }else {
             val userProfile = UserProfile(
+                id = user?.uid,
                 username = username,
                 fullName = name,
                 profileImage = R.drawable.default_profile_image,

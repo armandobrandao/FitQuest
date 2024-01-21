@@ -161,13 +161,13 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
 @Composable
 fun StatisticsSection(user: UserProfile) {
     val statisticsList1 = listOf(
-        Statistic((user.xp_total).toString(), R.drawable.bell, "Total XP"),
-        Statistic((user.longestStreak).toString(), R.drawable.bell, "Longest Streak"),
+        Statistic((user.xp_total).toString(), R.drawable.xp, "Total XP"),
+        Statistic((user.longestStreak).toString(), R.drawable.streak, "Longest Streak"),
     )
 
     val statisticsList2 = listOf(
-        Statistic((user.progress).toString() + "%", R.drawable.bell, "Progress"),
-        Statistic((user.places.size).toString(), R.drawable.bell, "Places"),
+        Statistic((user.progress).toString() + "%", R.drawable.progress, "Progress"),
+        Statistic((user.places.size).toString(), R.drawable.places, "Places"),
     )
 
     Column(modifier = Modifier.padding(horizontal=16.dp)) {
@@ -219,7 +219,7 @@ fun StatisticsContainer(statistic: Statistic, modifier: Modifier) {
                 Image(
                     painter = painterResource(id = statistic.icon),
                     contentDescription = statistic.title,
-                    modifier = Modifier.size(20.dp) // Adjust the size of the icon as needed
+                    modifier = Modifier.size(30.dp) // Adjust the size of the icon as needed
                 )
             }
 
