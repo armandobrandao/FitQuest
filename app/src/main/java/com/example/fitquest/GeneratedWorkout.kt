@@ -53,13 +53,13 @@ data class Exercise(
     val target: String = ""
 )
 
-val sampleExercises = listOf(
-    ExerciseData("Abdominais", "1 set of 12 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
-    ExerciseData("Flexoes", "1 set of 10 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
-    ExerciseData("Core and Cardio", "1:00", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
-    ExerciseData("Another Exercise", "0:45", R.drawable.abs_exercise, 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
+//val sampleExercises = listOf(
+//    ExerciseData("Abdominais", "1 set of 12 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
+//    ExerciseData("Flexoes", "1 set of 10 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
+//    ExerciseData("Core and Cardio", "1:00", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
+//    ExerciseData("Another Exercise", "0:45", R.drawable.abs_exercise, 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
     // Add more exercises as needed
-)
+//)
 
 //val sampleExercises2 = listOf(
 //    Exercise("Abdominais", "0:20", "R.drawable.abs_exercise", 20, listOf()),
@@ -191,12 +191,12 @@ fun GeneratedWorkout(navController: NavHostController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
-                                sampleExercises.forEachIndexed { index, exercise ->
-                                    ExerciseItem(exercise = exercise)
-                                    if (index < sampleExercises.size - 1) {
-                                        Divider()
-                                    }
-                                }
+//                                sampleExercises.forEachIndexed { index, exercise ->
+//                                    ExerciseItem(exercise = exercise)
+//                                    if (index < sampleExercises.size - 1) {
+//                                        Divider()
+//                                    }
+//                                }
                             }
                         }
                     }
