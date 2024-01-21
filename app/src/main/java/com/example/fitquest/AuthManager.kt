@@ -1,7 +1,6 @@
 package com.example.fitquest
 
 import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -198,7 +197,7 @@ class AuthManager(private val activity: Activity) {
         firstDay: String,
         trainingDays: String,
         sessionsOutside: String,
-        profileImageUri: Uri?,
+        profileImageUri: String?,
         callback: (Boolean, String?) -> Unit
     ) {
         val user = auth.currentUser
@@ -279,6 +278,7 @@ class AuthManager(private val activity: Activity) {
                 uniqueCode = generateUniqueCode(username),
                 lastLoginDate = Calendar.getInstance().time,
                 currentStreak = 0,
+                profileImageUrl = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/profile_images%2Fdefault_profile_image.jpg?alt=media&token=00edab37-d4f3-44d4-8a67-1c5f17d91aaf"
             )
 
             saveUserProfile(user?.uid, userProfile, callback)
@@ -553,7 +553,7 @@ class AuthManager(private val activity: Activity) {
                         image = R.drawable.pilates, // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
-                        isQuest = true,
+                        quest = true,
                         xp = 50
                     )
                     // Save the DailyQuest to the user's document
@@ -672,6 +672,7 @@ class AuthManager(private val activity: Activity) {
             // Update the checkpoint and challenge in a transaction
             firestore.runTransaction { transaction ->
                 val challengeDoc = transaction.get(challengeRef)
+                var completou = false
 
                 // Check if the challenge document exists
                 if (challengeDoc.exists()) {
@@ -680,20 +681,40 @@ class AuthManager(private val activity: Activity) {
                     // Find the checkpoint in the challenge
                     val updatedCheckpoints = challenge?.checkpoints?.map { checkpoint ->
                         if (checkpoint?.name == checkpointName) {
-                            checkpoint.isCompleted = true
+                            if(!checkpoint.isCompleted){
+                                checkpoint.isCompleted = true
+                                checkpoint.workout!!.isCompleted = true
+                                completou = true
+                            }
                         }
                         checkpoint
                     }
+                    if(completou) {
+                        // Update the challenge with the modified checkpoints
+                        challenge?.done_checkpoints = (challenge?.done_checkpoints ?: 0) + 1
+                        if (updatedCheckpoints != null) {
+                            challenge?.checkpoints = updatedCheckpoints
+                        }
+                        if (challenge != null) {
+                            if(challenge.done_checkpoints == challenge.total_checkpoints){
+                                challenge.completed = true
+                                Log.d("AuthManager","Entra no if para tornar challege completed")
+                                //chamar funcao e passar-lhe o xp para aumentar o xp_total
+                                updateXP(challenge.xp) { success ->
+                                    if (success) {
+                                        Log.d("AuthManager","Entra no sucess do updateXP")
+                                    } else {
 
-                    // Update the challenge with the modified checkpoints
-                    challenge?.done_checkpoints = (challenge?.done_checkpoints ?: 0) + 1
-                    if (updatedCheckpoints != null) {
-                        challenge?.checkpoints = updatedCheckpoints
+                                    }
+                                }
+                            }
+                        }
+                        // Save the updated challenge back to Firestore
+                        transaction.set(challengeRef, challenge!!)
+                        true
+                    } else {
+                        false
                     }
-
-                    // Save the updated challenge back to Firestore
-                    transaction.set(challengeRef, challenge!!)
-                    true
                 } else {
                     false
                 }
@@ -711,6 +732,119 @@ class AuthManager(private val activity: Activity) {
             callback(false)
         }
     }
+
+    fun updateXP(xp: Int, callback: (Boolean) -> Unit) {
+        val user = auth.currentUser
+        Log.d("AuthManager","Entra no updateXP")
+
+        if (user != null) {
+            val userId = user.uid
+
+            // Get the reference to the user's document
+            val userRef = firestore.collection("users").document(userId)
+            Log.d("AuthManager","userRef: $userRef")
+
+            // Fetch the current user profile
+            userRef.get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val userProfile = document.toObject(UserProfile::class.java)
+                        Log.d("AuthManager","userProfile: $userProfile")
+
+                        // Update xp_total field
+                        userProfile?.xp_total = userProfile?.xp_total?.plus(xp) ?: xp
+                        Log.d("AuthManager","userProfile 2: $userProfile")
+
+                        // Save the updated user profile back to Firestore
+                        userRef.set(userProfile!!)
+                            .addOnSuccessListener {
+                                // Update successful
+                                callback(true)
+                            }
+                            .addOnFailureListener {
+                                // Update failed
+                                callback(false)
+                            }
+                    } else {
+                        // Document does not exist
+                        callback(false)
+                    }
+                }
+                .addOnFailureListener {
+                    // Fetching the document failed
+                    callback(false)
+                }
+        } else {
+            // User is not signed in
+            callback(false)
+        }
+    }
+
+    fun updateDailyQuest(exercises: WorkoutData, callback: (Boolean) -> Unit) {
+        Log.d("AuthManager", "Entering updateDailyQuest")
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+
+            // Get the reference to the user's dailyQuests collection
+            val dailyQuestsRef = firestore.collection("users")
+                .document(userId)
+                .collection("dailyQuests")
+            Log.d("AuthManager", "dailyQuestsRef: $dailyQuestsRef")
+
+            // Query the dailyQuests subcollection to find the document with matching date
+            dailyQuestsRef.whereEqualTo("date", exercises.date).get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        // If there is a matching document, update its isCompleted field to true
+                        val dailyQuestDoc = querySnapshot.documents[0]
+                        Log.d("AuthManager", "dailyQuestDoc: $dailyQuestDoc")
+
+                        val daily = dailyQuestDoc.toObject(WorkoutData::class.java)
+                        Log.d("AuthManager", "daily: $daily")
+
+
+                        // Update isCompleted field
+                        daily?.isCompleted = true
+
+                        // Save the updated document back to Firestore
+                        dailyQuestDoc.reference.set(daily!!)
+                            .addOnSuccessListener {
+                                // Update successful
+                                // Retrieve XP from the exercises
+                                val xp = exercises.xp
+
+                                // Update XP using the existing updateXP function
+                                updateXP(xp) { success ->
+                                    if (success) {
+                                        Log.d("AuthManager", "Entra no success do updateXP")
+                                        callback(true)
+                                    } else {
+                                        callback(false)
+                                    }
+                                }
+                            }
+                            .addOnFailureListener {
+                                // Update failed
+                                callback(false)
+                            }
+                    } else {
+                        // No matching document found
+                        callback(false)
+                    }
+                }
+                .addOnFailureListener {
+                    // Query failed
+                    callback(false)
+                }
+        } else {
+            // User is not signed in
+            callback(false)
+        }
+    }
+
+
 
     fun updatePlaces(place: PlaceData, callback: (Boolean) -> Unit) {
         val user = auth.currentUser
@@ -998,7 +1132,7 @@ class AuthManager(private val activity: Activity) {
                     image = R.drawable.pilates, // Replace with the appropriate image
                     exercises = selectedExercises,
                     date = getCurrentFormattedDateDaily(),
-                    isQuest = false, // Set to false for challenges
+                    quest = false, // Set to false for challenges
                     xp = 50
                 )
             )
@@ -1014,7 +1148,7 @@ class AuthManager(private val activity: Activity) {
             checkpoints = checkpoints,
             begin_date = startDate,
             end_date = endDate,
-            isCompleted = false,
+            completed = false,
         )
     }
 
@@ -1029,7 +1163,7 @@ class AuthManager(private val activity: Activity) {
             type = "Steps",
             begin_date = startDate,
             end_date = endDate,
-            isCompleted = false,
+            completed = false,
             description = "Complete 40 000 steps"
         )
     }

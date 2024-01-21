@@ -3,20 +3,16 @@ package com.example.fitquest
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -414,7 +410,7 @@ fun GroupChallenges(navController: NavController, challenges : List<ChallengeDat
             ) {
                 Column {
                     challenges.forEachIndexed { index, challenge ->
-                        if (challenge != null && challenge.isGroup) {
+                        if (challenge != null && challenge.group) {
                             ChallengeItem(challenge = challenge, isGroupChallenge = true) {
                                 // Navigate to friend's profile
                                 navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")

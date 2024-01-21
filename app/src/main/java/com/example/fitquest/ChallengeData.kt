@@ -12,11 +12,11 @@ data class ChallengeData(
     var checkpoints : List<CheckpointData?> = emptyList(), //caso tenha checkpoints
     val goal: Int? = null, //caso NAO tenha checkpoints
     val type: String = "",
-    val isGroup: Boolean = false,
-    val friend: String? = null, //caso seja group, algo que consiga identificar o amigo
+    val group: Boolean = false,
+    val friend: UserProfile? = null, //caso seja group, algo que consiga identificar o amigo
     val begin_date: Date? = Date(),
     val end_date: Date? = Date(),
-    val isCompleted: Boolean = false,
+    var completed: Boolean = false,
 )
 
 // TODO verificar como associar ao amigo

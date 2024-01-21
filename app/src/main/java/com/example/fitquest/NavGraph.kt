@@ -347,13 +347,11 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             }
         }
 
-        composable("${Screens.FinishedWorkout.route}/{listExercises}/{isQuest}/{checkpointName}") { backStackEntry ->
-            val workout = backStackEntry.arguments?.getString("listExercises")
+        composable("${Screens.FinishedWorkout.route}/{isQuest}") { backStackEntry ->
+//            val workout = backStackEntry.arguments?.getString("listExercises")
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
-            val checkpointName = backStackEntry.arguments?.getString("checkpointName")
 
             if(isQuest != null) {
-                if (workout != null) {
                     if(isQuest) {
                         // Retrieve the DailyQuest based on the title
                         val exercises = dailyQuest
@@ -371,39 +369,43 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                     } else {
 
                     }
-                }else{
-
-                }
             }else{
 
             }
 
         }
-        composable("${Screens.DailyQuestComplete.route}/{listExercises}/{isQuest}") { backStackEntry ->
-            val workout = backStackEntry.arguments?.getString("listExercises")
+        composable("${Screens.DailyQuestComplete.route}/{isQuest}") { backStackEntry ->
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
             if(isQuest != null) {
-                if (workout != null) {
-                    if(isQuest) {
-                        // Retrieve the DailyQuest based on the title
-                        val exercises = dailyQuest
-                        Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                if(isQuest) {
+                    // Retrieve the DailyQuest based on the title
+                    val exercises = dailyQuest
+                    LaunchedEffect(Unit){
+                        Log.d("NavGraph", "Entra no LauchedEffect")
                         if (exercises != null) {
-                            // Pass the retrieved DailyQuest to the DailyQuest composable
-                            DailyQuestComplete(
-                                navController = navController,
-                                listExercises = exercises,
-                                isQuest = true
-                            )
-                        } else {
-                            // Handle the case where the retrieved DailyQuest is null
-                        }
-                    } else {
-                        // TODO: LIDAR QUANDO NAO É UM QUEST
-                    }
-                }else{
+                            authManager.updateDailyQuest(exercises) { success ->
+                                if (success) {
+                                    Log.d("NavGraph","deu certo")
+                                } else {
 
+                                }
+                            }
+                        }
+                    }
+                    Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                    if (exercises != null) {
+                        // Pass the retrieved DailyQuest to the DailyQuest composable
+                        DailyQuestComplete(
+                            navController = navController,
+                            listExercises = exercises,
+                            isQuest = true
+                        )
+                    } else {
+                        // Handle the case where the retrieved DailyQuest is null
+                    }
+                } else {
+                    // TODO: LIDAR QUANDO NAO É UM QUEST
                 }
             }else{
 

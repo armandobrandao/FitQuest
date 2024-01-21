@@ -3,11 +3,11 @@ data class WorkoutData(
     val id: String? = null,
     val title: String = "",
     val duration: String = "",
-    val isCompleted: Boolean = false,
+    var isCompleted: Boolean = false,
     val image: Int = 0,
     val exercises: List<ExerciseData> = emptyList(),
     val date: String = "",
-    val isQuest: Boolean = false,
+    val quest: Boolean = false,
     val xp : Int = 0,
 )
 

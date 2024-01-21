@@ -1,7 +1,6 @@
 package com.example.fitquest
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,16 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 
 
 @Composable
@@ -76,7 +73,7 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        if (challenge.isGroup) {
+                        if (challenge.group) {
                             Text(
                                 text = "Group Challenge",
                                 fontWeight = FontWeight.Bold,
@@ -139,7 +136,7 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center
                         )
-                        if (challenge.isGroup) {
+                        if (challenge.group) {
                             Text(
                                 text = "Josh completed: 39 800 steps",
                                 fontSize = 15.sp,
@@ -159,6 +156,20 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(100.dp)
+                                        .clip(CircleShape)
+                                )
+                                Image(
+                                    painter = rememberImagePainter(
+                                        data = challenge.friend?.profileImageUrl,
+                                        builder = {
+                                            crossfade(false)
+                                            placeholder(R.drawable.default_profile_image)
+                                        }
+                                    ),
+                                    contentScale = ContentScale.Crop,
+                                    contentDescription = "${challenge.friend?.fullName}'s profile photo",
+                                    modifier = Modifier
+                                        .size(120.dp)
                                         .clip(CircleShape)
                                 )
                             }

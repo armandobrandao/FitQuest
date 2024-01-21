@@ -103,7 +103,7 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
 }
 
 // Function to calculate total time in minutes
-private fun calculateTotalTime(exercises: List<ExerciseData>): Int {
+fun calculateTotalTime(exercises: List<ExerciseData>): Int {
     // Calculate total time of exercises and breaks in seconds
     val totalTimeInSeconds = (exercises.sumBy { it.durationInSeconds } + (exercises.size - 1) * 30) * 4
 

@@ -306,10 +306,17 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
         ) {
             // Round profile image
             Image(
-                painter = painterResource(id = user.profileImage),
-                contentDescription = null,
+                painter = rememberImagePainter(
+                    data = user.profileImageUrl,
+                    builder = {
+                        crossfade(false)
+                        placeholder(R.drawable.default_profile_image)
+                    }
+                ),
+                contentScale = ContentScale.Crop,
+                contentDescription = "${user.fullName}'s profile photo",
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(120.dp)
                     .clip(CircleShape)
             )
 

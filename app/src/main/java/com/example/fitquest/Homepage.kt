@@ -320,15 +320,15 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             .fillMaxWidth()
     ) {
         // Image
-        Image(
-            painter = painterResource(id = quest.image), // Replace with your image resource
-            contentDescription = quest.title, // Content description can be set to null for decorative images
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = RoundedCornerShape(26.dp))
-
-        )
+//        Image(
+//            painter = painterResource(id = quest.image), // Replace with your image resource
+//            contentDescription = quest.title, // Content description can be set to null for decorative images
+//            contentScale = ContentScale.Crop,
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .clip(shape = RoundedCornerShape(26.dp))
+//
+//        )
 
         // Text and Arrow
         Column(

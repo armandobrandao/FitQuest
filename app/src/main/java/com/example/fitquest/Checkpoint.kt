@@ -150,6 +150,7 @@ fun GoogleMapWithMarker(
 fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
     // Calculate progress percentage
     val progress = if (checkpoint.isCompleted) 1.0f else 0.0f
+    val totalTimeInMinutes = checkpoint.workout?.let { calculateTotalTime(it.exercises) }
 
     Column(
         modifier = Modifier
@@ -193,7 +194,7 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "20 mins | 5 exercises | 4x", // tem de ser gerados
+                text = "$totalTimeInMinutes mins | ${checkpoint.workout?.exercises?.size} exercises | 4x", // tem de ser gerados
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.weight(1f))

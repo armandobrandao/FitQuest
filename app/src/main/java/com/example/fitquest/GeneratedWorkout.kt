@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 
 
 data class Exercise(
@@ -97,14 +99,19 @@ fun ExerciseItem(exercise: ExerciseData) {
                     .weight(1f),
                 horizontalAlignment = Alignment.End
             ) {
-//                Image(
-//                    painter = painterResource(id = exercise.imageResId),
-//                    contentDescription = "Image of: ${exercise.name}",
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier
-//                        .size(100.dp)
-//                        .clip(MaterialTheme.shapes.medium)
-//                )
+                Image(
+                    painter = rememberImagePainter(
+                        data = exercise.imageResId,
+                        builder = {
+                            crossfade(false)
+                        }
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "Image of: ${exercise.name}",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                )
             }
         }
     }

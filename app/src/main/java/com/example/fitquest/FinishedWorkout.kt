@@ -182,7 +182,7 @@ fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutD
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.DailyQuestComplete.route}/$listExercises/$isQuest")
+                navController.navigate("${Screens.DailyQuestComplete.route}/$isQuest")
             },
             modifier = Modifier
                 .padding(8.dp),

@@ -19,7 +19,7 @@ data class UserProfile(
     val firstDayOfWeek: String = "", // New field from the questionnaire
     val trainingDays: String = "", // New field from the questionnaire
     val sessionsOutside: String = "",
-    val xp_total: Int = 0,
+    var xp_total: Int = 0,
     val xp_level: Int = 0,
     val level: Int = 0,
     val joinDate: String = "",

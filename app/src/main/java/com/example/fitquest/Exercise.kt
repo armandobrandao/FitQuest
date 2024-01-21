@@ -4,12 +4,14 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +57,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                 override fun onFinish() {
                     if(currentExercise == listExercises.exercises.size-1 && currentSet >= numSets ){
                         if(isQuest) {
-                            navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest/$checkpointName")
+                            navController.navigate("${Screens.FinishedWorkout.route}/$isQuest")
                         }else{
                             navController.navigate("${Screens.CheckpointComplete.route}/$checkpointName")
                         }
@@ -109,7 +112,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
 
                         if (currentSet > numSets) {
                             // All sets are completed, navigate or handle completion
-                            navController.navigate("${Screens.FinishedWorkout.route}/$listExercises")
+                            navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest")
                         }
                         // Reset exercise index for the new set
 
@@ -174,14 +177,19 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-//                Image(
-//                    painter = painterResource(id = listExercises.exercises[currentExercise].imageResId),
-//                    contentDescription = null,
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier
-//                        .width(400.dp)
-//                        .height(300.dp) // Set your desired height limit here
-//                )
+                Image(
+                    painter = rememberImagePainter(
+                        data = listExercises.exercises[currentExercise].imageResId,
+                        builder = {
+                            crossfade(false)
+                        }
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "${listExercises.exercises[currentExercise].name}",
+                    modifier = Modifier
+                        .width(400.dp)
+                        .height(300.dp)
+                )
             }
         }
 
