@@ -3,7 +3,7 @@ data class WorkoutData(
     val id: String? = null,
     val title: String = "",
     val duration: String = "",
-    var isCompleted: Boolean = false,
+    var completed: Boolean = false,
     val image: Int = 0,
     val exercises: List<ExerciseData> = emptyList(),
     val date: String = "",

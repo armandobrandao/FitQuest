@@ -549,7 +549,7 @@ class AuthManager(private val activity: Activity) {
                     val newDailyQuest = WorkoutData(
                         title = "Generated Daily Quest",
                         duration = "45 mins", // You can adjust this as needed
-                        isCompleted = false,
+                        completed = false,
                         image = R.drawable.pilates, // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
@@ -683,7 +683,7 @@ class AuthManager(private val activity: Activity) {
                         if (checkpoint?.name == checkpointName) {
                             if(!checkpoint.isCompleted){
                                 checkpoint.isCompleted = true
-                                checkpoint.workout!!.isCompleted = true
+                                checkpoint.workout!!.completed = true
                                 completou = true
                             }
                         }
@@ -806,7 +806,7 @@ class AuthManager(private val activity: Activity) {
 
 
                         // Update isCompleted field
-                        daily?.isCompleted = true
+                        daily?.completed = true
 
                         // Save the updated document back to Firestore
                         dailyQuestDoc.reference.set(daily!!)
@@ -1128,7 +1128,7 @@ class AuthManager(private val activity: Activity) {
                 workout = WorkoutData(
                     title = "",
                     duration = "45 mins", // You can adjust this as needed
-                    isCompleted = false,
+                    completed = false,
                     image = R.drawable.pilates, // Replace with the appropriate image
                     exercises = selectedExercises,
                     date = getCurrentFormattedDateDaily(),
