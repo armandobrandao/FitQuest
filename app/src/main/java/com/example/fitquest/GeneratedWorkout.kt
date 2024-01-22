@@ -42,18 +42,18 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 
 
-data class Exercise(
-    val name: String,
-    val duration: String,
-    val imageResId: String,
-    val durationInSeconds: Int,
-    val suitableGender: List<String>,
-    val suitableGoals: List<String>,
-    val suitableMotivations: List<String>,
-    val suitablePushUps: List<String>,
-    val suitableActivityLevels: List<String>,
-    val target: String = ""
-)
+//data class Exercise(
+//    val name: String,
+//    val duration: String,
+//    val imageResId: String,
+//    val durationInSeconds: Int,
+//    val suitableGender: List<String>,
+//    val suitableGoals: List<String>,
+//    val suitableMotivations: List<String>,
+//    val suitablePushUps: List<String>,
+//    val suitableActivityLevels: List<String>,
+//    val target: String = ""
+//)
 
 //val sampleExercises = listOf(
 //    ExerciseData("Abdominais", "1 set of 12 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
@@ -144,7 +144,8 @@ fun StartWorkoutButton(navController: NavController, isQuest: Boolean, checkpoin
 
 
 @Composable
-fun GeneratedWorkout(navController: NavHostController) {
+fun GeneratedWorkout(navController: NavHostController, generatedWorkout: WorkoutData?) {
+    val totalTimeInMinutes = generatedWorkout?.let { calculateTotalTime(it.exercises) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -180,16 +181,20 @@ fun GeneratedWorkout(navController: NavHostController) {
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        Text(
-                            text = "Abs Workout",       // tem de ser gerado
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                        )
+                        if (generatedWorkout != null) {
+                            Text(
+                                text = "${generatedWorkout.title}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp,
+                            )
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "20 mins | 5 exercises | 4x",        // tem de ser gerados
-                            fontSize = 14.sp
-                        )
+                        if (generatedWorkout != null) {
+                            Text(
+                                text = "$totalTimeInMinutes mins | ${generatedWorkout.exercises.size} exercises | 4x",
+                                fontSize = 14.sp
+                            )
+                        }
                         // Placeholder content (replace with your content)
                         ElevatedCard(
                             modifier = Modifier
@@ -198,12 +203,14 @@ fun GeneratedWorkout(navController: NavHostController) {
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
-//                                sampleExercises.forEachIndexed { index, exercise ->
-//                                    ExerciseItem(exercise = exercise)
-//                                    if (index < sampleExercises.size - 1) {
-//                                        Divider()
-//                                    }
-//                                }
+                                if (generatedWorkout != null) {
+                                    generatedWorkout.exercises.forEachIndexed { index, exercise ->
+                                        ExerciseItem(exercise = exercise)
+                                        if (index < generatedWorkout.exercises.size - 1) {
+                                            Divider()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

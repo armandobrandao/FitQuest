@@ -20,8 +20,8 @@ sealed class Screens(val route: String) {
     object FinishedWorkout : Screens("finishedWorkout")
     object DailyQuestComplete : Screens("dailyQuestComplete")
     object SignUpUser : Screens("user_sign_up")
-
     object Challenge : Screens("challenge")
+    object GeneratedWorkout : Screens("generatedWorkout")
 
 
 

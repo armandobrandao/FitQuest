@@ -23,12 +23,15 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var challenges by remember { mutableStateOf<List<ChallengeData?>>(emptyList()) }
     var usersList by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
     var placeData by remember { mutableStateOf<PlaceData?>(null) }
+    var generatedWorkout by remember { mutableStateOf<WorkoutData?>(null) }
+
 
     LaunchedEffect(authManager, userKey) {
         authManager.getCurrentUser { user ->
             if (user != null) {
                 currentUser = user
                 // Increment the key to trigger a re-execution of LaunchedEffect
+                Log.d("NavGraph", "$currentUser")
                 userKey++
             } else {
                 // Handle the case where the user is null
@@ -118,7 +121,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 //                }
                 if (search != null) {
                     Log.d("NavGraph", "Entra no search != null ")
-                    Friend(user = search, navController = navController)
+                    currentUser?.let { Friend(user = search, currentUser = it, navController = navController) }
                 }else {
                     // Handle the case where friend is null (e.g., username not found)
                 }
@@ -144,7 +147,32 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             }
         }
         composable(Screens.GenerateWorkout.route) {
-            GenerateWorkout(navController = navController)
+            GenerateWorkout(navController = navController, authManager = authManager)
+        }
+
+        composable("${Screens.GeneratedWorkout.route}/{selectedType}/{selectedDuration}") { backStackEntry ->
+            val selectedType = backStackEntry.arguments?.getString("selectedType")
+            val selectedDuration = backStackEntry.arguments?.getString("selectedDuration")
+            var canEnter by remember { mutableStateOf(false) }
+            LaunchedEffect(selectedType) {
+                authManager.generateNewWorkout(
+                    selectedType = selectedType,
+                    selectedDuration = selectedDuration
+                ) { result ->
+                    if (result != null) {
+                        // Handle the generated workout (e.g., navigate to a new screen)
+                        Log.d("GENERATE", "Generated Workout: $result")
+                        generatedWorkout = result
+                        canEnter = true
+                    } else {
+                        // Handle the case when the workout generation fails
+                        Log.d("GENERATE", "Failed to generate workout")
+                    }
+                }
+            }
+            if(canEnter) {
+                GeneratedWorkout(navController = navController, generatedWorkout = generatedWorkout)
+            }
         }
 
         composable("${Screens.CheckpointComplete.route}/{checkpointName}") { backStackEntry ->

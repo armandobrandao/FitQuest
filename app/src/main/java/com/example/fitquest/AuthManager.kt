@@ -311,7 +311,9 @@ class AuthManager(private val activity: Activity) {
     }
 
     fun getCurrentUser(callback: (UserProfile?) -> Unit) {
+        Log.d("AuthManager", "Entra no getCurrentUser")
         val user = auth.currentUser
+        Log.d("AuthManager", "user: $user")
         if (user != null) {
             firestore.collection("users")
                 .document(user.uid)
@@ -319,6 +321,7 @@ class AuthManager(private val activity: Activity) {
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         val userProfile = documentSnapshot.toObject(UserProfile::class.java)
+                        Log.d("AuthManager", "userProfile: $userProfile")
                         if (userProfile != null) {
                             val currentLevelData = calculateUserLevel(userProfile.xp_total)
                             val currentLevelXpData = calculateUserLevelXp(userProfile.xp_total)
@@ -353,13 +356,15 @@ class AuthManager(private val activity: Activity) {
                                 currentStreak = userProfile.currentStreak,
                                 profileImageUrl = userProfile.profileImageUrl
                             )
-                            updateCurrentUserProfile(user.uid, currentUser, null) {
-                                if (it) {
-                                    callback(currentUser)
-                                } else {
-                                    callback(null)
-                                }
-                            }
+                            Log.d("AuthManager", "userProfile: $userProfile")
+                            callback(currentUser)
+//                            updateCurrentUserProfile(user.uid, currentUser, null) {
+//                                if (it) {
+//                                    callback(currentUser)
+//                                } else {
+//                                    callback(null)
+//                                }
+//                            }
                         } else {
                             callback(null)
                         }
@@ -381,6 +386,7 @@ class AuthManager(private val activity: Activity) {
         imageUri: Uri?, // Pass the image URI to the function
         callback: (Boolean) -> Unit
     ) {
+        Log.d("AuthManager", "Entra no updateCurrentUserProfile")
         // Step 1: Upload the image to Firebase Storage
         val storageRef = storage.reference
         val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}") // Unique path for each image
@@ -419,13 +425,13 @@ class AuthManager(private val activity: Activity) {
                 }
             }
         } else {
-//            Log.d("AuthManager", "entra no else MAL")
+            Log.d("AuthManager", "entra no else do updateCurrentUserProfile")
             // If no image is selected, directly save the UserProfile in Firestore
             firestore.collection("users")
                 .document(userId)
                 .set(userProfile)
                 .addOnSuccessListener {
-//                    Log.d("AuthManager", "entra na firestore.collection errada")
+                    Log.d("AuthManager", "entra no callback true do updateCurrentUserProfile")
                     callback(true)
                 }
                 .addOnFailureListener {
@@ -665,6 +671,19 @@ class AuthManager(private val activity: Activity) {
                 callback(false)
             }
     }
+    fun saveWorkoutForUser(userId: String, newWorkout: WorkoutData, callback: (Boolean) -> Unit) {
+        Log.d("AuthManager", "Entra no saveWorkoutForUser")
+        firestore.collection("users")
+            .document(userId)
+            .collection("generatedWorkout")
+            .add(newWorkout)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
 
     fun saveExercise(exercise: ExerciseData, callback: (Boolean) -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -752,6 +771,74 @@ class AuthManager(private val activity: Activity) {
                 callback(null)
             }
     }
+
+    fun generateNewWorkout(
+        selectedType: String?,
+        selectedDuration: String?,
+        callback: (WorkoutData?) -> Unit
+    ) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+            if (selectedType != null && selectedDuration != null) {
+                // Assuming you have a collection named "exercises" in your Firestore
+                firestore.collection("exercises")
+                    .whereEqualTo("target", selectedType)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val exercisesList = mutableListOf<ExerciseData>()
+
+                        // Convert documents to Exercise objects
+                        for (document in querySnapshot.documents) {
+                            val exercise = document.toObject(ExerciseData::class.java)
+                            exercise?.let { exercisesList.add(it) }
+                        }
+
+                        // Ensure that there are at least 3 exercises in the collection
+                        if (exercisesList.size >= 3) {
+                            // Shuffle the list and select the first three exercises
+                            exercisesList.shuffle()
+                            val selectedExercises = exercisesList.subList(0, 3)
+                            Log.d("AuthManager", "selectedExercises: $selectedExercises")
+
+                            // Create a new WorkoutData with the selected exercises
+                            val newWorkout = WorkoutData(
+                                title = "$selectedType Workout",
+                                duration = selectedDuration,
+                                completed = false,
+                                image = "", // Replace with the appropriate image URL
+                                exercises = selectedExercises,
+                                date = getCurrentFormattedDateDaily(),
+                                quest = false, // Adjust as needed
+                                xp = 50 // Adjust as needed
+                            )
+
+                            // Save the WorkoutData to the user's document
+                            saveWorkoutForUser(userId, newWorkout) { success ->
+                                if (success) {
+                                    callback(newWorkout)
+                                } else {
+                                    // Handle the case when there is an issue saving the WorkoutData
+                                    callback(null)
+                                }
+                            }
+                        } else {
+                            // Handle the case when there are not enough exercises for the selected type
+                            callback(null)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        // Handle the failure to retrieve exercises from Firestore
+                        callback(null)
+                    }
+            } else {
+                // Handle the case when required inputs are missing
+                callback(null)
+            }
+        }
+    }
+
     private fun getCurrentFormattedDateDaily(): String {
         // Replace this with your date formatting logic
         val currentTime = Calendar.getInstance().time

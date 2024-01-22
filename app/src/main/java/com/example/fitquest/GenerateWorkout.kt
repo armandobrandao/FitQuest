@@ -135,62 +135,12 @@ fun InputBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenerateWorkout(navController: NavHostController) {
+fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) {
 
-    // Make the API request
-    var apiResponse by remember { mutableStateOf<String?>(null) }
-
-    // Mapping for display values
-    val difficultyOptionsMap = mapOf(
-        "" to "(optional)",
-        "beginner" to "Beginner",
-        "intermediate" to "Intermediate",
-        "expert" to "Expert",
-    )
-
-    val typeOptionsMap = mapOf(
-        "" to "(optional)",
-        "cardio" to "Cardio",
-        "olympic_weightlifting" to "Olympic Weightlifting",
-        "plyometrics" to "Plyometrics",
-        "powerlifting" to "Powerlifting",
-        "strength" to "Strength",
-        "stretching" to "Stretching",
-        "strongman" to "Strongman",
-    )
-
-    val muscleOptionsMap = mapOf(
-        "" to "(optional)",
-        "abdominals" to "Abdominals",
-        "abductors" to "Abductors",
-        "adductors" to "Adductors",
-        "biceps" to "Biceps",
-        "calves" to "Calves",
-        "chest" to "Chest",
-        "forearms" to "Forearms",
-        "glutes" to "Glutes",
-        "hamstrings" to "Hamstrings",
-        "lats" to "Lats",
-        "lower_back" to "Lower Back",
-        "middle_back" to "Middle Back",
-        "neck" to "Neck",
-        "quadriceps" to "Quadriceps",
-        "traps" to "Traps",
-        "triceps" to "Triceps",
-    )
-
-    val intensityOptions = listOf("", "beginner", "intermediate", "expert")
-    var selectedDifficulty by remember { mutableStateOf(intensityOptions.firstOrNull()) }
-
-    val typeOptions = listOf("", "cardio", "olympic_weightlifting", "plyometrics", "powerlifting", "strength", "stretching", "strongman")
+    val typeOptions = listOf("Cardio", "Back", "Abs", "Legs", "Shoulders", "Full Body", "Arms", "Chest")
     var selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
 
     var selectedDuration by remember { mutableStateOf("") }
-
-    val muscleOptions = listOf("", "abdominals", "abductors", "adductors", "biceps", "calves", "chest", "forearms", "glutes",
-        "hamstrings", "lats", "lower_back", "middle_back", "neck", "quadriceps", "traps", "triceps")
-    var selectedMuscle by remember { mutableStateOf(muscleOptions.firstOrNull()) }
-
 
     Column(
         modifier = Modifier
@@ -229,15 +179,9 @@ fun GenerateWorkout(navController: NavHostController) {
                     )
 
                     InputBox(
-                        label = "Intensity",
-                        options = intensityOptions.map { difficultyOptionsMap[it] ?: it },
-                        onValueChange = { selectedDifficulty = difficultyOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
-                    )
-
-                    InputBox(
                         label = "Type",
-                        options = typeOptions.map { typeOptionsMap[it] ?: it },
-                        onValueChange = { selectedType = typeOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
+                        options = typeOptions,
+                        onValueChange = { selectedType = it }
                     )
 
                     InputBox(
@@ -245,11 +189,6 @@ fun GenerateWorkout(navController: NavHostController) {
                         onValueChange = { selectedDuration = it }
                     )
 
-                    InputBox(
-                        label = "Muscle Type",
-                        options = muscleOptions.map { muscleOptionsMap[it] ?: it },
-                        onValueChange = { selectedMuscle = muscleOptionsMap.entries.firstOrNull { entry -> entry.value == it }?.key ?: it }
-                    )
 
                 }
             }
@@ -266,30 +205,13 @@ fun GenerateWorkout(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    Log.d("GENERATE", "selectedMuscle: $selectedMuscle")
-                    Log.d("GENERATE", "selectedDifficulty: $selectedDifficulty")
-                    Log.d("GENERATE", "selectedType: $selectedType")
-
-                    // Handle Generate Workout button click
-                    val response = WorkoutAPI.makeApiRequest(
-                        selectedMuscle,
-                        selectedType,
-                        selectedDifficulty,
-                        selectedDuration
-                    )
-                    apiResponse = response
-                    Log.d("GENERATE", "Ainda dentro do onClick response: $response")
+                    navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType/$selectedDuration")
                 },
                 modifier = Modifier
                     .padding(8.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
             ) {
                 Text("Generate Workout", fontSize = 20.sp)
-            }
-
-            // Display API response
-            apiResponse?.let { response ->
-                Text("API Response: $response", fontSize = 16.sp)
             }
         }
     }

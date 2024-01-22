@@ -316,7 +316,7 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
                 contentScale = ContentScale.Crop,
                 contentDescription = "${user.fullName}'s profile photo",
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(50.dp)
                     .clip(CircleShape)
             )
 
