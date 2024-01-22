@@ -36,13 +36,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -59,7 +57,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.CameraPositionState
 
 data class Place(
@@ -333,7 +330,7 @@ fun CheckpointItem(checkpoint: CheckpointData, checkpointNumber: Int, onClick: (
                 Spacer(modifier = Modifier.weight(1f))
 
                 // Display check mark if the checkpoint is done
-                if (checkpoint.isCompleted) {
+                if (checkpoint.completed) {
                     Image(
                         painter = painterResource(id = R.drawable.check_mark),
                         contentDescription = "Check mark icon",
@@ -420,7 +417,7 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
                 if (checkpoint != null) {
                     CheckpointItem(checkpoint = checkpoint, checkpointNumber = index + 1, onClick = {
                         // Navigate to friend's profile
-                        if(checkpoint.isCompleted) {
+                        if(checkpoint.completed) {
                             navController.navigate("${Screens.CheckpointComplete.route}/${checkpoint.name}")
                         }else{
                             navController.navigate("${Screens.Checkpoint.route}/${challenge.title}/${checkpoint.name}")

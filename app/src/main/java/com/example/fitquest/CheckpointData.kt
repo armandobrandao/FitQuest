@@ -1,12 +1,10 @@
 package com.example.fitquest
 
-import java.time.Duration
-
 data class CheckpointData(
     val id: String? = null,
     val name: String = "",
     val place: PlaceData? = null,
-    var isCompleted: Boolean = false,
+    var completed: Boolean = false,
     val workout: WorkoutData? = null,
     )
 

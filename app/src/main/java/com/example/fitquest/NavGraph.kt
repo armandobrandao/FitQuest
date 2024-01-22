@@ -22,6 +22,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var dailyQuest by remember { mutableStateOf<WorkoutData?>(null) }
     var challenges by remember { mutableStateOf<List<ChallengeData?>>(emptyList()) }
     var usersList by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
+    var placeData by remember { mutableStateOf<PlaceData?>(null) }
 
     LaunchedEffect(authManager, userKey) {
         authManager.getCurrentUser { user ->
@@ -179,21 +180,41 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 
                             }
                         }
+                        val placeName = checkpoint.place?.name
+                        authManager.getPlace(placeName) { result ->
+                            if (result != null) {
+                                placeData = result
+                                Log.d("NavGraph", "Place data retrieved successfully: $placeData")
+                                // Handle the retrieved placeData as needed
+                            } else {
+                                Log.d("NavGraph", "Failed to retrieve place data.")
+                                // Handle the case where placeData is null
+                            }
+                        }
                     }
                 }
                 // Pass the exercises from the checkpoint to the CheckpointComplete composable
                 checkpoint.workout?.let { workout ->
                     val challenge = challenges.find { it?.checkpoints?.contains(checkpoint) == true }
 
+                    val placeName = checkpoint.place?.name
                     if (challenge != null) {
                         currentUser?.id?.let {
-                            CheckpointComplete(
-                                navController = navController,
-                                workout = workout,
-                                challenge = challenge,
-                                authManager = authManager,
-                                userId = it
-                            )
+                            if (checkpointName != null) {
+                                if (challengeId != null) {
+                                    CheckpointComplete(
+                                        navController = navController,
+                                        workout = workout,
+                                        challenge = challenge,
+                                        authManager = authManager,
+                                        userId = it,
+                                        checkpointName = checkpointName,
+                                        challengeId = challengeId,
+                                        placeName = placeName,
+                                        placeData = placeData
+                                    )
+                                }
+                            }
                         }
                     }
                 }

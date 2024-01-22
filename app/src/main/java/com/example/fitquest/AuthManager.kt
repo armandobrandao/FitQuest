@@ -466,6 +466,38 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
+    fun uploadPhotoToFirestorePlace(imageUri: Uri?, userId: String, checkpointName: String, challengeId :String, placeName: String, callback: (Uri?) -> Unit) {
+        if (imageUri != null) {
+            val storageRef = storage.reference
+            val imageRef = storageRef.child("post_workout_images/${UUID.randomUUID()}")
+
+            val uploadTask = imageRef.putFile(imageUri)
+            uploadTask.continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                imageRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+
+                    // Save the reference to the user's subcollection dailyQuests document
+//                    savePhotoReferenceToDailyQuest(userId, downloadUri)
+                    savePhotoReferenceToPlacesAndCheckpoint(userId, downloadUri, checkpointName, challengeId, placeName)
+
+                    // Return the download URI
+                    callback(downloadUri)
+                } else {
+                    callback(null)
+                }
+            }
+        } else {
+            callback(null)
+        }
+    }
+
     private fun savePhotoReferenceToDailyQuest(userId: String, photoUri: Uri?) {
         val currentDate = getCurrentFormattedDateDaily()
 
@@ -495,6 +527,87 @@ class AuthManager(private val activity: Activity) {
             .addOnFailureListener {
                 // Handle the failure to query the dailyQuests collection
             }
+    }
+
+    fun savePhotoReferenceToPlacesAndCheckpoint(
+        userId: String,
+        photoUri: Uri?,
+        checkpointName: String,
+        challengeId: String,
+        placeName: String
+    ) {
+        if (photoUri != null) {
+            // Save the photo reference to the Places collection
+            savePhotoReferenceToPlaces(placeName, photoUri.toString())
+
+            // Save the photo reference to the Challenge's Checkpoint
+            savePhotoReferenceToCheckpoint(userId, challengeId, checkpointName, photoUri.toString())
+        }
+    }
+
+    private fun savePhotoReferenceToPlaces(placeName: String, photoUrl: String) {
+        val placesCollectionRef = firestore.collection("places")
+
+        // Query for documents where the "name" field is equal to placeName
+        val query = placesCollectionRef.whereEqualTo("name", placeName)
+
+        query.get().addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                // Assuming there is only one document with the specified placeName
+                val documentSnapshot = querySnapshot.documents[0]
+                val placeData = documentSnapshot.toObject(PlaceData::class.java)
+                val updatedPhotos = placeData?.photos?.toMutableList() ?: mutableListOf()
+                updatedPhotos.add(photoUrl)
+
+                // Update the photos list in the PlaceData document
+                documentSnapshot.reference.update("photos", updatedPhotos)
+                    .addOnSuccessListener {
+                        // Successfully updated the photos list in the PlaceData document
+                    }
+                    .addOnFailureListener {
+                        // Handle the failure to update the photos list
+                    }
+            } else {
+                // Handle the case where no document with the specified placeName is found
+            }
+        }
+    }
+
+
+    private fun savePhotoReferenceToCheckpoint(
+        userId: String,
+        challengeId: String,
+        checkpointName: String,
+        photoUrl: String
+    ) {
+        val challengesCollectionRef = firestore.collection("users").document(userId)
+            .collection("challenges").document(challengeId)
+        challengesCollectionRef.get().addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                val challengeData = documentSnapshot.toObject(ChallengeData::class.java)
+                val checkpoints = challengeData?.checkpoints?.toMutableList() ?: mutableListOf()
+
+                val updatedCheckpoints = checkpoints.map { checkpoint ->
+                    if (checkpoint?.name == checkpointName) {
+                        val updatedWorkout = checkpoint.workout?.copy(post_photo = photoUrl)
+                        checkpoint.copy(workout = updatedWorkout)
+                    } else {
+                        checkpoint
+                    }
+                }
+
+                // Update the checkpoints list in the ChallengeData document
+                challengesCollectionRef.update("checkpoints", updatedCheckpoints)
+                    .addOnSuccessListener {
+                        // Successfully updated the checkpoints list in the ChallengeData document
+                    }
+                    .addOnFailureListener {
+                        // Handle the failure to update the checkpoints list
+                    }
+            } else {
+                // Handle the case where the ChallengeData document does not exist
+            }
+        }
     }
 
 
@@ -745,8 +858,8 @@ class AuthManager(private val activity: Activity) {
                     // Find the checkpoint in the challenge
                     val updatedCheckpoints = challenge?.checkpoints?.map { checkpoint ->
                         if (checkpoint?.name == checkpointName) {
-                            if(!checkpoint.isCompleted){
-                                checkpoint.isCompleted = true
+                            if(!checkpoint.completed){
+                                checkpoint.completed = true
                                 checkpoint.workout!!.completed = true
                                 completou = true
                             }
@@ -968,6 +1081,34 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
+    fun getPlace(placeName: String?, callback: (PlaceData?) -> Unit) {
+        if (placeName.isNullOrEmpty()) {
+            callback(null)
+            return
+        }
+
+        val placesCollectionRef = firestore.collection("places")
+
+        // Query for documents where the "name" field is equal to placeName
+        val query = placesCollectionRef.whereEqualTo("name", placeName).limit(1)
+
+        query.get().addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                // Assuming there is only one document with the specified placeName
+                val documentSnapshot = querySnapshot.documents[0]
+                val placeData = documentSnapshot.toObject(PlaceData::class.java)
+                callback(placeData)
+            } else {
+                // Handle the case where no document with the specified placeName is found
+                callback(null)
+            }
+        }.addOnFailureListener {
+            // Handle any failure in fetching the place data
+            callback(null)
+        }
+    }
+
+
 
     //Sempre que faz log in faz check da streak!
     fun updateLongestStreak(userId: String, callback: (Boolean) -> Unit) {
@@ -1184,7 +1325,7 @@ class AuthManager(private val activity: Activity) {
             val checkpoint = CheckpointData(
                 name = "Checkpoint ${index + 1}",
                 place = selectedPlaces[index],
-                isCompleted = false,
+                completed = false,
                 workout = WorkoutData(
                     title = "",
                     duration = "45 mins", // You can adjust this as needed
