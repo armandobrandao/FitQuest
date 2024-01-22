@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -134,15 +135,18 @@ fun CreateWorkoutButton(navController: NavController) {
         verticalArrangement = Arrangement.Bottom // Align the content to the bottom
     ) {
         Button(
+
             onClick = {
                 navController.navigate(Screens.GenerateWorkout.route)
             },
             modifier = Modifier
                 .padding(8.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
+            colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Create Workout", fontSize =20.sp)
+            Text("Create Workout", fontSize =20.sp,
+                color = colorResource(id = R.color.lightModeColor)
+            )
         }
     }
 }

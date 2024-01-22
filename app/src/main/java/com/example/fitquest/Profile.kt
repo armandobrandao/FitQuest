@@ -3,6 +3,7 @@ package com.example.fitquest
 import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -142,7 +144,9 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                     onClick = {
                         context.startActivity(Intent(context, EditInfo::class.java))
                     }) {
-                    Text("Edit Profile")
+                    Text("Edit Profile",
+                        color = colorResource(id = R.color.lightModeColor)
+                    )
                 }
                 Spacer(modifier = Modifier.weight(0.5f)) // Adjust spacing as needed
                 Button(
@@ -151,7 +155,8 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                         authManager.signOut()
                         context.startActivity(Intent(context, WelcomeActivity::class.java))
                     }) {
-                    Text("Log out")
+                    Text("Log out",
+                        color = colorResource(id = R.color.lightModeColor))
                 }
             }
         }
@@ -260,7 +265,8 @@ fun FriendsSection(navController: NavController, user: UserProfile) {
                 onClick = {
                     navController.navigate(Screens.AddFriends.route)
                 }) {
-                Text("Add Friends")
+                Text("Add Friends",
+                    color = colorResource(id = R.color.lightModeColor))
             }
         }
         if (user.friends.isNotEmpty()) {

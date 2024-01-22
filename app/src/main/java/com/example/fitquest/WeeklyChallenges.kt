@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -239,12 +240,12 @@ fun WeeklyChallenges(navController: NavHostController, challenges : List<Challen
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
-                    .background(Color(0xFFED8F83))
+                    .background(Color(0xFFE66353))
             ) {
                 Text(
                     text = "Individual",
                     fontSize = 25.sp,
-                    color= colorText
+                    color = colorResource(id = R.color.lightModeColor)
                 )
             }
             Tab(
@@ -253,12 +254,12 @@ fun WeeklyChallenges(navController: NavHostController, challenges : List<Challen
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
-                    .background(Color(0xFFED8F83))
+                    .background(Color(0xFFE66353))
             ) {
                 Text(
                     text = "Group",
                     fontSize = 25.sp,
-                    color= colorText
+                    color = colorResource(id = R.color.lightModeColor)
                 )
             }
         }
