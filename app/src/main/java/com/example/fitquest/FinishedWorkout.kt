@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
-fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, isQuest: Boolean) {
+fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, isQuest: Boolean, isGen: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -156,7 +156,7 @@ fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, is
             }
         }
         // Placeholder CreateWorkoutButton
-        ContinueWorkoutButton(navController, listExercises, isQuest)
+        ContinueWorkoutButton(navController, listExercises, isQuest, isGen)
     }
 }
 
@@ -171,7 +171,7 @@ fun calculateTotalDuration(exercises: List<ExerciseData>): String {
 }
 
 @Composable
-fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutData, isQuest: Boolean) {
+fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutData, isQuest: Boolean, isGen: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,7 +182,11 @@ fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutD
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.DailyQuestComplete.route}/$isQuest")
+                if(isQuest || isGen) {
+                    navController.navigate("${Screens.DailyQuestComplete.route}/$isQuest")
+                }else{
+                    navController.navigate(Screens.Home.route)
+                }
             },
             modifier = Modifier
                 .padding(8.dp),

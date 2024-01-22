@@ -118,7 +118,7 @@ fun ExerciseItem(exercise: ExerciseData) {
 }
 
 @Composable
-fun StartWorkoutButton(navController: NavController, isQuest: Boolean, checkpoint: String?) {
+fun StartWorkoutButton(navController: NavController, isQuest: Boolean, isGen: Boolean, checkpoint: String?) {
     Log.d("StartWorkoutButton", "isQuest, $isQuest")
     Column(
         modifier = Modifier
@@ -130,7 +130,7 @@ fun StartWorkoutButton(navController: NavController, isQuest: Boolean, checkpoin
     ) {
         Button(
             onClick = {
-                navController.navigate("${Screens.CountdownPage.route}/$numSets/$isQuest/$checkpoint")
+                navController.navigate("${Screens.CountdownPage.route}/$numSets/$isQuest/$isGen/$checkpoint")
             },
             modifier = Modifier
                 .padding(8.dp),
@@ -218,7 +218,7 @@ fun GeneratedWorkout(navController: NavHostController, generatedWorkout: Workout
             }
         }
         // Placeholder CreateWorkoutButton
-//        StartWorkoutButton(navController, workout )
+        StartWorkoutButton(navController, isQuest = false, isGen = true, checkpoint = null)
     }
 }
 

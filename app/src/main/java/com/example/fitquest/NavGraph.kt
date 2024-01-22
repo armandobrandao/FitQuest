@@ -137,8 +137,21 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                 val quest = dailyQuest
                 Log.d("NavGraph", "Navigating to DailyQuest for $questTitle")
                 if (quest != null) {
-                    // Pass the retrieved DailyQuest to the DailyQuest composable
-                    DailyQuest(quest = quest, navController = navController)
+                    if (quest.completed){
+                        currentUser?.id?.let {
+                            DailyQuestComplete(
+                                navController = navController,
+                                listExercises = quest,
+                                isQuest = true,
+                                authManager = authManager,
+                                userId = it,
+                                showButton = false
+                            )
+                        }
+                    }else {
+                        // Pass the retrieved DailyQuest to the DailyQuest composable
+                        DailyQuest(quest = quest, navController = navController)
+                    }
                 } else {
                     // Handle the case where the retrieved DailyQuest is null
                 }
@@ -304,11 +317,16 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 
 
 
-        composable("${Screens.CountdownPage.route}/{numSets}/{isQuest}/{checkpointName}") { backStackEntry ->
+        composable("${Screens.CountdownPage.route}/{numSets}/{isQuest}/{isGen}/{checkpointName}") { backStackEntry ->
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
+            val isGen = backStackEntry.arguments?.getString("isGen")?.toBoolean()
+
             Log.d("NavGraph COUNTDOWNPAGE", "isQuest, $isQuest")
+            Log.d("NavGraph COUNTDOWNPAGE", "isGen, $isGen")
+            Log.d("NavGraph COUNTDOWNPAGE", "numSets, $numSets")
+            Log.d("NavGraph COUNTDOWNPAGE", "checkpointName, $checkpointName")
             if(isQuest != null) {
                 if(isQuest) {
                     // Retrieve the DailyQuest based on the title
@@ -322,6 +340,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                             exercises = exercises,
                             numSets = numSets,
                             isQuest = true,
+                            isGen = false,
                             checkpointName = null
                         )
                     } else {
@@ -329,24 +348,51 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                         // Handle the case where the retrieved DailyQuest is null
                     }
                 } else {
-                    // Look for the checkpoint in challenges and get exercises
-                    val checkpoint = challenges
-                        .flatMap { it?.checkpoints.orEmpty() }
-                        .find { it?.name == checkpointName }
-
-                    if (checkpoint != null) {
-                        // Pass the exercises from the checkpoint to the CountdownPage composable
-                        checkpoint.workout?.let {
+                    if(isGen!!) {
+                        Log.d("NavGraph COUNTDOWNPAGE", "Entra bem no if isGen")
+                        val exercises = generatedWorkout
+                        if (exercises != null) {
+                            Log.d("NAVGRAPH COUNTDOWNPAGE", "exercises, $exercises")
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
                             CountdownPage(
                                 navController = navController,
-                                exercises = it,
+                                exercises = exercises,
                                 numSets = numSets,
                                 isQuest = false,
-                                checkpointName = checkpointName
+                                isGen = true,
+                                checkpointName = null
                             )
+                        }else{
+                            Log.d("NavGraph COUNTDOWNPAGE", "Entra mal no else")
+                            if (checkpointName != null) {
+                                Log.d(
+                                    "NavGraph COUNTDOWNPAGE",
+                                    "Entra mal para o checkpointName != null"
+                                )
+                                // Look for the checkpoint in challenges and get exercises
+                                val checkpoint = challenges
+                                    .flatMap { it?.checkpoints.orEmpty() }
+                                    .find { it?.name == checkpointName }
+
+                                if (checkpoint != null) {
+                                    // Pass the exercises from the checkpoint to the CountdownPage composable
+                                    checkpoint.workout?.let {
+                                        CountdownPage(
+                                            navController = navController,
+                                            exercises = it,
+                                            numSets = numSets,
+                                            isQuest = false,
+                                            isGen = false,
+                                            checkpointName = checkpointName
+                                        )
+                                    }
+                                } else {
+                                    // Handle the case when checkpoint is not found
+                                }
+                            } else {
+
+                            }
                         }
-                    } else {
-                        // Handle the case when checkpoint is not found
                     }
                 }
             }else{
@@ -354,9 +400,10 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             }
         }
 
-        composable("${Screens.Exercise.route}/{numSets}/{isQuest}/{checkpointName}") { backStackEntry ->
+        composable("${Screens.Exercise.route}/{numSets}/{isQuest}/{isGen}/{checkpointName}") { backStackEntry ->
             val numSets = backStackEntry.arguments?.getString("numSets")?.toIntOrNull() ?: 1
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
+            val isGen = backStackEntry.arguments?.getString("isGen")?.toBoolean()
             val checkpointName = backStackEntry.arguments?.getString("checkpointName")
             Log.d("NavGraph EXERCISE", "isQuest, $isQuest")
 
@@ -372,28 +419,48 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                             listExercises = exercises,
                             numSets = numSets,
                             isQuest = true,
+                            isGen = false,
                             checkpointName = null
-
                         )
                     } else {
                         // Handle the case where the retrieved DailyQuest is null
                     }
                 } else {
-                    // Look for the checkpoint in challenges and get exercises
-                    val checkpoint = challenges
-                        .flatMap { it?.checkpoints.orEmpty() }
-                        .find { it?.name == checkpointName }
-
-                    if (checkpoint != null) {
-                        // Pass the exercises from the checkpoint to the CountdownPage composable
-                        checkpoint.workout?.let {
+                    if (isGen!!) {
+                        // Look for the checkpoint in challenges and get exercises
+                        val exercises = generatedWorkout
+                        if (exercises != null) {
+                            Log.d("NAVGRAPH", "exercises, $exercises")
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
                             Exercise(
                                 navController = navController,
-                                listExercises = it,
+                                listExercises = exercises,
                                 numSets = numSets,
                                 isQuest = false,
-                                checkpointName = checkpointName
+                                isGen = true,
+                                checkpointName = null
                             )
+                        }
+                    } else {
+                        if (checkpointName != null) {
+                            val checkpoint = challenges
+                                .flatMap { it?.checkpoints.orEmpty() }
+                                .find { it?.name == checkpointName }
+
+                            if (checkpoint != null) {
+                                // Pass the exercises from the checkpoint to the CountdownPage composable
+                                checkpoint.workout?.let {
+                                    Exercise(
+                                        navController = navController,
+                                        listExercises = it,
+                                        numSets = numSets,
+                                        isQuest = false,
+                                        isGen = false,
+                                        checkpointName = checkpointName
+                                    )
+                                }
+                            }
+                        } else {
                         }
                     }
                 }
@@ -414,13 +481,23 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                             FinishedWorkout(
                                 navController = navController,
                                 listExercises = exercises,
-                                isQuest = true
+                                isQuest = true,
+                                isGen = false
                             )
                         } else {
                             // Handle the case where the retrieved DailyQuest is null
                         }
                     } else {
-
+                        val exercises = generatedWorkout
+                        if (exercises != null) {
+                            // Pass the retrieved DailyQuest to the DailyQuest composable
+                            FinishedWorkout(
+                                navController = navController,
+                                listExercises = exercises,
+                                isQuest = false,
+                                isGen = true
+                            )
+                        }
                     }
             }else{
 
@@ -431,38 +508,35 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             val isQuest = backStackEntry.arguments?.getString("isQuest")?.toBoolean()
 
             if(isQuest != null) {
-                if(isQuest) {
-                    // Retrieve the DailyQuest based on the title
-                    val exercises = dailyQuest
-                    LaunchedEffect(Unit){
-                        Log.d("NavGraph", "Entra no LauchedEffect")
-                        if (exercises != null) {
-                            authManager.updateDailyQuest(exercises) { success ->
-                                if (success) {
-                                    Log.d("NavGraph","deu certo")
-                                } else {
+                // Retrieve the DailyQuest based on the title
+                val exercises = dailyQuest
+                LaunchedEffect(Unit){
+                    Log.d("NavGraph", "Entra no LauchedEffect")
+                    if (exercises != null) {
+                        authManager.updateDailyQuest(exercises, isQuest) { success ->
+                            if (success) {
+                                Log.d("NavGraph","deu certo")
+                            } else {
 
-                                }
                             }
                         }
                     }
-                    Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
-                    if (exercises != null) {
-                        // Pass the retrieved DailyQuest to the DailyQuest composable
-                        currentUser?.id?.let {
-                            DailyQuestComplete(
-                                navController = navController,
-                                listExercises = exercises,
-                                isQuest = true,
-                                authManager = authManager,
-                                userId = it
-                            )
-                        }
-                    } else {
-                        // Handle the case where the retrieved DailyQuest is null
+                }
+                Log.d("NavGraph", "Navigating to DailyQuest for $exercises")
+                if (exercises != null) {
+                    // Pass the retrieved DailyQuest to the DailyQuest composable
+                    currentUser?.id?.let {
+                        DailyQuestComplete(
+                            navController = navController,
+                            listExercises = exercises,
+                            isQuest = isQuest,
+                            authManager = authManager,
+                            userId = it,
+                            showButton = true
+                        )
                     }
                 } else {
-                    // TODO: LIDAR QUANDO NAO É UM QUEST
+                    // Handle the case where the retrieved DailyQuest is null
                 }
             }else{
 

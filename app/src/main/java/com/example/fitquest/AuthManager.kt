@@ -46,7 +46,9 @@ class AuthManager(private val activity: Activity) {
 
     fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         // Check if the email is already in use using Firestore
+        Log.d("AuthManager", "Entra no signUp")
         val usersCollection = FirebaseFirestore.getInstance().collection("users")
+        Log.d("AuthManager", "usersCollection: $usersCollection")
 
         usersCollection.whereEqualTo("e-mail", email)
             .get()
@@ -63,7 +65,9 @@ class AuthManager(private val activity: Activity) {
                             // Password has more than 6 characters, proceed with Firebase Authentication
                             auth.createUserWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(activity) { task ->
+                                    Log.d("AuthManager", "entra na task do createUserWithEmailAndPassword")
                                     if (task.isSuccessful) {
+                                        Log.d("AuthManager", "diz que a task é successful")
                                         signIn(email, password) { signInSuccess, signInError ->
                                             if (signInSuccess) {
                                                 callback(true, null)
@@ -71,6 +75,7 @@ class AuthManager(private val activity: Activity) {
                                                 callback(false, signInError ?: "Error signing in after sign-up")
                                             }
                                         }
+                                        callback(true, null)
                                     } else {
                                         callback(false, task.exception?.message)
                                     }
@@ -96,6 +101,7 @@ class AuthManager(private val activity: Activity) {
 
 
     fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+        Log.d("AuthManager", "entra no SignIn")
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
@@ -104,6 +110,7 @@ class AuthManager(private val activity: Activity) {
                         // Check if the user already has a DailyQuest for the current day
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                             if (!hasDailyQuest) {
+                                Log.d("AuthManager", "antes da zona que meti em comentário")
                                 // If no DailyQuest exists for the current day, generate a new one
                                 generateNewDailyQuest(user.uid) { newDailyQuest ->
                                     if (newDailyQuest != null) {
@@ -126,10 +133,13 @@ class AuthManager(private val activity: Activity) {
                                         callback(false, "Error generating DailyQuest")
                                     }
                                 }
+                                Log.d("AuthManager", "passa a zona que meti em comentário")
 
                                 updateLongestStreak(user.uid) { updateSuccess ->
                                     if (updateSuccess) {
                                         // Callback with sign-in success
+                                        Log.d("AuthManager", "updateLongestStreak em updateSuccess")
+
                                         callback(true, null)
                                     } else {
                                         // Callback with update failure
@@ -166,7 +176,7 @@ class AuthManager(private val activity: Activity) {
     private fun hasDailyQuestForToday(userId: String, callback: (Boolean) -> Unit) {
         // Get the current date
         val currentDate = getCurrentFormattedDateDaily()
-
+        Log.d("AuthManager", "entra no hasDailyQuestForToday")
         firestore.collection("users")
             .document(userId)
             .collection("dailyQuests")
@@ -175,10 +185,13 @@ class AuthManager(private val activity: Activity) {
             .get()
             .addOnSuccessListener { querySnapshot ->
                 // Check if there is a DailyQuest for the current day
+                Log.d("AuthManager", "entra no hasDailyQuestForToday addOnSuccessListener")
                 callback(!querySnapshot.isEmpty)
             }
             .addOnFailureListener {
                 // Handle the failure to check for existing DailyQuests in Firestore
+                Log.d("AuthManager", "entra no hasDailyQuestForToday addOnFailureListener")
+
                 callback(false)
             }
     }
@@ -197,100 +210,54 @@ class AuthManager(private val activity: Activity) {
         firstDay: String,
         trainingDays: String,
         sessionsOutside: String,
+        joinDate: String,
+        uniqueCode: String,
         profileImageUri: String?,
         callback: (Boolean, String?) -> Unit
     ) {
         val user = auth.currentUser
-//        if (profileImageUri != null) {
-//            val storageRef = storage.reference
-//            val imageRef = storageRef.child("profile_images/${user?.uid}.jpg")
-//
-//            imageRef.putFile(profileImageUri)
-//                .addOnSuccessListener { _ ->
-//                    // Image uploaded successfully, get the download URL
-//                    imageRef.downloadUrl.addOnSuccessListener { uri ->
-//                        // Create UserProfile with the image URL
-//                        val userProfile = UserProfile(
-//                            username = username,
-//                            fullName = name,
-//                            profileImage = R.drawable.default_profile_image,
-//                            gender = gender,
-//                            age = age,
-//                            weight = weight,
-//                            height = height,
-//                            goal = goal,
-//                            motivation = motivation,
-//                            pushUps = pushUps,
-//                            firstDayOfWeek = firstDay,
-//                            trainingDays = trainingDays,
-//                            activityLevel = activityLevel,
-//                            sessionsOutside = sessionsOutside,
-//                            xp_total = 0,
-//                            xp_level = 0,
-//                            level = 0,
-//                            joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
-//                            longestStreak = 0,
-//                            places = emptyList(),
-//                            friends = emptyList(),
-//                            friend_reqs = emptyList(),
-//                            achievements = emptyList(),
-//                            progress = 0,
-//                            uniqueCode = generateUniqueCode(username),
-//                            lastLoginDate = Calendar.getInstance().time,
-//                            currentStreak = 0,
-//                            profileImageUrl = uri.toString()
-//                        )
-//
-//                        // Save UserProfile to Firestore
-//                        saveUserProfile(user?.uid, userProfile, callback)
-//                    }
-//                }
-//                .addOnFailureListener { e ->
-//                    callback(false, "Error uploading profile image: $e")
-//                }
-//        }else {
-            val userProfile = UserProfile(
-                id = user?.uid,
-                username = username,
-                fullName = name,
-                profileImage = R.drawable.default_profile_image,
-                gender = gender,
-                age = age,
-                weight = weight,
-                height = height,
-                goal = goal,
-                motivation = motivation,
-                pushUps = pushUps,
-                firstDayOfWeek = firstDay,
-                trainingDays = trainingDays,
-                activityLevel = activityLevel,
-                sessionsOutside = sessionsOutside,
-                xp_total = 0,
-                xp_level = 0,
-                level = 0,
-                joinDate = getCurrentFormattedDate(), // Replace this function with your date formatting logic
-                longestStreak = 0,
-                places = emptyList(),
-                friends = emptyList(),
-                friend_reqs = emptyList(),
-                achievements = emptyList(),
-                progress = 0,
-                uniqueCode = generateUniqueCode(username),
-                lastLoginDate = Calendar.getInstance().time,
-                currentStreak = 0,
-                profileImageUrl = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/profile_images%2Fdefault_profile_image.jpg?alt=media&token=00edab37-d4f3-44d4-8a67-1c5f17d91aaf"
-            )
+        Log.d("AuthManager", "user.uid")
+        val userProfile = UserProfile(
+            id = user?.uid,
+            username = username,
+            fullName = name,
+            profileImage = R.drawable.default_profile_image,
+            gender = gender,
+            age = age,
+            weight = weight,
+            height = height,
+            goal = goal,
+            motivation = motivation,
+            pushUps = pushUps,
+            firstDayOfWeek = firstDay,
+            trainingDays = trainingDays,
+            activityLevel = activityLevel,
+            sessionsOutside = sessionsOutside,
+            xp_total = 0,
+            xp_level = 0,
+            level = 0,
+            joinDate = joinDate, // Replace this function with your date formatting logic
+            longestStreak = 0,
+            places = emptyList(),
+            friends = emptyList(),
+            friend_reqs = emptyList(),
+            achievements = emptyList(),
+            progress = 0,
+            uniqueCode = uniqueCode,
+            lastLoginDate = Calendar.getInstance().time,
+            currentStreak = 0,
+            profileImageUrl = "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/profile_images%2Fdefault_profile_image.jpg?alt=media&token=af298b29-c545-4d30-b56a-5331b6667348"
+        )
 
-            saveUserProfile(user?.uid, userProfile, callback)
-//        }
+        saveUserProfile(user?.uid, userProfile, callback)
     }
 
 
-    private fun getCurrentFormattedDate(): String {
-        // Replace this with your date formatting logic
-        val currentTime = Calendar.getInstance().time
-        return SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentTime)
-    }
+//    private fun getCurrentFormattedDate(): String {
+//        // Replace this with your date formatting logic
+//        val currentTime = Calendar.getInstance().time
+//        return SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentTime)
+//    }
 
     private fun saveUserProfile(
         userId: String?,
@@ -311,9 +278,9 @@ class AuthManager(private val activity: Activity) {
     }
 
     fun getCurrentUser(callback: (UserProfile?) -> Unit) {
-        Log.d("AuthManager", "Entra no getCurrentUser")
+//        Log.d("AuthManager", "Entra no getCurrentUser")
         val user = auth.currentUser
-        Log.d("AuthManager", "user: $user")
+//        Log.d("AuthManager", "user: $user")
         if (user != null) {
             firestore.collection("users")
                 .document(user.uid)
@@ -321,7 +288,7 @@ class AuthManager(private val activity: Activity) {
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
                         val userProfile = documentSnapshot.toObject(UserProfile::class.java)
-                        Log.d("AuthManager", "userProfile: $userProfile")
+//                        Log.d("AuthManager", "userProfile: $userProfile")
                         if (userProfile != null) {
                             val currentLevelData = calculateUserLevel(userProfile.xp_total)
                             val currentLevelXpData = calculateUserLevelXp(userProfile.xp_total)
@@ -356,7 +323,7 @@ class AuthManager(private val activity: Activity) {
                                 currentStreak = userProfile.currentStreak,
                                 profileImageUrl = userProfile.profileImageUrl
                             )
-                            Log.d("AuthManager", "userProfile: $userProfile")
+//                            Log.d("AuthManager", "userProfile: $userProfile")
                             callback(currentUser)
 //                            updateCurrentUserProfile(user.uid, currentUser, null) {
 //                                if (it) {
@@ -441,7 +408,7 @@ class AuthManager(private val activity: Activity) {
     }
 
 
-    fun uploadPhotoToFirestore(imageUri: Uri?, userId: String, callback: (Uri?) -> Unit) {
+    fun uploadPhotoToFirestore(isQuest: Boolean, imageUri: Uri?, userId: String, callback: (Uri?) -> Unit) {
         if (imageUri != null) {
             val storageRef = storage.reference
             val imageRef = storageRef.child("post_workout_images/${UUID.randomUUID()}")
@@ -459,7 +426,7 @@ class AuthManager(private val activity: Activity) {
                     val downloadUri = task.result
 
                     // Save the reference to the user's subcollection dailyQuests document
-                    savePhotoReferenceToDailyQuest(userId, downloadUri)
+                    savePhotoReferenceToDailyQuest(isQuest, userId, downloadUri)
 
                     // Return the download URI
                     callback(downloadUri)
@@ -504,24 +471,34 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-    private fun savePhotoReferenceToDailyQuest(userId: String, photoUri: Uri?) {
+    private fun savePhotoReferenceToDailyQuest(isQuest: Boolean, userId: String, photoUri: Uri?) {
         val currentDate = getCurrentFormattedDateDaily()
+
+        var collection = "generatedWorkouts"
+        if(isQuest){
+            collection = "dailyQuests"
+        }
+
+        Log.d("AuthManager", "coollection, $collection")
+        Log.d("AuthManager", "isQuest, $isQuest")
 
         // Query the dailyQuests collection to get the document for today
         firestore.collection("users")
             .document(userId)
-            .collection("dailyQuests")
+            .collection(collection)
             .whereEqualTo("date", currentDate)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
                     val dailyQuestDocument = querySnapshot.documents[0]
+                    Log.d("AuthManager", "dailyQuestDocument, $dailyQuestDocument")
 
                     // Update the dailyQuest document with the photo reference
                     dailyQuestDocument.reference
                         .update("post_photo", photoUri.toString())
                         .addOnSuccessListener {
                             // Successfully updated the dailyQuest document with the photo reference
+                            Log.d("AuthManager", "Entra no success")
                         }
                         .addOnFailureListener {
                             // Handle the failure to update the dailyQuest document
@@ -621,29 +598,29 @@ class AuthManager(private val activity: Activity) {
         auth.signOut()
     }
 
-    fun generateUniqueCode(username: String): String {
-        val random = SecureRandom()
-        val salt = random.nextInt().absoluteValue.toString()
-
-        // Concatenate username and randomness
-        val combinedData = "$username$salt"
-
-        // Create a hash of the combined data
-        val hashedCode = hashString(combinedData)
-
-        val sanitizedHashedCode = hashedCode.replace("-", "")
-
-        val part1 = sanitizedHashedCode.substring(0, 2)
-        val part2 = sanitizedHashedCode.substring(2, 4)
-        val part3 = sanitizedHashedCode.substring(4, 6)
-
-        return "$part1-$part2-$part3"
-    }
-
-    fun hashString(input: String): String {
-        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
-        return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
-    }
+//    fun generateUniqueCode(username: String): String {
+//        val random = SecureRandom()
+//        val salt = random.nextInt().absoluteValue.toString()
+//
+//        // Concatenate username and randomness
+//        val combinedData = "$username$salt"
+//
+//        // Create a hash of the combined data
+//        val hashedCode = hashString(combinedData)
+//
+//        val sanitizedHashedCode = hashedCode.replace("-", "")
+//
+//        val part1 = sanitizedHashedCode.substring(0, 2)
+//        val part2 = sanitizedHashedCode.substring(2, 4)
+//        val part3 = sanitizedHashedCode.substring(4, 6)
+//
+//        return "$part1-$part2-$part3"
+//    }
+//
+//    fun hashString(input: String): String {
+//        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
+//        return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
+//    }
 
     fun calculateUserLevel(xp_total: Int): Int{
         val levelThreshold = 200
@@ -675,7 +652,7 @@ class AuthManager(private val activity: Activity) {
         Log.d("AuthManager", "Entra no saveWorkoutForUser")
         firestore.collection("users")
             .document(userId)
-            .collection("generatedWorkout")
+            .collection("generatedWorkouts")
             .add(newWorkout)
             .addOnSuccessListener {
                 callback(true)
@@ -746,7 +723,7 @@ class AuthManager(private val activity: Activity) {
                         title = "Generated Daily Quest",
                         duration = "45 mins", // You can adjust this as needed
                         completed = false,
-                        image = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e", // Replace with the appropriate image
+                        image = "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fyoga.jpg?alt=media&token=b623e637-edb7-4433-8dcf-6abd7bd8b296", // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
                         quest = true,
@@ -784,7 +761,7 @@ class AuthManager(private val activity: Activity) {
             if (selectedType != null && selectedDuration != null) {
                 // Assuming you have a collection named "exercises" in your Firestore
                 firestore.collection("exercises")
-                    .whereEqualTo("target", selectedType)
+//                    .whereEqualTo("target", selectedType) //TODO retirar isto de comentário
                     .get()
                     .addOnSuccessListener { querySnapshot ->
                         val exercisesList = mutableListOf<ExerciseData>()
@@ -865,6 +842,39 @@ class AuthManager(private val activity: Activity) {
 
                         // Create a new WorkoutData object with the dailyQuest's ID
                         val workoutDataWithId = dailyQuest?.copy(id = dailyQuestId)
+                        callback(workoutDataWithId)
+                    } else {
+                        callback(null)
+                    }
+                }
+                .addOnFailureListener {
+                    callback(null)
+                }
+        } else {
+            callback(null)
+        }
+    }
+
+    fun getGeneratedWorkoutForToday(callback: (WorkoutData?) -> Unit) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+            val currentDate = getCurrentFormattedDateDaily()
+
+            firestore.collection("users")
+                .document(userId)
+                .collection("generatedWorkouts")
+                .whereEqualTo("date", currentDate)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        val generatedWorkoutDocument = querySnapshot.documents[0]
+                        val generatedWorkoutId = generatedWorkoutDocument.id
+                        val generatedWorkout = generatedWorkoutDocument.toObject(WorkoutData::class.java)
+
+                        // Create a new WorkoutData object with the dailyQuest's ID
+                        val workoutDataWithId = generatedWorkout?.copy(id = generatedWorkoutId)
                         callback(workoutDataWithId)
                     } else {
                         callback(null)
@@ -1044,18 +1054,21 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
-    fun updateDailyQuest(exercises: WorkoutData, callback: (Boolean) -> Unit) {
+    fun updateDailyQuest(exercises: WorkoutData, isQuest: Boolean, callback: (Boolean) -> Unit) {
 //        Log.d("AuthManager", "Entering updateDailyQuest")
         val user = auth.currentUser
 
         if (user != null) {
             val userId = user.uid
-
+            var collection = "generatedWorkouts"
+            if(isQuest){
+                collection = "dailyQuests"
+            }
             // Get the reference to the user's dailyQuests collection
             val dailyQuestsRef = firestore.collection("users")
                 .document(userId)
-                .collection("dailyQuests")
-//            Log.d("AuthManager", "dailyQuestsRef: $dailyQuestsRef")
+                .collection(collection)
+            Log.d("AuthManager", "dailyQuestsRef: $dailyQuestsRef")
 
             // Query the dailyQuests subcollection to find the document with matching date
             dailyQuestsRef.whereEqualTo("date", exercises.date).get()
@@ -1063,10 +1076,10 @@ class AuthManager(private val activity: Activity) {
                     if (!querySnapshot.isEmpty) {
                         // If there is a matching document, update its isCompleted field to true
                         val dailyQuestDoc = querySnapshot.documents[0]
-//                        Log.d("AuthManager", "dailyQuestDoc: $dailyQuestDoc")
+                        Log.d("AuthManager", "dailyQuestDoc: $dailyQuestDoc")
 
                         val daily = dailyQuestDoc.toObject(WorkoutData::class.java)
-//                        Log.d("AuthManager", "daily: $daily")
+                        Log.d("AuthManager", "daily: $daily")
                         // Update isCompleted field
                         daily?.completed = true
 
@@ -1199,6 +1212,8 @@ class AuthManager(private val activity: Activity) {
 
     //Sempre que faz log in faz check da streak!
     fun updateLongestStreak(userId: String, callback: (Boolean) -> Unit) {
+        Log.d("AuthManager", "entra no updateLongestStreak")
+
         val user = auth.currentUser
         if (user != null) {
             firestore.collection("users")
@@ -1505,19 +1520,37 @@ class AuthManager(private val activity: Activity) {
         val updatedFriendReqs = userFriend.friend_reqs.toMutableList().apply {
             add(currentUser)
         }
-        Log.d("AuthManager", "sendFriendRequest currentUser + $currentUser + userFriend $userFriend")
 
         // Update userFriend's friend_reqs in Firestore
         firestore.collection("users")
-            .document(userFriend.id!!)
-            .update("friend_reqs", updatedFriendReqs)
-            .addOnSuccessListener {
-                callback(true)
+            .whereEqualTo("uniqueCode", userFriend.uniqueCode)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Assuming there is only one user with a uniqueCode (or you handle multiple results accordingly)
+                    val userDocument = querySnapshot.documents[0]
+                    val userId = userDocument.id
+
+                    // Update friend_reqs for the found user
+                    firestore.collection("users")
+                        .document(userId)
+                        .update("friend_reqs", updatedFriendReqs)
+                        .addOnSuccessListener {
+                            callback(true)
+                        }
+                        .addOnFailureListener {
+                            callback(false)
+                        }
+                } else {
+                    // User not found with the provided uniqueCode
+                    callback(false)
+                }
             }
             .addOnFailureListener {
                 callback(false)
             }
     }
+
 
     fun acceptFriendRequest(currentUser: UserProfile, friend: UserProfile, callback: (Boolean) -> Unit) {
         // Add friend to currentUser's friends list

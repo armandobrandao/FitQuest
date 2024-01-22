@@ -17,6 +17,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.fitquest.databinding.UserSignUpBinding
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import kotlin.math.absoluteValue
 import kotlin.properties.Delegates
 
 class SignUpUser : AppCompatActivity() {
@@ -273,10 +279,13 @@ class SignUpUser : AppCompatActivity() {
                             val trainingDays = findViewById<RadioButton>(trainingDaysValue).text.toString()
                             val sessionsOutside = findViewById<RadioButton>(sessionsOutsideValue).text.toString()
 
+                            val joinDate = getCurrentFormattedDate()
+                            val uniqueCode = generateUniqueCode(username)
+
                             // Call the signUpUser function with the additional values
                             authManager.signUpUser(
                                 name, username, gender, age, weight, height,
-                                goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
+                                goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside, joinDate, uniqueCode,
                                 null
                             ) { success, errorMessage ->
                                 if (success) {
@@ -315,7 +324,6 @@ class SignUpUser : AppCompatActivity() {
             }
         }
 
-
 //        buttonSubmit.setOnClickListener {
 //            val name = TextName.text.toString()
 //            val username = TextUsername.text.toString()
@@ -351,4 +359,35 @@ class SignUpUser : AppCompatActivity() {
 //        }
 
     }
+
+    private fun getCurrentFormattedDate(): String {
+        // Replace this with your date formatting logic
+        val currentTime = Calendar.getInstance().time
+        return SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentTime)
+    }
+
+    fun generateUniqueCode(username: String): String {
+        val random = SecureRandom()
+        val salt = random.nextInt().absoluteValue.toString()
+
+        // Concatenate username and randomness
+        val combinedData = "$username$salt"
+
+        // Create a hash of the combined data
+        val hashedCode = hashString(combinedData)
+
+        val sanitizedHashedCode = hashedCode.replace("-", "")
+
+        val part1 = sanitizedHashedCode.substring(0, 2)
+        val part2 = sanitizedHashedCode.substring(2, 4)
+        val part3 = sanitizedHashedCode.substring(4, 6)
+
+        return "$part1-$part2-$part3"
+    }
+
+    fun hashString(input: String): String {
+        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
+        return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
+    }
+
 }

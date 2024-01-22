@@ -138,7 +138,7 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
                 contentScale = ContentScale.Crop,
                 contentDescription = "${user.fullName}'s profile photo",
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(50.dp)
                     .clip(CircleShape)
             )
 
@@ -150,6 +150,8 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
             // Send Friend Request Button
             Button(
                 onClick = {
+                    Log.d("AddFriend", "currentUser: $currentUser")
+                    Log.d("AddFriend", "user: $user")
                     authManager.sendFriendRequest(currentUser, user) { success ->
                         if (success) {
                             // Update the friendRequestSent variable

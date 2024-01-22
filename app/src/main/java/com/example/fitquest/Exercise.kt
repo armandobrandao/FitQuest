@@ -25,7 +25,7 @@ import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: Int, isQuest: Boolean, checkpointName : String?) {
+fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: Int, isQuest: Boolean, isGen: Boolean, checkpointName : String?) {
     var currentSet by remember { mutableStateOf(1) }
     var currentExercise by remember { mutableStateOf(0) }
     var timerRunning by remember { mutableStateOf(true) }
@@ -56,7 +56,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
 
                 override fun onFinish() {
                     if(currentExercise == listExercises.exercises.size-1 && currentSet >= numSets ){
-                        if(isQuest) {
+                        if(isQuest || isGen) {
                             navController.navigate("${Screens.FinishedWorkout.route}/$isQuest")
                         }else{
                             navController.navigate("${Screens.CheckpointComplete.route}/$checkpointName")

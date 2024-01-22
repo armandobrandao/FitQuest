@@ -239,6 +239,6 @@ fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
             }
         }
 //        StartWorkoutButton(navController)
-        StartWorkoutButton(navController = navController, isQuest = false, checkpoint = checkpoint.name)
+        StartWorkoutButton(navController = navController, isQuest = false, isGen = false, checkpoint = checkpoint.name)
     }
 }

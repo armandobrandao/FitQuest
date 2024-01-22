@@ -98,7 +98,7 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
             }
         }
         // Bottom bar
-        StartWorkoutButton(navController = navController, isQuest = true, checkpoint = null)
+        StartWorkoutButton(navController = navController, isQuest = true, isGen = false, checkpoint = null)
     }
 }
 

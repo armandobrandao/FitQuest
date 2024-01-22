@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun CountdownPage(navController: NavController, exercises: WorkoutData, numSets: Int, isQuest: Boolean, checkpointName: String?) {
+fun CountdownPage(navController: NavController, exercises: WorkoutData, numSets: Int, isQuest: Boolean, isGen: Boolean, checkpointName: String?) {
     Log.d("CountdownPage", "Entra na CountdownPage")
     Log.d("CountdownPage", "exercises, $exercises")
     var secondsLeft by remember { mutableStateOf(3) }
@@ -39,7 +39,7 @@ fun CountdownPage(navController: NavController, exercises: WorkoutData, numSets:
 
             override fun onFinish() {
                 // Countdown completed, navigate to another page
-                navController.navigate("${Screens.Exercise.route}/$numSets/$isQuest/$checkpointName")
+                navController.navigate("${Screens.Exercise.route}/$numSets/$isQuest/$isGen/$checkpointName")
             }
         }
 

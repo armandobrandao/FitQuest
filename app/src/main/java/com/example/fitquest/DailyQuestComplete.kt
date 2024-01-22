@@ -61,7 +61,7 @@ import android.util.Log
 
 
 @Composable
-fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData, isQuest: Boolean, authManager: AuthManager, userId: String) {
+fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData, isQuest: Boolean, authManager: AuthManager, userId: String, showButton:Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -141,14 +141,17 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
             }
         }
     }
-    // Placeholder CreateWorkoutButton
-        TakePhotoButton { photoUri ->
-            // Handle the captured photo URI here
-            Log.d("DailyQuestComplete", "Photo captured: $photoUri")
-            // If you want to upload the photo to Firestore, call the upload function here
-            authManager.uploadPhotoToFirestore(photoUri, userId) { downloadUri ->
-                // Handle the download URI if needed
-                Log.d("DailyQuestComplete", "Download URI: $downloadUri")
+        if(showButton){
+            // Placeholder CreateWorkoutButton
+            TakePhotoButton { photoUri ->
+                // Handle the captured photo URI here
+                Log.d("DailyQuestComplete", "Photo captured: $photoUri")
+                // If you want to upload the photo to Firestore, call the upload function here
+                authManager.uploadPhotoToFirestore(isQuest, photoUri, userId) { downloadUri ->
+                    // Handle the download URI if needed
+                    Log.d("DailyQuestComplete", "Download URI: $downloadUri")
+                    navController.navigate(Screens.Home.route)
+                }
             }
         }
     }
