@@ -358,7 +358,9 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
                 contentDescription = "Arrow",
                 modifier = Modifier
                     .size(24.dp)
-                    .align(Alignment.End)
+                    .align(Alignment.End),
+                tint = colorResource(id = R.color.lightModeColor)
+
             )
         }
 

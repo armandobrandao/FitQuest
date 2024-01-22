@@ -70,6 +70,7 @@ class AuthManager(private val activity: Activity) {
                                         Log.d("AuthManager", "diz que a task é successful")
                                         signIn(email, password) { signInSuccess, signInError ->
                                             if (signInSuccess) {
+                                                Log.d("ENTROU", "ENTROU")
                                                 callback(true, null)
                                             } else {
                                                 callback(false, signInError ?: "Error signing in after sign-up")

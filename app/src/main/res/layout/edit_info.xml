@@ -27,11 +27,14 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignTop="@id/toolbar"
+                    android:background="#00FFFFFF"
                     android:contentDescription="Back"
                     android:onClick="onBackButtonClick"
-                    android:src="@drawable/left_arrow"
                     android:scaleType="fitCenter"
-                    android:background="@android:color/white" />
+                    android:src="@drawable/left_arrow"
+                    android:tint="@color/black"
+
+                    />
             </androidx.appcompat.widget.Toolbar>
 
             <!-- Edit Your Profile Title -->
@@ -86,10 +89,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewUsernameLabel"
             android:hint="Select a valid username"
-            android:inputType="text"
+            android:editable="false"
             android:minHeight="48dp"
             android:textSize="15dp"
          />
+        <TextView
+            android:id="@+id/errorMessageTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:layout_below="@id/editTextUsername"
+            />
 
         <ImageView
             android:id="@+id/imageViewProfilePhoto"
@@ -566,62 +579,53 @@
                 />
 
         </RadioGroup>
-
+        <TextView
+            android:id="@+id/errorMessageSubmitTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:layout_below="@id/radioGroupSessionsOutside"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/radioGroupSessionsOutside"
             android:layout_gravity="center_horizontal"
+            android:layout_below="@id/errorMessageSubmitTextView"
+
            >
 
             <!-- First Button and TextView pair -->
             <Button
                 android:id="@+id/buttonBack"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Back"
                 android:layout_marginTop="22dp"
                 android:visibility="gone"
+                android:layout_gravity="left"
             />
 
-            <TextView
-                android:id="@+id/errorMessageTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/red"
-                android:textSize="16sp"
-                android:visibility="invisible"
-                android:layout_below="@id/buttonBack"
-         />
 
             <!-- Second Button and TextView pair -->
             <Button
                 android:id="@+id/buttonSubmit"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Update"
                 android:layout_marginTop="22dp"
                 android:visibility="gone"
+                android:layout_gravity="right"
              />
 
-            <TextView
-                android:id="@+id/errorMessageSubmitTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/red"
-                android:textSize="16sp"
-                android:visibility="invisible"
-                android:layout_below="@id/buttonSubmit"/>
+
         </LinearLayout>
 
 

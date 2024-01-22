@@ -550,8 +550,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/errorMessageSubmitTextView"
             android:layout_gravity="center_horizontal"
+            android:layout_below="@id/errorMessageSubmitTextView"
             android:id="@+id/layoutbuttons"
            >
 
@@ -566,8 +566,6 @@
                 android:visibility="gone"
                 android:layout_gravity="left"
             />
-
-
 
             <!-- Second Button and TextView pair -->
             <Button
