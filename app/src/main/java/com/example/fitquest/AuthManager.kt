@@ -512,8 +512,13 @@ class AuthManager(private val activity: Activity) {
         // Create a hash of the combined data
         val hashedCode = hashString(combinedData)
 
-        // Return a portion of the hash as the unique code
-        return hashedCode.substring(0, 8) // You can adjust the length as needed
+        val sanitizedHashedCode = hashedCode.replace("-", "")
+
+        val part1 = sanitizedHashedCode.substring(0, 2)
+        val part2 = sanitizedHashedCode.substring(2, 4)
+        val part3 = sanitizedHashedCode.substring(4, 6)
+
+        return "$part1-$part2-$part3"
     }
 
     fun hashString(input: String): String {
