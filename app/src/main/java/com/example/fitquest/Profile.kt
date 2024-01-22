@@ -166,7 +166,7 @@ fun StatisticsSection(user: UserProfile) {
     )
 
     val statisticsList2 = listOf(
-        Statistic((user.progress).toString() + "%", R.drawable.progress, "Progress"),
+        Statistic((user.friends.size).toString() , R.drawable.friends_total, "Friends"),
         Statistic((user.places.size).toString(), R.drawable.places, "Places"),
     )
 
