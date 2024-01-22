@@ -104,8 +104,8 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         composable("${Screens.Friend.route}/{friendUsername}") { backStackEntry ->
             val friendUsername = backStackEntry.arguments?.getString("friendUsername")
             if (friendUsername != null) {
-                val friend = sampleFriends.find { it.username == friendUsername }
-                val request = requestList.find { it.username == friendUsername }
+//                val friend = sampleFriends.find { it.username == friendUsername }
+//                val request = requestList.find { it.username == friendUsername }
                 val search = usersList.find { it.username == friendUsername }
                 Log.d("NavGraph", "Navigating to FriendProfile for $friendUsername")
                 Log.d("NavGraph", "search $search")

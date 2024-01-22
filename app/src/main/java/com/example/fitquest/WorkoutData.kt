@@ -4,7 +4,7 @@ data class WorkoutData(
     val title: String = "",
     val duration: String = "",
     var completed: Boolean = false,
-    val image: Int = 0,
+    val image: String = "",
     val exercises: List<ExerciseData> = emptyList(),
     val date: String = "",
     val quest: Boolean = false,

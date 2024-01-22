@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import java.time.LocalDate
@@ -320,15 +321,22 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             .fillMaxWidth()
     ) {
         // Image
-//        Image(
-//            painter = painterResource(id = quest.image), // Replace with your image resource
-//            contentDescription = quest.title, // Content description can be set to null for decorative images
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .clip(shape = RoundedCornerShape(26.dp))
-//
-//        )
+        Image(
+            painter = rememberImagePainter(
+                data = quest.image,
+//                data = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e",
+                builder = {
+                    crossfade(false)
+                    placeholder(R.drawable.pilates)
+                }
+            ), // Replace with your image resource
+            contentDescription = quest.title, // Content description can be set to null for decorative images
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(shape = RoundedCornerShape(26.dp))
+
+        )
 
         // Text and Arrow
         Column(
@@ -346,14 +354,27 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
 
             // Arrow icon
             Icon(
-                painter = painterResource(id = R.drawable.right_arrow), // Replace with your arrow icon resource
-                contentDescription = "Arrow", // Content description can be set to null for decorative icons
+                painter = painterResource(id = R.drawable.right_arrow),
+                contentDescription = "Arrow",
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.End)
             )
         }
-    }
+
+        // Check mark icon
+        if (quest.completed) {
+                Icon(
+                    painter = painterResource(id = R.drawable.check_mark),
+                    contentDescription = "Check mark icon",
+                    modifier = Modifier
+                        .size(35.dp)
+                        .align(Alignment.TopEnd) // Align to the top-right corner
+                        .padding(top = 4.dp, end = 4.dp) // Add padding for spacing
+                )
+            }
+        }
+
 }
 
 

@@ -172,24 +172,47 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
             ElevatedCard(
                 modifier = Modifier.width(300.dp)
             ) {
-                Text(
-                    text = listExercises.exercises[currentExercise].name,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Image(
-                    painter = rememberImagePainter(
-                        data = listExercises.exercises[currentExercise].imageResId,
-                        builder = {
-                            crossfade(false)
-                        }
-                    ),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "${listExercises.exercises[currentExercise].name}",
-                    modifier = Modifier
-                        .width(400.dp)
-                        .height(300.dp)
-                )
+
+                if(!isBreak) {
+                    Text(
+                        text = listExercises.exercises[currentExercise].name,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Image(
+                        painter = rememberImagePainter(
+                            data = listExercises.exercises[currentExercise].imageResId,
+                            builder = {
+                                crossfade(false)
+                            }
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "${listExercises.exercises[currentExercise].name}",
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(300.dp)
+                    )
+                }else{
+                    Text(
+                        text = "Break",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Image(
+                        painter = rememberImagePainter(
+                            data = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/exercises%2Fbreak.jpg?alt=media&token=adf21d9b-ac46-4050-9472-f85e0d38291d",
+                            builder = {
+                                crossfade(false)
+                            }
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "Exercise break",
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(300.dp)
+                    )
+
+                }
             }
         }
 

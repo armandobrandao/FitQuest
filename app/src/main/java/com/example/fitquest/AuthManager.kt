@@ -727,7 +727,7 @@ class AuthManager(private val activity: Activity) {
                         title = "Generated Daily Quest",
                         duration = "45 mins", // You can adjust this as needed
                         completed = false,
-                        image = R.drawable.pilates, // Replace with the appropriate image
+                        image = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e", // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
                         quest = true,
@@ -1330,7 +1330,7 @@ class AuthManager(private val activity: Activity) {
                     title = "",
                     duration = "45 mins", // You can adjust this as needed
                     completed = false,
-                    image = R.drawable.pilates, // Replace with the appropriate image
+                    image = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e", // Replace with the appropriate image
                     exercises = selectedExercises,
                     date = getCurrentFormattedDateDaily(),
                     quest = false, // Set to false for challenges
