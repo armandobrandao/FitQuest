@@ -31,6 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,10 +51,12 @@ import com.google.firebase.firestore.auth.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainCardFriend(user: UserProfile, navController: NavController, currentUser: UserProfile) {
+fun MainCardFriend(user: UserProfile, navController: NavController, currentUser: UserProfile, authManager: AuthManager) {
     val addFriendIcon =
         if (isSystemInDarkTheme()) painterResource(id = R.drawable.add_user_2)
         else painterResource(id = R.drawable.add_user)
+
+    var friendRequestSent by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -165,19 +171,26 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                 Log.d("Friend", "currentUser.friends: ${currentUser.friends}")
                 Log.d("Friend", "user: ${user}")
                 Log.d("Friend", "isFriend: ${isFriend}")
+
                 val isInFriendReq = user.friend_reqs.any { it.uniqueCode == currentUser.uniqueCode }
                 val isInMyFriendReq = currentUser.friend_reqs.any { it.uniqueCode == user.uniqueCode }
-                Log.d("Friend", "isFriend: ${isFriend}")
+
                 if (!isFriend && !isInFriendReq && !isInMyFriendReq) {
                     Button(
                         onClick = {
                             // Handle add friend click here
                             // Add the user to the friends list or perform the necessary action
+                            authManager.sendFriendRequest(currentUser, user) { success ->
+                                if (success) {
+                                    // Update the friendRequestSent variable
+                                    friendRequestSent = true
+                                }
+                            }
                         },
                         modifier = Modifier
                             .height(48.dp)
                             .padding(horizontal = 16.dp),
-                        colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
+                        colors = ButtonDefaults.buttonColors(if (friendRequestSent || isInFriendReq || isInMyFriendReq) Color.Gray else Color(0xFFE66353))
                     ) {
                         Image(
                             painter = addFriendIcon,
@@ -185,7 +198,7 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                             modifier = Modifier.size(20.dp) // Adjust the size of the icon as needed
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Add Friend", fontWeight = FontWeight.Bold)
+                        Text(if (friendRequestSent || isInFriendReq || isInMyFriendReq) "Sent" else "Add Friend", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -193,13 +206,13 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
     }
 }
 @Composable
-fun Friend(user: UserProfile, currentUser: UserProfile ,navController: NavController) {
+fun Friend(user: UserProfile, currentUser: UserProfile ,navController: NavController, authManager: AuthManager) {
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
     ){
         item {
-            MainCardFriend(user, navController, currentUser)
+            MainCardFriend(user, navController, currentUser, authManager)
             Spacer(modifier = Modifier.height(16.dp))
             StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))

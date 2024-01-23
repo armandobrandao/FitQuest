@@ -1965,21 +1965,22 @@ class AuthManager(private val activity: Activity) {
         val updatedCurrentUserFriends = currentUser.friends.toMutableList().apply {
             add(friend)
         }
-
+        Log.d("AuthManager", "updatedCurrentUserFriends: $updatedCurrentUserFriends")
         // Remove friend from currentUser's friend requests
         val updatedCurrentUserFriendReqs = currentUser.friend_reqs.toMutableList().apply {
             remove(friend)
         }
-
+        Log.d("AuthManager", "updatedCurrentUserFriendReqs: $updatedCurrentUserFriendReqs")
         // Add currentUser to friend's friends list
         val updatedFriendFriends = friend.friends.toMutableList().apply {
             add(currentUser)
         }
-
+        Log.d("AuthManager", "updatedFriendFriends: $updatedFriendFriends")
         // Remove currentUser from friend's friend requests
         val updatedFriendFriendReqs = friend.friend_reqs.toMutableList().apply {
             remove(currentUser)
         }
+        Log.d("AuthManager", "updatedFriendFriendReqs: $updatedFriendFriendReqs")
 
         // Update currentUser's friends and friend_reqs in Firestore
         firestore.collection("users")

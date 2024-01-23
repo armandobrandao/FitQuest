@@ -137,7 +137,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
 //                }
                 if (search != null) {
                     Log.d("NavGraph", "Entra no search != null ")
-                    currentUser?.let { Friend(user = search, currentUser = it, navController = navController) }
+                    currentUser?.let { Friend(user = search, currentUser = it, navController = navController, authManager) }
                 }else {
                     // Handle the case where friend is null (e.g., username not found)
                 }
