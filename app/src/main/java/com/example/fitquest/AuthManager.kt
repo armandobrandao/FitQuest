@@ -944,7 +944,7 @@ class AuthManager(private val activity: Activity) {
                         }
 
                         // Ensure at least 3 criteria match
-                        matchCount >= 2
+                        matchCount >= 1
                     }
 
                     val selectedExercises = filteredExercises.subList(0, 5)

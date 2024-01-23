@@ -134,9 +134,9 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                         .padding(horizontal = 32.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Lvl. " + (user.level).toString(), fontWeight = FontWeight.Bold)
+                    Text(text = "Lvl. ${user.level}", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(text = (user.xp_level).toString() + "/200", fontWeight = FontWeight.Bold)
+                    Text(text = "${user.xp_level}/200", fontWeight = FontWeight.Bold)
                 }
                 Row(
                     modifier = Modifier
