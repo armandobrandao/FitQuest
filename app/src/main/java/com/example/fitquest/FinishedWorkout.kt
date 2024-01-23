@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -190,10 +191,10 @@ fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutD
             },
             modifier = Modifier
                 .padding(8.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFFED8F83)),
+            colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
             shape = RoundedCornerShape(30.dp)
         ) {
-            Text("Continue", fontSize = 20.sp)
+            Text("Continue", fontSize = 20.sp,color = colorResource(id = R.color.lightModeColor))
         }
     }
 }
