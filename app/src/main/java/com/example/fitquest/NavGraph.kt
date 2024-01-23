@@ -363,35 +363,36 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                                 checkpointName = null
                             )
                         }else{
-                            Log.d("NavGraph COUNTDOWNPAGE", "Entra mal no else")
-                            if (checkpointName != null) {
-                                Log.d(
-                                    "NavGraph COUNTDOWNPAGE",
-                                    "Entra mal para o checkpointName != null"
-                                )
-                                // Look for the checkpoint in challenges and get exercises
-                                val checkpoint = challenges
-                                    .flatMap { it?.checkpoints.orEmpty() }
-                                    .find { it?.name == checkpointName }
+                        }
+                    }else{
+                        Log.d("NavGraph COUNTDOWNPAGE", "Entra mal no else")
+                        if (checkpointName != null) {
+                            Log.d(
+                                "NavGraph COUNTDOWNPAGE",
+                                "Entra mal para o checkpointName != null"
+                            )
+                            // Look for the checkpoint in challenges and get exercises
+                            val checkpoint = challenges
+                                .flatMap { it?.checkpoints.orEmpty() }
+                                .find { it?.name == checkpointName }
 
-                                if (checkpoint != null) {
-                                    // Pass the exercises from the checkpoint to the CountdownPage composable
-                                    checkpoint.workout?.let {
-                                        CountdownPage(
-                                            navController = navController,
-                                            exercises = it,
-                                            numSets = numSets,
-                                            isQuest = false,
-                                            isGen = false,
-                                            checkpointName = checkpointName
-                                        )
-                                    }
-                                } else {
-                                    // Handle the case when checkpoint is not found
+                            if (checkpoint != null) {
+                                // Pass the exercises from the checkpoint to the CountdownPage composable
+                                checkpoint.workout?.let {
+                                    CountdownPage(
+                                        navController = navController,
+                                        exercises = it,
+                                        numSets = numSets,
+                                        isQuest = false,
+                                        isGen = false,
+                                        checkpointName = checkpointName
+                                    )
                                 }
                             } else {
-
+                                // Handle the case when checkpoint is not found
                             }
+                        } else {
+
                         }
                     }
                 }
