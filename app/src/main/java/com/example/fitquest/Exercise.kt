@@ -66,7 +66,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     }else {
                         // Exercise timer completed, start the break timer
                         isBreak = true
-                        timerValue = 2 + 1 // break time
+                        timerValue = 30 + 1 // break time
                         timerRunning = true
 
                         Log.d("SET onFinish 1","$currentSet" )
@@ -152,11 +152,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold
                 )
-            },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                }
             }
         )
         Spacer(modifier = Modifier.height(8.dp))

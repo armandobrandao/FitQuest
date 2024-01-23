@@ -94,7 +94,7 @@ fun ExerciseItem(exercise: ExerciseData) {
             ) {
                 Text(text = exercise.name)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Duration: ${exercise.durationInSeconds}")
+                Text(text = "Duration: ${exercise.durationInSeconds} secs")
             }
             Spacer(modifier = Modifier.width(46.dp))
             Column(
@@ -205,7 +205,7 @@ fun GeneratedWorkout(navController: NavHostController, generatedWorkout: Workout
                         Spacer(modifier = Modifier.height(8.dp))
                         if (generatedWorkout != null) {
                             Text(
-                                text = "$totalTimeInMinutes mins | ${generatedWorkout.exercises.size} exercises | 4x",
+                                text = "$totalTimeInMinutes mins | ${generatedWorkout.exercises.size} exercises | 3x",
                                 fontSize = 14.sp
                             )
                         }

@@ -152,7 +152,11 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
                     // Handle the download URI if needed
                     Log.d("DailyQuestComplete", "Download URI: $downloadUri")
                 }
-                navController.navigate(Screens.Home.route)
+                if(isQuest) {
+                    navController.navigate(Screens.Home.route)
+                }else{
+                    navController.navigate(Screens.Workout.route)
+                }
             }
         }
     }

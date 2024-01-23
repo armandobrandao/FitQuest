@@ -109,7 +109,8 @@ class AuthManager(private val activity: Activity) {
                                     Log.d("AuthManager", "entra na task do createUserWithEmailAndPassword")
                                     if (task.isSuccessful) {
                                         Log.d("AuthManager", "diz que a task é successful")
-                                        signIn(email, password) { signInSuccess, signInError ->
+                                        val signUpBefore = true
+                                        signIn(email, password, signUpBefore) { signInSuccess, signInError ->
                                             if (signInSuccess) {
                                                 Log.d("ENTROU", "ENTROU")
                                                 callback(true, null)
@@ -186,7 +187,7 @@ class AuthManager(private val activity: Activity) {
     }
 
 
-    fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+    fun signIn(email: String, password: String, signUpBefore: Boolean, callback: (Boolean, String?) -> Unit) {
         Log.d("AuthManager", "entra no SignIn")
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
@@ -197,48 +198,51 @@ class AuthManager(private val activity: Activity) {
 
                     if (user != null) {
                         // Check if the user already has a DailyQuest for the current day
-                        hasDailyQuestForToday(user.uid) { hasDailyQuest ->
-                            if (!hasDailyQuest) {
-                                Log.d("AuthManager", "antes da zona que meti em comentário")
-                                // If no DailyQuest exists for the current day, generate a new one
-                                generateNewDailyQuest(user.uid) { newDailyQuest ->
-                                    if (newDailyQuest != null) {
-                                        // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
-                                        // ...
-                                        Log.d("New daily quest", "$newDailyQuest")
+                        if (!signUpBefore) {
+                            Log.d("AuthManager", "entra no !signUpBefore")
+                            hasDailyQuestForToday(user.uid) { hasDailyQuest ->
+                                if (!hasDailyQuest) {
+                                    // If no DailyQuest exists for the current day, generate a new one
+                                    generateNewDailyQuest(user.uid) { newDailyQuest ->
+                                        if (newDailyQuest != null) {
+                                            // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
+                                            // ...
+                                            Log.d("New daily quest", "$newDailyQuest")
 
-                                        // Check for existing challenges and create them if needed
-                                        checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
-                                            if (challengeCreationSuccess) {
-                                                // Callback with sign-in success
-                                                callback(true, null)
-                                            } else {
-                                                // Handle the case when there is an issue creating challenges
-                                                callback(false, "Error creating challenges")
+                                            // Check for existing challenges and create them if needed
+                                            checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
+                                                if (challengeCreationSuccess) {
+                                                    // Callback with sign-in success
+                                                    callback(true, null)
+                                                } else {
+                                                    // Handle the case when there is an issue creating challenges
+                                                    callback(false, "Error creating challenges")
+                                                }
                                             }
+                                        } else {
+                                            // Handle the case when there is an issue generating the DailyQuest
+                                            callback(false, "Error generating DailyQuest")
                                         }
-                                    } else {
-                                        // Handle the case when there is an issue generating the DailyQuest
-                                        callback(false, "Error generating DailyQuest")
                                     }
-                                }
-                                Log.d("AuthManager", "passa a zona que meti em comentário")
 
-                                updateLongestStreak(user.uid) { updateSuccess ->
-                                    if (updateSuccess) {
-                                        // Callback with sign-in success
-                                        Log.d("AuthManager", "updateLongestStreak em updateSuccess")
+                                    updateLongestStreak(user.uid) { updateSuccess ->
+                                        if (updateSuccess) {
+                                            // Callback with sign-in success
+                                            Log.d(
+                                                "AuthManager",
+                                                "updateLongestStreak em updateSuccess"
+                                            )
 
-                                        callback(true, null)
-                                    } else {
-                                        // Callback with update failure
-                                        callback(false, "Error updating longest streak")
+                                            callback(true, null)
+                                        } else {
+                                            // Callback with update failure
+                                            callback(false, "Error updating longest streak")
+                                        }
                                     }
-                                }
-                            } else {
-                                // If a DailyQuest already exists for the current day, proceed without generating a new one
+                                } else {
+                                    // If a DailyQuest already exists for the current day, proceed without generating a new one
 
-                                // Check for existing challenges and create them if needed
+                                    // Check for existing challenges and create them if needed
 //                                checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
 //                                    if (challengeCreationSuccess) {
 //                                        // Callback with sign-in success
@@ -248,7 +252,8 @@ class AuthManager(private val activity: Activity) {
 //                                        callback(false, "Error creating challenges")
 //                                    }
 //                                }
-                                callback(true, null)
+                                    callback(true, null)
+                                }
                             }
                         }
                          renewAccessToken { renewSuccess, renewError ->
@@ -350,6 +355,51 @@ class AuthManager(private val activity: Activity) {
         )
 
         saveUserProfile(user?.uid, userProfile, callback)
+
+        if (user != null) {
+            hasDailyQuestForToday(user.uid) { hasDailyQuest ->
+                if (!hasDailyQuest) {
+                    // If no DailyQuest exists for the current day, generate a new one
+                    generateNewDailyQuest(user.uid) { newDailyQuest ->
+                        if (newDailyQuest != null) {
+                            // Handle the generated DailyQuest, for example, save it to Firestore or use it as needed
+                            // ...
+                            Log.d("New daily quest", "$newDailyQuest")
+
+                            // Check for existing challenges and create them if needed
+                            checkAndCreateChallenges(user.uid) { challengeCreationSuccess ->
+                                if (challengeCreationSuccess) {
+                                    // Callback with sign-in success
+                                    callback(true, null)
+                                } else {
+                                    // Handle the case when there is an issue creating challenges
+                                    callback(false, "Error creating challenges")
+                                }
+                            }
+                        } else {
+                            // Handle the case when there is an issue generating the DailyQuest
+                            callback(false, "Error generating DailyQuest")
+                        }
+                    }
+                    updateLongestStreak(user.uid) { updateSuccess ->
+                        if (updateSuccess) {
+                            // Callback with sign-in success
+                            Log.d(
+                                "AuthManager",
+                                "updateLongestStreak em updateSuccess"
+                            )
+
+                            callback(true, null)
+                        } else {
+                            // Callback with update failure
+                            callback(false, "Error updating longest streak")
+                        }
+                    }
+                } else {
+                    callback(true, null)
+                }
+            }
+        }
     }
 
 
@@ -848,7 +898,16 @@ class AuthManager(private val activity: Activity) {
 
     fun generateNewDailyQuest(userId: String, callback: (WorkoutData?) -> Unit) {
         Log.d("AuthManager", "Entra no generateNewDailyQuest")
+        var currentUser: UserProfile? = null
+        getCurrentUser { user ->
+            if (user != null) {
+                currentUser = user
 
+            } else {
+                // Handle the case where the user is null
+            }
+        }
+        Log.d("AuthManager", "currentUser no generateNewDailyQuest, $currentUser")
         // Assuming you have a collection named "exercises" in your Firestore
         firestore.collection("exercises")
             .get()
@@ -865,15 +924,49 @@ class AuthManager(private val activity: Activity) {
                 if (exercisesList.size >= 2) {
                     // Shuffle the list and select the first two exercises
                     exercisesList.shuffle()
-                    val selectedExercises = exercisesList.subList(0, 2)
+
+                    val filteredExercises = exercisesList.filter { exercise ->
+                        val matchCount = listOf(
+                            currentUser?.gender,
+                            currentUser?.goal,
+                            currentUser?.motivation,
+                            currentUser?.pushUps,
+                            currentUser?.activityLevel
+                        ).count { criteria ->
+                            when (criteria) {
+                                currentUser?.gender -> exercise.suitableGender.contains(criteria)
+                                currentUser?.goal -> exercise.suitableGoals.contains(criteria)
+                                currentUser?.motivation -> exercise.suitableMotivations.contains(criteria)
+                                currentUser?.pushUps -> exercise.suitablePushUps.contains(criteria)
+                                currentUser?.activityLevel -> exercise.suitableActivityLevels.contains(criteria)
+                                else -> false
+                            }
+                        }
+
+                        // Ensure at least 3 criteria match
+                        matchCount >= 2
+                    }
+
+                    val selectedExercises = filteredExercises.subList(0, 5)
                     Log.d("AuthManager", "selectedExercises, $selectedExercises")
 
+                    val images = arrayOf(
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fabs.jpg?alt=media&token=f82d14ea-137b-4e16-8654-ea6a630e4637",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=90c6ffb2-b0ec-4494-a3ba-6c836e9eeffd",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fhiit.jpg?alt=media&token=bfe4564f-7151-4826-88ce-8798dfd89595",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Frunning.jpg?alt=media&token=27e73550-3854-4520-8c1b-8cd57f5239da",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fweight%20lift.jpg?alt=media&token=81249036-cff5-407d-9afa-152399ef0c25",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fweights.jpg?alt=media&token=2a4810de-aeb9-4c3e-ae61-c602774ed013",
+                        "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fyoga.jpg?alt=media&token=b623e637-edb7-4433-8dcf-6abd7bd8b296"
+                    )
+
+                    images.shuffle()
                     // Create a new DailyQuest with the selected exercises
                     val newDailyQuest = WorkoutData(
-                        title = "Generated Daily Quest",
-                        duration = "45 mins", // You can adjust this as needed
+                        title = "Daily Quest",
+                        duration = "", // You can adjust this as needed
                         completed = false,
-                        image = "https://firebasestorage.googleapis.com/v0/b/fitquest2-2d61f.appspot.com/o/daily%2Fyoga.jpg?alt=media&token=b623e637-edb7-4433-8dcf-6abd7bd8b296", // Replace with the appropriate image
+                        image = images[0], // Replace with the appropriate image
                         exercises = selectedExercises,
                         date = getCurrentFormattedDateDaily(),
                         quest = true,
@@ -899,16 +992,18 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
+
+
+
     fun generateNewWorkout(
         selectedType: String?,
-        selectedDuration: String?,
         callback: (WorkoutData?) -> Unit
     ) {
         val user = auth.currentUser
 
         if (user != null) {
             val userId = user.uid
-            if (selectedType != null && selectedDuration != null) {
+            if (selectedType != null ) {
                 // Assuming you have a collection named "exercises" in your Firestore
                 firestore.collection("exercises")
                     .whereEqualTo("target", selectedType)
@@ -932,7 +1027,7 @@ class AuthManager(private val activity: Activity) {
                             // Create a new WorkoutData with the selected exercises
                             val newWorkout = WorkoutData(
                                 title = "$selectedType Workout",
-                                duration = selectedDuration,
+                                duration = "",
                                 completed = false,
                                 image = "", // Replace with the appropriate image URL
                                 exercises = selectedExercises,
@@ -1552,9 +1647,17 @@ class AuthManager(private val activity: Activity) {
         return calendar.time
     }
 
-    // TODO: meter esta função a criar challenges para amigos se o user tiver amigos
     private fun createNewChallenges(userId: String, startDate: Date, endDate: Date, user: UserProfile?) {
         // Fetch exercises and places from the database
+        var currentUser: UserProfile? = null
+        getCurrentUser { user ->
+            if (user != null) {
+                currentUser = user
+
+            } else {
+                // Handle the case where the user is null
+            }
+        }
         firestore.collection("exercises")
             .get()
             .addOnSuccessListener { exercisesQuerySnapshot ->
@@ -1581,23 +1684,49 @@ class AuthManager(private val activity: Activity) {
                         if (exercisesList.size >= 3 && placesList.size >= 3) {
                             // Shuffle the lists
                             exercisesList.shuffle()
+
+                            val filteredExercises = exercisesList.filter { exercise ->
+                                val matchCount = listOf(
+                                    currentUser?.gender,
+                                    currentUser?.goal,
+                                    currentUser?.motivation,
+                                    currentUser?.pushUps,
+                                    currentUser?.activityLevel
+                                ).count { criteria ->
+                                    when (criteria) {
+                                        currentUser?.gender -> exercise.suitableGender.contains(criteria)
+                                        currentUser?.goal -> exercise.suitableGoals.contains(criteria)
+                                        currentUser?.motivation -> exercise.suitableMotivations.contains(criteria)
+                                        currentUser?.pushUps -> exercise.suitablePushUps.contains(criteria)
+                                        currentUser?.activityLevel -> exercise.suitableActivityLevels.contains(criteria)
+                                        else -> false
+                                    }
+                                }
+
+                                // Ensure at least 3 criteria match
+                                matchCount >= 1
+                            }
+
                             placesList.shuffle()
 
                             // Select the first three places
                             val selectedPlaces = placesList.subList(0, 3)
 
                             // Create challenges with checkpoints
-                            val challengeWithCheckpoints = createChallengeWithCheckpoints(
-                                "Challenge w Checkpoints",
-                                startDate,
-                                endDate,
-                                listOf(
-                                    exercisesList.subList(0, 3),
-                                    exercisesList.subList(3, 6),
-                                    exercisesList.subList(6, 9)
-                                ),
-                                selectedPlaces
-                            )
+                            val challengeWithCheckpoints = currentUser?.sessionsOutside?.let {
+                                createChallengeWithCheckpoints(
+                                    "Challenge w Checkpoints",
+                                    startDate,
+                                    endDate,
+                                    listOf(
+                                        filteredExercises.subList(0, 5),
+                                        filteredExercises.subList(5, 10),
+                                        filteredExercises.subList(10, 15)
+                                    ),
+                                    selectedPlaces,
+                                    it.toInt()
+                                )
+                            }
 
                             // Create challenges without checkpoints
                             val challengeWithoutCheckpoints1 = createChallengeWithoutCheckpoints(
@@ -1629,7 +1758,9 @@ class AuthManager(private val activity: Activity) {
                             }
 
                             // Save challenges to the user's document
-                            saveChallengeForUser(userId, challengeWithCheckpoints)
+                            if (challengeWithCheckpoints != null) {
+                                saveChallengeForUser(userId, challengeWithCheckpoints)
+                            }
                             saveChallengeForUser(userId, challengeWithoutCheckpoints1)
                             saveChallengeForUser(userId, challengeWithoutCheckpoints2)
                         } else {
@@ -1649,10 +1780,14 @@ class AuthManager(private val activity: Activity) {
         startDate: Date,
         endDate: Date,
         selectedExercisesList: List<List<ExerciseData>>, // List of lists of exercises
-        selectedPlaces: List<PlaceData>
+        selectedPlaces: List<PlaceData>,
+        sessionsOutside: Int
     ): ChallengeData {
+        // Limit the number of checkpoints based on sessionsOutside
+        val checkpointsCount = sessionsOutside.coerceAtMost(selectedExercisesList.size)
+
         // Create checkpoints with associated exercises and places
-        val checkpoints = selectedExercisesList.mapIndexed { index, selectedExercises ->
+        val checkpoints = selectedExercisesList.subList(0, checkpointsCount).mapIndexed { index, selectedExercises ->
             val checkpoint = CheckpointData(
                 name = "Checkpoint ${index + 1}",
                 place = selectedPlaces[index],
@@ -1675,7 +1810,7 @@ class AuthManager(private val activity: Activity) {
             title = title,
             xp = 200,
             type = "Location",
-            total_checkpoints = selectedExercisesList.size,
+            total_checkpoints = checkpointsCount,
             done_checkpoints = 0,
             checkpoints = checkpoints,
             begin_date = startDate,
@@ -1683,6 +1818,7 @@ class AuthManager(private val activity: Activity) {
             completed = false,
         )
     }
+
 
     private fun createChallengeWithoutCheckpoints(
         title: String,

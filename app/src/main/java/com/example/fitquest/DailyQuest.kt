@@ -72,7 +72,7 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "$totalTimeInMinutes mins | ${quest.exercises.size} exercises | 4x", // tem de ser gerados
+                            text = "$totalTimeInMinutes mins | ${quest.exercises.size} exercises | 3x", // tem de ser gerados
                             fontSize = 14.sp
                         )
                         // Placeholder content (replace with your content)

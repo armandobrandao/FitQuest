@@ -179,14 +179,12 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
             GenerateWorkout(navController = navController, authManager = authManager)
         }
 
-        composable("${Screens.GeneratedWorkout.route}/{selectedType}/{selectedDuration}") { backStackEntry ->
+        composable("${Screens.GeneratedWorkout.route}/{selectedType}") { backStackEntry ->
             val selectedType = backStackEntry.arguments?.getString("selectedType")
-            val selectedDuration = backStackEntry.arguments?.getString("selectedDuration")
             var canEnter by remember { mutableStateOf(false) }
             LaunchedEffect(selectedType) {
                 authManager.generateNewWorkout(
                     selectedType = selectedType,
-                    selectedDuration = selectedDuration
                 ) { result ->
                     if (result != null) {
                         // Handle the generated workout (e.g., navigate to a new screen)

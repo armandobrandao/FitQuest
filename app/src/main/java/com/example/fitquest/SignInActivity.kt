@@ -26,7 +26,7 @@ class SignInActivity : AppCompatActivity() {
             val email = binding.loginEmail.text.toString()
             val password = binding.loginPassword.text.toString()
 
-            authManager.signIn(email, password) { success, errorMessage ->
+            authManager.signIn(email, password, signUpBefore = false) { success, errorMessage ->
                 if (success) {
                     // Autenticação bem-sucedida, faça o que precisar aqui
                     Log.d("SignInActivity", "Autenticação bem-sucedida")

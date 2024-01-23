@@ -315,6 +315,7 @@ fun DailyQuests(navController: NavController, dailyQuest: WorkoutData) {
 
 @Composable
 fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
+    val totalTimeInMinutes = calculateTotalTime(quest.exercises)
     Box(
         modifier = Modifier
             .clickable { onClick.invoke() }
@@ -359,8 +360,7 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             verticalArrangement = Arrangement.Top
         ) {
             // Content
-            Text(text = quest.title, fontSize = 20.sp, color = Color.White)
-            Text(text = quest.duration, fontSize = 16.sp, color = Color.White)
+            Text(text = "$totalTimeInMinutes minutes", fontSize = 20.sp, color = Color.White)
 
             // Spacer for layout adjustment
             Spacer(modifier = Modifier.weight(1f))

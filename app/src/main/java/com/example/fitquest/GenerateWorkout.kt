@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -49,7 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -148,7 +152,7 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
     val typeOptions = listOf("Cardio", "Back", "Abs", "Legs", "Shoulders", "Full Body", "Arms", "Chest")
     var selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
 
-    var selectedDuration by remember { mutableStateOf("") }
+//    var selectedDuration by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -160,44 +164,51 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
                 .fillMaxWidth()
         ) {
             item {
-                Column(
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .paint(
+                            painter = painterResource(R.drawable.diverse_exercise),
+                            contentScale = ContentScale.FillWidth
+                        )
+                ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.Black
+                        )
+                    }
+                }
+                // Box with title and stats on top of the image
+                ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(bottom = 70.dp)
                 ) {
-                    // Top Bar
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Create Workout",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 27.sp
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "Back"
-                                )
-                            }
-                        }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                    ) {
+                        // Top Bar
+                        Text(text = "Create Workout",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 27.sp
+                        )
 
-                    InputBox(
-                        label = "Type",
-                        options = typeOptions,
-                        onValueChange = { selectedType = it }
-                    )
+                        InputBox(
+                            label = "Type",
+                            options = typeOptions,
+                            onValueChange = { selectedType = it }
+                        )
 
-                    InputBox(
-                        label = "Duration (m)",
-                        onValueChange = { selectedDuration = it }
-                    )
+//                    InputBox(
+//                        label = "Duration (m)",
+//                        onValueChange = { selectedDuration = it }
+//                    )
 
 
+                    }
                 }
             }
         }
@@ -213,13 +224,13 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
         ) {
             Button(
                 onClick = {
-                    if (selectedType.isNullOrBlank() || selectedDuration.isNullOrBlank()) {
+                    if (selectedType.isNullOrBlank()) {
                         // Display error message if type or duration is not selected
                         showError = true
 
                     } else {
                         // Navigate to the next screen if both type and duration are selected
-                        navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType/$selectedDuration")
+                        navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType")
                     }
 
                 },
@@ -235,12 +246,14 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
 
     if (showError) {
         // You can replace this with any UI element you want for displaying the error
-        Text("Please select the workout duration",
+        Text(
+            "Please select the workout duration",
             modifier = Modifier
                 .offset(y = 306.dp) // Adjust the vertical offset as needed (negative value to move upwards)
                 .padding(8.dp),
 
-            color = Color.Red)
+            color = Color.Red
+        )
 
     }
 }

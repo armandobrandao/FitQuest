@@ -185,7 +185,7 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$totalTimeInMinutes mins | ${checkpoint.workout?.exercises?.size} exercises | 4x", // tem de ser gerados
+                text = "$totalTimeInMinutes mins | ${checkpoint.workout?.exercises?.size} exercises | 3x", // tem de ser gerados
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.weight(1f))
