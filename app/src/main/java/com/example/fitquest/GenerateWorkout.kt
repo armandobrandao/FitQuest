@@ -5,10 +5,14 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+//import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.ColumnScopeInstance.align
+//import androidx.compose.foundation.layout.RowScopeInstance.align
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
@@ -36,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,6 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,7 +144,7 @@ fun InputBox(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) {
-
+    var showError by remember { mutableStateOf(false) }
     val typeOptions = listOf("Cardio", "Back", "Abs", "Legs", "Shoulders", "Full Body", "Arms", "Chest")
     var selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
 
@@ -205,17 +213,39 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
         ) {
             Button(
                 onClick = {
-                    navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType/$selectedDuration")
+                    if (selectedType.isNullOrBlank() || selectedDuration.isNullOrBlank()) {
+                        // Display error message if type or duration is not selected
+                        showError = true
+
+                    } else {
+                        // Navigate to the next screen if both type and duration are selected
+                        navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType/$selectedDuration")
+                    }
+
                 },
                 modifier = Modifier
                     .padding(8.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFFED8F83))
+                colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
             ) {
-                Text("Generate Workout", fontSize = 20.sp)
+
+                Text("Generate Workout", fontSize = 20.sp,color = colorResource(id = R.color.lightModeColor))
             }
         }
     }
+
+    if (showError) {
+        // You can replace this with any UI element you want for displaying the error
+        Text("Please select the workout duration",
+            modifier = Modifier
+                .offset(y = 306.dp) // Adjust the vertical offset as needed (negative value to move upwards)
+                .padding(8.dp),
+
+            color = Color.Red)
+
+    }
 }
+
+
 
 //@Preview(showBackground = true)
 //@Composable
