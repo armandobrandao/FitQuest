@@ -84,7 +84,7 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
 
                     Spacer(modifier = Modifier.height(4.dp)) // Add more space here
 
-                    Text(text = user.username, fontSize = 18.sp)
+                    Text(text = "@" + user.username, fontSize = 18.sp)
 
                     Spacer(modifier = Modifier.height(8.dp)) // Add more space here
 
