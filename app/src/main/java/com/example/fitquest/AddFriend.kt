@@ -147,6 +147,9 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val isInFriendReq = user.friend_reqs.any { it.uniqueCode == currentUser.uniqueCode }
+            val isInMyFriendReq = currentUser.friend_reqs.any { it.uniqueCode == user.uniqueCode }
+
             // Send Friend Request Button
             Button(
                 onClick = {
@@ -162,9 +165,9 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
                 modifier = Modifier
                     .padding(8.dp)
                     .widthIn(min = 80.dp),
-                colors = ButtonDefaults.buttonColors(if (friendRequestSent) Color.Gray else Color(0xFFE66353))
+                colors = ButtonDefaults.buttonColors(if (friendRequestSent || isInFriendReq || isInMyFriendReq) Color.Gray else Color(0xFFE66353))
             ) {
-                Text(if (friendRequestSent) "Sent" else "Add")
+                Text(if (friendRequestSent || isInFriendReq || isInMyFriendReq) "Sent" else "Add")
             }
         }
     }

@@ -146,12 +146,14 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                val isFriend = currentUser.friends.any { it.id == user.id }
+                val isFriend = currentUser.friends.any { it.uniqueCode == user.uniqueCode }
                 Log.d("Friend", "currentUser.friends: ${currentUser.friends}")
                 Log.d("Friend", "user: ${user}")
                 Log.d("Friend", "isFriend: ${isFriend}")
-
-                if (!isFriend) {
+                val isInFriendReq = user.friend_reqs.any { it.uniqueCode == currentUser.uniqueCode }
+                val isInMyFriendReq = currentUser.friend_reqs.any { it.uniqueCode == user.uniqueCode }
+                Log.d("Friend", "isFriend: ${isFriend}")
+                if (!isFriend && !isInFriendReq && !isInMyFriendReq) {
                     Button(
                         onClick = {
                             // Handle add friend click here

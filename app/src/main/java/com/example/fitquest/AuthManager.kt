@@ -1503,8 +1503,10 @@ class AuthManager(private val activity: Activity) {
                     // Assuming you have a data class or model class named UserProfile to map the document data
                     val userProfile = document.toObject(UserProfile::class.java)
 
-                    // Check if the user is not the current user
-                    if (userProfile.id != currentUser.id) {
+                    // Check if the user is not the current user and their uniqueCode is not in currentUser's friends
+                    if (userProfile.uniqueCode != currentUser.uniqueCode &&
+                        userProfile.uniqueCode !in currentUser.friends.map { it.uniqueCode }
+                    ) {
                         userList.add(userProfile)
                     }
                 }
