@@ -11,14 +11,17 @@ import com.google.firebase.auth.FirebaseAuth
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
-    //private lateinit var firebaseAuth: FirebaseAuth
-    private val authManager = AuthManager(this)
+    private lateinit var authManager: AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val errorMessageTextView = binding.errorMessageTextView
+
+        // Inicializar o AuthManager no método onCreate
+        authManager = AuthManager(this)
+
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
             val password = binding.loginPassword.text.toString()
@@ -36,7 +39,6 @@ class SignInActivity : AppCompatActivity() {
                     errorMessage?.let {
                         errorMessageTextView.text = "Incorrect email or password. Please try again."
                         errorMessageTextView.visibility = View.VISIBLE
-
                     }
                 }
             }

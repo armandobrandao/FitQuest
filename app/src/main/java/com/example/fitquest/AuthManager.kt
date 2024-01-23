@@ -1,6 +1,7 @@
 package com.example.fitquest
 
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -13,6 +14,9 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
 class AuthManager(private val activity: Activity) {
@@ -20,6 +24,39 @@ class AuthManager(private val activity: Activity) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+
+    private val executor = Executors.newSingleThreadScheduledExecutor()
+    private var renewalTask: ScheduledFuture<*>? = null
+
+
+    init {
+        // Verificar se há um token armazenado localmente e tentar fazer o login automaticamente
+        val localAccessToken = getLocalAccessToken()
+        if (localAccessToken != null) {
+            // Existe um token armazenado localmente, tentar fazer o login
+            signInWithToken(localAccessToken)
+        } else {
+            // Não existe um token localmente, iniciar a renovação automática
+            //startTokenRenewal()
+        }
+    }
+
+    private fun signInWithToken(token: String) {
+        // Autenticar com o token diretamente (sem necessidade de email/senha)
+        Log.d("AuthManager", "---------------- TESTE DE TOKEN --------------")
+        Log.d("AuthManager", token)
+        auth.signInWithCustomToken(token)
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    // Login bem-sucedido com o token
+                    // Agora, você pode prosseguir com qualquer lógica adicional
+                    Log.d("AuthManager", "Login automático bem-sucedido com o token")
+                } else {
+                    // Tratar falha no login com o token
+                    Log.e("AuthManager", "Falha no login automático com o token: ${task.exception?.message}")
+                }
+            }
+    }
 
     //fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
     //    auth.createUserWithEmailAndPassword(email, password)
@@ -93,12 +130,56 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
+    private fun renewAccessToken(callback: (Boolean, String?) -> Unit) {
+        val user = auth.currentUser
+        user?.getIdToken(false)
+            ?.addOnCompleteListener { idTokenTask ->
+                if (idTokenTask.isSuccessful) {
+                    // Novo token de acesso obtido com sucesso
+                    val newAccessToken = idTokenTask.result?.token
+                    // Salvar o novo token localmente
+                    saveAccessTokenLocally(newAccessToken ?: "")
+                    // Callback com o novo token de acesso
+                    callback(true, newAccessToken)
+                } else {
+                    // Tratar falha na obtenção do novo token de acesso
+                    callback(false, "Erro ao renovar o token de acesso")
+                }
+            }
+    }
 
+    // Renovação automatica do token
+    private fun scheduleTokenRenewal() {
+        renewalTask = executor.scheduleAtFixedRate({
+            // Renovar o token a cada 24 horas
+            renewAccessToken { _, _ ->
+            }
+        }, 0, 24, TimeUnit.HOURS)
+    }
 
+    private fun saveAccessTokenLocally(token: String) {
+        // Salvar o token de acesso localmente usando SharedPreferences
+        val sharedPreferences = activity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("accessToken", token)
+        editor.apply()
+    }
 
+    private fun getLocalAccessToken(): String? {
+        // Obter o token de acesso armazenado localmente usando SharedPreferences
+        val sharedPreferences = activity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("accessToken", null)
+    }
 
+    fun startTokenRenewal() {
+        if (renewalTask == null || renewalTask?.isCancelled == true) {
+            scheduleTokenRenewal()
+        }
+    }
 
-
+    fun stopTokenRenewal() {
+        renewalTask?.cancel(true)
+    }
 
 
     fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
@@ -107,6 +188,9 @@ class AuthManager(private val activity: Activity) {
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    Log.d("AuthManager", "----- USER -----")
+                    Log.d("AuthManager", "fas")
+
                     if (user != null) {
                         // Check if the user already has a DailyQuest for the current day
                         hasDailyQuestForToday(user.uid) { hasDailyQuest ->
@@ -161,6 +245,17 @@ class AuthManager(private val activity: Activity) {
 //                                    }
 //                                }
                                 callback(true, null)
+                            }
+                        }
+                         renewAccessToken { renewSuccess, renewError ->
+                            if (renewSuccess) {
+                                Log.d("AuthManager", "------ TESTE1 -------")
+                                // Callback com sucesso na renovação do token de acesso
+                                callback(true, null)
+                            } else {
+                                Log.d("AuthManager", "------ TESTE2 -------")
+                                // Callback com falha na renovação do token de acesso
+                                callback(false, renewError ?: "Erro durante a renovação do token de acesso")
                             }
                         }
                     } else {
