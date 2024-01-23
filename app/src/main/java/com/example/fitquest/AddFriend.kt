@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -269,9 +270,9 @@ fun ShareCode(user: UserProfile){
                     },
                     modifier = Modifier
                         .padding(8.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFFf3b4ac))
+                    colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
                 ) {
-                    Text("Share Code", fontSize = 25.sp)
+                    Text("Share Code", fontSize = 25.sp,color = colorResource(id = R.color.lightModeColor))
                 }
             }
         }
