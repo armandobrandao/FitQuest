@@ -200,11 +200,19 @@ fun Workouts(navController: NavHostController, lastWorkouts: List<WorkoutData>) 
 //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 ) {
                     Column {
-                        lastWorkouts.forEachIndexed { index, workout ->
-                            WorkoutItem(workout = workout)
-                            if (index < lastWorkouts.size - 1) {
-                                Divider()
+                        if(lastWorkouts.isNotEmpty()) {
+                            lastWorkouts.forEachIndexed { index, workout ->
+                                WorkoutItem(workout = workout)
+                                if (index < lastWorkouts.size - 1) {
+                                    Divider()
+                                }
                             }
+                        }else{
+                            Text(
+                                text = "Your previous workouts will appear here",
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }

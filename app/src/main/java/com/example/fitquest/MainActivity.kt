@@ -86,14 +86,14 @@ class MainActivity : ComponentActivity() {
                         title = "Workout",
                         selectedIcon = Icons.Filled.Add,
                         unselectedIcon = Icons.Outlined.Add,
-                        hasNews = true,
+                        hasNews = false,
                     ),
                     BottomNavigationItem(
                         title = "Challenges",
                         selectedIcon = Icons.Filled.LocationOn,
                         unselectedIcon = Icons.Outlined.LocationOn,
-                        hasNews = true,
-                        badgeCount = 2
+                        hasNews = false,
+//                        badgeCount = 2
                     ),
                     BottomNavigationItem(
                         title = "Profile",

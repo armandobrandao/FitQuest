@@ -180,20 +180,31 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
             horizontalArrangement = Arrangement.spacedBy(8.dp) // Adjust spacing here
         ) {
             // Round profile image
-            Image(
-                painter = rememberImagePainter(
-                    data = user.profileImageUrl,
-                    builder = {
-                        crossfade(false)
-                        placeholder(R.drawable.default_profile_image)
-                    }
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = "${user.fullName}'s profile photo",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            )
+            Box {
+                // Loading indicator
+                if (user.profileImageUrl.isNullOrEmpty()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+                }
+                Image(
+                    painter = rememberImagePainter(
+                        data = user.profileImageUrl,
+                        builder = {
+                            crossfade(false)
+//                            placeholder(R.drawable.default_profile_image)
+                        }
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "${user.fullName}'s profile photo",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                )
+            }
 
             // User's name
             Text(text = user.fullName, fontSize = 15.sp, fontWeight = FontWeight.Bold)

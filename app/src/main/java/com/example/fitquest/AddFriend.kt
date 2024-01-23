@@ -132,7 +132,7 @@ fun UserListItem(currentUser: UserProfile, user: UserProfile, onClick: () -> Uni
                     data = user.profileImageUrl,
                     builder = {
                         crossfade(false)
-                        placeholder(R.drawable.default_profile_image)
+//                        placeholder(R.drawable.default_profile_image)
                     }
                 ),
                 contentScale = ContentScale.Crop,
@@ -203,20 +203,31 @@ fun ShareCode(user: UserProfile){
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Round profile image
-                Image(
-                    painter = rememberImagePainter(
-                        data = user.profileImageUrl,
-                        builder = {
-                            crossfade(false)
-                            placeholder(R.drawable.default_profile_image)
-                        }
-                    ),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "${user.fullName}'s profile photo",
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                )
+                Box {
+                    // Loading indicator
+                    if (user.profileImageUrl.isNullOrEmpty()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.background)
+                        )
+                    }
+                    Image(
+                        painter = rememberImagePainter(
+                            data = user.profileImageUrl,
+                            builder = {
+                                crossfade(false)
+//                                placeholder(R.drawable.default_profile_image)
+                            }
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "${user.fullName}'s profile photo",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

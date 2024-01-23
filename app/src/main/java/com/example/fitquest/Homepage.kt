@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -321,22 +323,33 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             .fillMaxWidth()
     ) {
         // Image
-        Image(
-            painter = rememberImagePainter(
-                data = quest.image,
+        Box {
+            // Loading indicator
+            if (quest.image.isNullOrEmpty()) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colorScheme.background)
+                )
+            }
+            Image(
+                painter = rememberImagePainter(
+                    data = quest.image,
 //                data = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e",
-                builder = {
-                    crossfade(false)
-                    placeholder(R.drawable.pilates)
-                }
-            ), // Replace with your image resource
-            contentDescription = quest.title, // Content description can be set to null for decorative images
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = RoundedCornerShape(26.dp))
+                    builder = {
+                        crossfade(false)
+//                        placeholder(R.drawable.pilates)
+                    }
+                ), // Replace with your image resource
+                contentDescription = quest.title, // Content description can be set to null for decorative images
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(shape = RoundedCornerShape(26.dp))
 
-        )
+            )
+        }
 
         // Text and Arrow
         Column(

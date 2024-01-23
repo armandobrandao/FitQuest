@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,10 +21,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -89,20 +92,31 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                     .padding(horizontal = 16.dp) // Add padding here
             ) {
                 Log.d("Profile", "user.profileImageUrl, ${user.profileImageUrl}")
-                Image(
-                    painter = rememberImagePainter(
-                        data = user.profileImageUrl,
-                        builder = {
-                            crossfade(false)
-                            placeholder(R.drawable.default_profile_image)
-                        }
-                    ),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "${user.fullName}'s profile photo",
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                )
+                Box {
+                    // Loading indicator
+                    if (user.profileImageUrl.isNullOrEmpty()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.background)
+                        )
+                    }
+                    Image(
+                        painter = rememberImagePainter(
+                            data = user.profileImageUrl,
+                            builder = {
+                                crossfade(false)
+//                                placeholder(R.drawable.default_profile_image)
+                            }
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "${user.fullName}'s profile photo",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                    )
+                }
             }
         }
 
@@ -152,7 +166,7 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                 Button(
                     colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
                     onClick = {
-                        authManager.signOut()
+                        authManager.signOut(context)
                         context.startActivity(Intent(context, WelcomeActivity::class.java))
                     }) {
                     Text("Log out",
@@ -311,20 +325,31 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(16.dp) // Adjust spacing here
         ) {
             // Round profile image
-            Image(
-                painter = rememberImagePainter(
-                    data = user.profileImageUrl,
-                    builder = {
-                        crossfade(false)
-                        placeholder(R.drawable.default_profile_image)
-                    }
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = "${user.fullName}'s profile photo",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            )
+            Box {
+                // Loading indicator
+                if (user.profileImageUrl.isNullOrEmpty()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+                }
+                Image(
+                    painter = rememberImagePainter(
+                        data = user.profileImageUrl,
+                        builder = {
+                            crossfade(false)
+//                            placeholder(R.drawable.default_profile_image)
+                        }
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "${user.fullName}'s profile photo",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                )
+            }
 
             // User's name
             Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)

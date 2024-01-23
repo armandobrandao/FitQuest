@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -100,19 +102,30 @@ fun ExerciseItem(exercise: ExerciseData) {
                     .weight(1f),
                 horizontalAlignment = Alignment.End
             ) {
-                Image(
-                    painter = rememberImagePainter(
-                        data = exercise.imageResId,
-                        builder = {
-                            crossfade(false)
-                        }
-                    ),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "Image of: ${exercise.name}",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                )
+                Box {
+                    // Loading indicator
+                    if ( exercise.imageResId.isNullOrEmpty()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.background)
+                        )
+                    }
+                    Image(
+                        painter = rememberImagePainter(
+                            data = exercise.imageResId,
+                            builder = {
+                                crossfade(false)
+                            }
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "Image of: ${exercise.name}",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                    )
+                }
             }
         }
     }

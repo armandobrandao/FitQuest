@@ -21,8 +21,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import java.time.DayOfWeek
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 
 //TEM DE SER ALTERADOS PARA FAZER DISPLAY DOS VALORES CORRETOS
 data class Challenge(
@@ -58,35 +61,39 @@ val timeUntilMidnight = Duration.between(LocalTime.now(), LocalTime.MAX).toMinut
 // Sample completion value (replace this with your completion logic)
 val completion = 0.33f
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun CompletionInfo(completion: Float, currentDay: DayOfWeek, timeUntilMidnight: Long) {
-    // Calculate remaining days, hours, and minutes
-    val daysLeft = DayOfWeek.SUNDAY.value - currentDay.value
-    val hoursLeft = timeUntilMidnight / 60
-    val minutesLeft = timeUntilMidnight % 60
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "${(completion * 100).toInt()}% Completed",
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = when {
-                daysLeft > 0 -> "$daysLeft ${if (daysLeft > 1) "days" else "day"} left"
-                hoursLeft > 0 -> "$hoursLeft ${if (hoursLeft > 1) "hours" else "hour"} left"
-                else -> "$minutesLeft ${if (minutesLeft > 1) "minutes" else "minute"} left"
-            },
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//fun CompletionInfo(challengeList: List<ChallengeData>, currentDay: DayOfWeek, timeUntilMidnight: Long) {
+//    val currentTime = Instant.now()
+//    val remainingTime = Duration.between(currentTime, challengeList[0]?.end_date!!.toInstant())
+//
+//    val daysLeft = remainingTime.toDays()
+//    val hoursLeft = remainingTime.toHours() % 24
+//    val minutesLeft = remainingTime.toMinutes() % 60
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 16.dp, vertical = 2.dp),
+//        verticalAlignment = Alignment.CenterVertically
+//    ) {
+//        Text(
+//            text = "${(overallProgress).toInt()}% Completed",
+//            fontWeight = FontWeight.Bold
+//        )
+//        Spacer(modifier = Modifier.weight(1f))
+//        Text(
+//            text = when {
+//                daysLeft > 0 -> "$daysLeft ${if (daysLeft > 1) "days" else "day"} left"
+//                hoursLeft > 0 -> "$hoursLeft ${if (hoursLeft > 1) "hours" else "hour"} left"
+//                else -> "$minutesLeft ${if (minutesLeft > 1) "minutes" else "minute"} left"
+//            },
+//            fontWeight = FontWeight.Bold
+//        )
+//    }
+//}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -167,6 +174,28 @@ fun ChallengeItem(challenge: ChallengeData, isGroupChallenge: Boolean = false, o
 
         }
     }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun WeekChallengesProgress(challengeList: List<ChallengeData?>) {
+    // Calculate overall progress
+    val totalChallenges = challengeList.size
+    val completedChallenges = challengeList.count { it!!.completed }
+    val overallProgress = if (totalChallenges > 0) {
+        (completedChallenges.toFloat() / totalChallenges) * 100
+    } else {
+        0f
+    }
+
+    LinearProgressIndicator(
+        progress = overallProgress / 100, // LinearProgressIndicator expects progress between 0 and 1
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .height(8.dp)
+    )
+
+    Spacer(modifier = Modifier.width(3.dp))
+    Text(text = "${overallProgress.toInt()}%", fontSize = 10.sp)
 }
 
 @Composable
@@ -275,6 +304,7 @@ fun WeeklyChallenges(navController: NavHostController, challenges : List<Challen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun IndividualChallenges(navController: NavController, challenges : List<ChallengeData?>) {
+    var overallProgress by remember { mutableStateOf(0f) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -300,14 +330,27 @@ fun IndividualChallenges(navController: NavController, challenges : List<Challen
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+//                WeekChallengesProgress(challenges)
+                val totalChallenges = challenges.count { it?.group == false }
+                val completedChallenges = challenges.count { it?.group == false && it?.completed == true }
+
+                overallProgress = if (totalChallenges > 0) {
+                    (completedChallenges.toFloat() / totalChallenges) * 100
+                } else {
+                    0f
+                }
+
                 LinearProgressIndicator(
-                    progress = 0.3f,
-                    color = Color(0xFFE66353),
+                    progress = overallProgress / 100, // LinearProgressIndicator expects progress between 0 and 1
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth() // Adjust the width here
                         .padding(start = 16.dp, end = 16.dp)
                         .height(16.dp)
                 )
+
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(text = "${overallProgress.toInt()}%", fontSize = 10.sp)
             }
 //            Row(
 //                modifier = Modifier
@@ -320,7 +363,34 @@ fun IndividualChallenges(navController: NavController, challenges : List<Challen
 //                Text(text = "3 days", fontWeight = FontWeight.Bold)
 //            }
 
-            CompletionInfo(completion, currentDay, timeUntilMidnight)
+//            CompletionInfo(completion, currentDay, timeUntilMidnight)
+            val currentTime = Instant.now()
+            val remainingTime = Duration.between(currentTime, challenges[0]?.end_date!!.toInstant())
+
+            val daysLeft = remainingTime.toDays()
+            val hoursLeft = remainingTime.toHours() % 24
+            val minutesLeft = remainingTime.toMinutes() % 60
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${(overallProgress).toInt()}% Completed",
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = when {
+                        daysLeft > 0 -> "$daysLeft ${if (daysLeft > 1) "days" else "day"} left"
+                        hoursLeft > 0 -> "$hoursLeft ${if (hoursLeft > 1) "hours" else "hour"} left"
+                        else -> "$minutesLeft ${if (minutesLeft > 1) "minutes" else "minute"} left"
+                    },
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             // Placeholder content (replace with your content)
             ElevatedCard(
@@ -331,7 +401,7 @@ fun IndividualChallenges(navController: NavController, challenges : List<Challen
             ) {
                 Column {
                     challenges.forEachIndexed { index, challenge ->
-                        if (challenge != null) {
+                        if (challenge != null && !challenge.group) {
                             ChallengeItem(challenge = challenge) {
                                 // Navigate to friend's profile
                                 if(challenge.done_checkpoints != null) {
@@ -355,6 +425,7 @@ fun IndividualChallenges(navController: NavController, challenges : List<Challen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GroupChallenges(navController: NavController, challenges : List<ChallengeData?>) {
+    var overallProgress by remember { mutableStateOf(0f) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -380,14 +451,27 @@ fun GroupChallenges(navController: NavController, challenges : List<ChallengeDat
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ){
+//                WeekChallengesProgress(challenges)
+                val totalChallenges = challenges.count { it?.group == true }
+                val completedChallenges = challenges.count { it?.group == true && it?.completed == true }
+
+                overallProgress = if (totalChallenges > 0) {
+                    (completedChallenges.toFloat() / totalChallenges) * 100
+                } else {
+                    0f
+                }
+
                 LinearProgressIndicator(
-                    progress = 0.3f,
-                    color = Color(0xFFE66353),
+                    progress = overallProgress / 100, // LinearProgressIndicator expects progress between 0 and 1
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth() // Adjust the width here
-                        .padding(start= 16.dp, end= 16.dp)
+                        .padding(start = 16.dp, end = 16.dp)
                         .height(16.dp)
                 )
+
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(text = "${overallProgress.toInt()}%", fontSize = 10.sp)
             }
 //            Row(
 //                modifier = Modifier
@@ -399,7 +483,34 @@ fun GroupChallenges(navController: NavController, challenges : List<ChallengeDat
 //                Spacer(modifier = Modifier.weight(1f))
 //                Text(text = "3 days", fontWeight = FontWeight.Bold)
 //            }
-            CompletionInfo(completion, currentDay, timeUntilMidnight)
+//            CompletionInfo(completion, currentDay, timeUntilMidnight)
+            val currentTime = Instant.now()
+            val remainingTime = Duration.between(currentTime, challenges[0]?.end_date!!.toInstant())
+
+            val daysLeft = remainingTime.toDays()
+            val hoursLeft = remainingTime.toHours() % 24
+            val minutesLeft = remainingTime.toMinutes() % 60
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${(overallProgress).toInt()}% Completed",
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = when {
+                        daysLeft > 0 -> "$daysLeft ${if (daysLeft > 1) "days" else "day"} left"
+                        hoursLeft > 0 -> "$hoursLeft ${if (hoursLeft > 1) "hours" else "hour"} left"
+                        else -> "$minutesLeft ${if (minutesLeft > 1) "minutes" else "minute"} left"
+                    },
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
             // Placeholder content (replace with your content)
@@ -419,8 +530,7 @@ fun GroupChallenges(navController: NavController, challenges : List<ChallengeDat
                         challenges.forEachIndexed { index, challenge ->
                             if (challenge != null && challenge.group) {
                                 ChallengeItem(challenge = challenge, isGroupChallenge = true) {
-                                    // Navigate to friend's profile
-                                    navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")
+                                    navController.navigate("${Screens.Challenge.route}/${challenge.title}")
                                 }
                             }
                             if (index < challenges.size - 1 && challenge?.group == true) {

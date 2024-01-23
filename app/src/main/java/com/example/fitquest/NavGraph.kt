@@ -21,6 +21,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var userKey by remember { mutableStateOf(0) }
     var dailyQuest by remember { mutableStateOf<WorkoutData?>(null) }
     var challenges by remember { mutableStateOf<List<ChallengeData?>>(emptyList()) }
+    var usersListNotFriend by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
     var usersList by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
     var placeData by remember { mutableStateOf<PlaceData?>(null) }
     var generatedWorkout by remember { mutableStateOf<WorkoutData?>(null) }
@@ -43,6 +44,12 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
         authManager.getChallengesForCurrentWeek { result ->
             challenges = result
+        }
+
+        currentUser?.let {
+            authManager.fetchUserListFromFirestoreNotFriend(it) { fetchedUserList ->
+                usersListNotFriend = fetchedUserList
+            }
         }
 
         currentUser?.let {
@@ -106,7 +113,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         composable(Screens.AddFriends.route) {
             //AddFriend(user= Harry, navController = navController)
             currentUser?.let {
-                AddFriend(user = it, navController = navController, usersList, authManager)
+                AddFriend(user = it, navController = navController, usersListNotFriend, authManager)
             } ?: run {
                 // Handle the case where currentUser is null
             }

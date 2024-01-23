@@ -3,6 +3,7 @@ package com.example.fitquest
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -180,19 +181,30 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    Image(
-                        painter = rememberImagePainter(
-                            data = listExercises.exercises[currentExercise].imageResId,
-                            builder = {
-                                crossfade(false)
-                            }
-                        ),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "${listExercises.exercises[currentExercise].name}",
-                        modifier = Modifier
-                            .width(400.dp)
-                            .height(300.dp)
-                    )
+                    Box {
+                        // Loading indicator
+                        if (listExercises.exercises[currentExercise].imageResId.isNullOrEmpty()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .background(MaterialTheme.colorScheme.background)
+                            )
+                        }
+                        Image(
+                            painter = rememberImagePainter(
+                                data = listExercises.exercises[currentExercise].imageResId,
+                                builder = {
+                                    crossfade(false)
+                                }
+                            ),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "${listExercises.exercises[currentExercise].name}",
+                            modifier = Modifier
+                                .width(400.dp)
+                                .height(300.dp)
+                        )
+                    }
                 }else{
                     Text(
                         text = "Break",

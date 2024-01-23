@@ -2,8 +2,10 @@ package com.example.fitquest
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +21,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -96,21 +100,32 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                         .weight(1f)
                         .padding(horizontal = 16.dp) // Add padding here
                 ) {
-                    Image(
-                        painter = rememberImagePainter(
-                            data = user.profileImageUrl,
-                            builder = {
-                                crossfade(false)
-                                placeholder(R.drawable.default_profile_image)
-                            }
-                        ),
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "${user.fullName}'s profile photo",
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                    )
+                    Box {
+                        // Loading indicator
+                        if (user.profileImageUrl.isNullOrEmpty()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .background(MaterialTheme.colorScheme.background)
+                            )
+                        }
+                        Image(
+                            painter = rememberImagePainter(
+                                data = user.profileImageUrl,
+                                builder = {
+                                    crossfade(false)
+//                                    placeholder(R.drawable.default_profile_image)
+                                }
+                            ),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "${user.fullName}'s profile photo",
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape)
+                        )
 
+                    }
                 }
             }
             Column {
@@ -186,7 +201,7 @@ fun Friend(user: UserProfile, currentUser: UserProfile ,navController: NavContro
         item {
             MainCardFriend(user, navController, currentUser)
             Spacer(modifier = Modifier.height(16.dp))
-//            StatisticsSection(user)
+            StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))
 //            AchievementsSection(user)
         }

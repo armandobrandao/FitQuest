@@ -19,7 +19,6 @@ data class ChallengeData(
     var completed: Boolean = false,
 )
 
-// TODO verificar como associar ao amigo
 // dá para associar como os dailyQuests e associar tmb ao documento do outro??
 
 // Exemplo Challenge com Checkpoints:

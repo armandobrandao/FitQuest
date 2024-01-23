@@ -6,6 +6,7 @@ import android.content.Intent
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,18 +66,29 @@ fun RoundedImageCard(imageResource: String) {
             .width(200.dp)
             .clip(RoundedCornerShape(8.dp))
     ) {
-        Image(
-            painter = rememberImagePainter(
-                data = imageResource,
-                builder = {
-                    crossfade(false)
-                    placeholder(R.drawable.principe_real)
-                }
-            ),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        Box {
+            // Loading indicator
+            if (imageResource.isNullOrEmpty()) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colorScheme.background)
+                )
+            }
+            Image(
+                painter = rememberImagePainter(
+                    data = imageResource,
+                    builder = {
+                        crossfade(false)
+//                        placeholder(R.drawable.principe_real)
+                    }
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
@@ -180,7 +193,7 @@ fun CheckpointComplete(navController: NavController, workout: WorkoutData, chall
                                 // Handle the download URI if needed
                                 Log.d("CheckpointComplete", "Download URI: $downloadUri")
                             }
-                            navController.navigate(Screens.Home.route)
+                            navController.navigate(Screens.Challenges.route)
                         }
                     }
                 }

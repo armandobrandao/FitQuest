@@ -151,8 +151,8 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
                 authManager.uploadPhotoToFirestore(isQuest, photoUri, userId) { downloadUri ->
                     // Handle the download URI if needed
                     Log.d("DailyQuestComplete", "Download URI: $downloadUri")
-                    navController.navigate(Screens.Home.route)
                 }
+                navController.navigate(Screens.Home.route)
             }
         }
     }

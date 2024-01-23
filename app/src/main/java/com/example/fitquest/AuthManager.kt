@@ -2,8 +2,11 @@ package com.example.fitquest
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -30,17 +33,17 @@ class AuthManager(private val activity: Activity) {
     private var renewalTask: ScheduledFuture<*>? = null
 
 
-    init {
-        // Verificar se há um token armazenado localmente e tentar fazer o login automaticamente
-        val localAccessToken = getLocalAccessToken()
-        if (localAccessToken != null) {
-            // Existe um token armazenado localmente, tentar fazer o login
-            signInWithToken(localAccessToken)
-        } else {
-            // Não existe um token localmente, iniciar a renovação automática
-            //startTokenRenewal()
-        }
-    }
+//    init {
+//        // Verificar se há um token armazenado localmente e tentar fazer o login automaticamente
+//        val localAccessToken = getLocalAccessToken()
+//        if (localAccessToken != null) {
+//            // Existe um token armazenado localmente, tentar fazer o login
+//            signInWithToken(localAccessToken)
+//        } else {
+//            // Não existe um token localmente, iniciar a renovação automática
+//            //startTokenRenewal()
+//        }
+//    }
 
     private fun signInWithToken(token: String) {
         // Autenticar com o token diretamente (sem necessidade de email/senha)
@@ -451,6 +454,7 @@ class AuthManager(private val activity: Activity) {
         callback: (Boolean) -> Unit
     ) {
         Log.d("AuthManager", "Entra no updateCurrentUserProfile")
+        Log.d("AuthManager", "userProfile, $userProfile")
         // Step 1: Upload the image to Firebase Storage
         val storageRef = storage.reference
         val imageRef = storageRef.child("profile_images/${UUID.randomUUID()}") // Unique path for each image
@@ -737,8 +741,11 @@ class AuthManager(private val activity: Activity) {
     }
 
 
-    fun signOut() {
+    fun signOut(context : Context) {
         auth.signOut()
+        val intent = Intent(context, WelcomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
     }
 
 //    fun generateUniqueCode(username: String): String {
@@ -1480,13 +1487,22 @@ class AuthManager(private val activity: Activity) {
 
     private fun checkAndCreateChallenges(userId: String, callback: (Boolean) -> Unit) {
         // Check if the user already has challenges for the current week
+        var currentUser: UserProfile? = null
         hasChallengesForCurrentWeek(userId) { hasChallenges ->
             if (!hasChallenges) {
                 // If no challenges for the current week, create new challenges
                 val currentDate = Calendar.getInstance().time
                 val endDate = getEndDateForCurrentWeek(currentDate)
 
-                createNewChallenges(userId, currentDate, endDate)
+                getCurrentUser { user ->
+                    if (user != null) {
+                        currentUser = user
+
+                        createNewChallenges(userId, currentDate, endDate, user)
+                    } else {
+                        // Handle the case where the user is null
+                    }}
+
 
                 // Callback with success
                 callback(true)
@@ -1537,7 +1553,7 @@ class AuthManager(private val activity: Activity) {
     }
 
     // TODO: meter esta função a criar challenges para amigos se o user tiver amigos
-    private fun createNewChallenges(userId: String, startDate: Date, endDate: Date) {
+    private fun createNewChallenges(userId: String, startDate: Date, endDate: Date, user: UserProfile?) {
         // Fetch exercises and places from the database
         firestore.collection("exercises")
             .get()
@@ -1595,6 +1611,22 @@ class AuthManager(private val activity: Activity) {
                                 startDate,
                                 endDate
                             )
+
+                            if (user != null) {
+                                if (user.friends.isNotEmpty()) {
+                                    // Create challenges with friends
+                                    for (friend in user.friends.take(3)) {
+                                        val challengeWithFriend =
+                                            createChallengeWithoutCheckpointsWithFriends(
+                                                "Challenge with Friend",
+                                                startDate,
+                                                endDate,
+                                                friend
+                                            )
+                                        saveChallengeForUser(userId, challengeWithFriend)
+                                    }
+                                }
+                            }
 
                             // Save challenges to the user's document
                             saveChallengeForUser(userId, challengeWithCheckpoints)
@@ -1668,6 +1700,25 @@ class AuthManager(private val activity: Activity) {
         )
     }
 
+    private fun createChallengeWithoutCheckpointsWithFriends(
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        friend: UserProfile
+    ): ChallengeData {
+        return ChallengeData(
+            title = title,
+            xp = 100,
+            type = "Steps",
+            begin_date = startDate,
+            end_date = endDate,
+            completed = false,
+            description = "Complete 40 000 steps",
+            friend = friend,
+            group = true,
+        )
+    }
+
     private fun saveChallengeForUser(userId: String, challenge: ChallengeData) {
         firestore.collection("users")
             .document(userId)
@@ -1690,7 +1741,7 @@ class AuthManager(private val activity: Activity) {
         return calendar.time
     }
 
-    fun fetchUserListFromFirestore(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
+    fun fetchUserListFromFirestoreNotFriend(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
         // Replace "users" with the actual collection name in your Firestore
         firestore.collection("users").get()
             .addOnSuccessListener { querySnapshot ->
@@ -1703,6 +1754,28 @@ class AuthManager(private val activity: Activity) {
                     if (userProfile.uniqueCode != currentUser.uniqueCode &&
                         userProfile.uniqueCode !in currentUser.friends.map { it.uniqueCode }
                     ) {
+                        userList.add(userProfile)
+                    }
+                }
+                callback(userList)
+            }
+            .addOnFailureListener { exception ->
+                // Handle the failure case, for now, using an empty list as a placeholder
+                callback(emptyList())
+            }
+    }
+
+    fun fetchUserListFromFirestore(currentUser: UserProfile, callback: (List<UserProfile>) -> Unit) {
+        // Replace "users" with the actual collection name in your Firestore
+        firestore.collection("users").get()
+            .addOnSuccessListener { querySnapshot ->
+                val userList = mutableListOf<UserProfile>()
+                for (document in querySnapshot) {
+                    // Assuming you have a data class or model class named UserProfile to map the document data
+                    val userProfile = document.toObject(UserProfile::class.java)
+
+                    // Check if the user is not the current user and their uniqueCode is not in currentUser's friends
+                    if (userProfile.uniqueCode != currentUser.uniqueCode) {
                         userList.add(userProfile)
                     }
                 }
