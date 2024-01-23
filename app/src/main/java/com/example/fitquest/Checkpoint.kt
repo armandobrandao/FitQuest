@@ -1,5 +1,6 @@
 package com.example.fitquest
 
+import android.location.Location
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,50 +50,26 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
-fun MapSection(navController: NavController, focusCheckpoint: CheckpointData? = null) {
+fun MapSection(navController: NavController, properties: MapProperties, cameraPositionState: CameraPositionState, focusCheckpoint: CheckpointData  ) {
     Box(
         modifier = Modifier
             .height(500.dp)
             .background(Color.Transparent)
     ) {
-        // GoogleMapWithMarker
-        var properties by remember {
-            mutableStateOf(MapProperties(mapType = MapType.TERRAIN))
-        }
-
-        var contextCurrent = LocalContext.current
-
-        var checkpointCoords = focusCheckpoint?.place?.let { LatLng(it.lat, it.long) }
-        // Location-related variables
-        val fusedLocationClient: FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(contextCurrent)
-
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(checkpointCoords ?: LatLng(0.0, 0.0), 12f)
-        }
-
-        LaunchedEffect(Unit) {
-            val context = contextCurrent
-            if (hasLocationPermission(context)) {
-                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(checkpointCoords!!, 14f)
-                cameraPositionState.move(cameraUpdate)
-            }
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            if (focusCheckpoint != null) {
-                GoogleMapWithMarker(
-                    properties = properties,
-                    cameraPositionState = cameraPositionState,
-                    focusCheckpoint = focusCheckpoint.place,
-                ) { place ->
-                    // Handle marker click, you can navigate or show more details
-                    // about the clicked place
-                }
+
+            GoogleMapWithMarker(
+                properties = properties,
+                cameraPositionState = cameraPositionState,
+                focusCheckpoint = focusCheckpoint.place,
+            ) { place ->
+                // Handle marker click, you can navigate or show more details
+                // about the clicked place
             }
+
         }
 
         // TopAppBar with just the back arrow
@@ -222,6 +200,36 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
+    // GoogleMapWithMarker
+    var properties by remember {
+        mutableStateOf(MapProperties(mapType = MapType.TERRAIN))
+    }
+
+    var contextCurrent = LocalContext.current
+
+    var checkpointCoords = checkpoint?.place?.let { LatLng(it.lat, it.long) }
+    // Location-related variables
+    val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(contextCurrent)
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(checkpointCoords ?: LatLng(0.0, 0.0), 12f)
+    }
+
+    var currentLocation by remember { mutableStateOf<LatLng?>(null) }
+    var enter by remember { mutableStateOf(false)}
+    LaunchedEffect(Unit) {
+        val context = contextCurrent
+        if (hasLocationPermission(context)) {
+            getCurrentLocation(context, fusedLocationClient) { location ->
+                currentLocation = LatLng(location.latitude, location.longitude)
+                enter = true
+            }
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(checkpointCoords!!, 14f)
+            cameraPositionState.move(cameraUpdate)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -232,13 +240,48 @@ fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
                 .fillMaxWidth()
         ) {
             item {
-                MapSection(navController, focusCheckpoint = checkpoint)
+                MapSection(navController, properties = properties, cameraPositionState = cameraPositionState, focusCheckpoint = checkpoint )
             }
             item {
                 CheckpointSection(navController, checkpoint)
             }
         }
-//        StartWorkoutButton(navController)
-        StartWorkoutButton(navController = navController, isQuest = false, isGen = false, checkpoint = checkpoint.name)
+
+        // PARA ATIVAR BASTA TIRAR ESTAS LINHAS DE COMENTÁRIO
+//        if(currentLocation != null && checkpointCoords != null && enter) {
+//            if (checkpointWithinRadius(currentLocation!!, checkpointCoords)) {
+                StartWorkoutButton(
+                    navController = navController,
+                    isQuest = false,
+                    isGen = false,
+                    checkpoint = checkpoint.name
+                )
+//            } else {
+//                Box(
+//                    modifier = Modifier
+//                        .padding(16.dp) // Add your desired padding here
+//                ) {
+//                    Text(
+//                        text = "You can start when you're closer to the location",
+//                        fontSize = 16.sp,
+//                        textAlign = TextAlign.Center,
+//                        modifier = Modifier
+//                            .padding(8.dp) // Add additional padding if necessary
+//                    )
+//                }
+//            }
+        }
     }
+//}
+
+fun checkpointWithinRadius(userLocation: LatLng, checkpointCoords: LatLng): Boolean {
+    val results = FloatArray(1)
+    Location.distanceBetween(
+        userLocation.latitude, userLocation.longitude,
+        checkpointCoords.latitude, checkpointCoords.longitude,
+        results
+    )
+    val distanceInMeters = results[0]
+    val distanceInKm = distanceInMeters / 1000
+    return distanceInKm <= 5
 }
