@@ -113,6 +113,7 @@ dependencies {
     //coil
     implementation("io.coil-kt:coil-compose:1.3.2")
 
+    implementation ("androidx.compose.ui:ui:1.0.5")
 
 
 
