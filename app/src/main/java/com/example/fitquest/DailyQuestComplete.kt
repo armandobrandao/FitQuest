@@ -58,6 +58,7 @@ import java.util.Date
 import java.util.Objects
 import android.Manifest
 import android.util.Log
+import androidx.compose.ui.res.colorResource
 
 
 @Composable
@@ -207,8 +208,15 @@ fun TakePhotoButton(onPhotoCaptured: (Uri?) -> Unit) {
                 // Request a permission
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
-        }) {
-            Text(text = "Take a Photo!")
+        },
+        modifier = Modifier
+            .padding(8.dp),
+        colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
+        shape = RoundedCornerShape(30.dp)
+        ) {
+            Text(text = "Take a Photo!", fontSize =20.sp,
+                color = colorResource(id = R.color.lightModeColor)
+            )
         }
     }
 }

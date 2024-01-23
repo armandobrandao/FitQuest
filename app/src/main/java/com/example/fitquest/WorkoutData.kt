@@ -12,4 +12,3 @@ data class WorkoutData(
     val post_photo: String? = null
 )
 
-// TODO: ADICIONAR UMA CENA PARA GUARDAR A FOTO PARA MOSTRAR NOS LAST WORKOUTS

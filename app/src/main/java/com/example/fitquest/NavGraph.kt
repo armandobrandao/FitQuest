@@ -24,6 +24,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     var usersList by remember { mutableStateOf<List<UserProfile>>(emptyList()) }
     var placeData by remember { mutableStateOf<PlaceData?>(null) }
     var generatedWorkout by remember { mutableStateOf<WorkoutData?>(null) }
+    var lastWorkouts by remember { mutableStateOf<List<WorkoutData>?>(null) }
 
 
     LaunchedEffect(authManager, userKey) {
@@ -49,6 +50,10 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
                 usersList = fetchedUserList
             }
         }
+
+        authManager.getLastWorkouts { result ->
+            lastWorkouts = result
+        }
     }
     NavHost(
         navController = navController,
@@ -67,7 +72,11 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         }
         composable(Screens.Workout.route) {
             Log.d("NavGraph", "Navigating to Workout")
-            Workouts(navController)
+            lastWorkouts?.let {
+                Workouts(navController = navController, lastWorkouts = lastWorkouts!!)
+            } ?: run {
+                // Handle the case where dailyQuest is null
+            }
         }
         composable(Screens.Challenges.route) {
             Log.d("NavGraph", "Navigating to Challenges")

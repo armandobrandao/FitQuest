@@ -15,17 +15,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fitquest.ui.theme.FitQuestTheme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 
 
 data class Workout(
@@ -85,7 +89,7 @@ fun HeaderSimple() {
 
 
 @Composable
-fun WorkoutItem(workout: Workout) {
+fun WorkoutItem(workout: WorkoutData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -100,10 +104,8 @@ fun WorkoutItem(workout: Workout) {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = workout.name)
+                Text(text = workout.title)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Duration: ${workout.duration}")
-                Text(text = "Calories: ${workout.calories}")
             }
             Spacer(modifier = Modifier.width(46.dp))
             Column(
@@ -111,18 +113,37 @@ fun WorkoutItem(workout: Workout) {
                     .weight(1f),
                 horizontalAlignment = Alignment.End
             ) {
-                Image(
-                    painter = painterResource(id = workout.imageResId),
-                    contentDescription = "Image of: ${workout.name}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                )
+                Box {
+                    // Loading indicator
+                    if (workout.post_photo.isNullOrEmpty()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.background)
+                        )
+                    }
+
+                    // Image
+                    Image(
+                        painter = rememberImagePainter(
+                            data = workout.post_photo,
+                            builder = {
+                                crossfade(true)
+                            }
+                        ),
+                        contentDescription = "Image of: ${workout.title}",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                    )
+                }
             }
         }
     }
 }
+
 @Composable
 fun CreateWorkoutButton(navController: NavController) {
     Column(
@@ -154,7 +175,7 @@ fun CreateWorkoutButton(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Workouts(navController: NavHostController) {
+fun Workouts(navController: NavHostController, lastWorkouts: List<WorkoutData>) {
     Log.d("Workouts", "Estou na Workouts")
     Column(
         modifier = Modifier
@@ -179,9 +200,9 @@ fun Workouts(navController: NavHostController) {
 //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 ) {
                     Column {
-                        sampleWorkouts.forEachIndexed { index, workout ->
+                        lastWorkouts.forEachIndexed { index, workout ->
                             WorkoutItem(workout = workout)
-                            if (index < sampleWorkouts.size - 1) {
+                            if (index < lastWorkouts.size - 1) {
                                 Divider()
                             }
                         }

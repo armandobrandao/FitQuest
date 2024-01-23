@@ -373,7 +373,7 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = challenge.title, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            Text(text = challenge.title, fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.weight(1f))
             Text(text = challenge.xp.toString(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }

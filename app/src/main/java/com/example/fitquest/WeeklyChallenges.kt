@@ -410,18 +410,26 @@ fun GroupChallenges(navController: NavController, challenges : List<ChallengeDat
 //                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
             ) {
                 Column {
-                    challenges.forEachIndexed { index, challenge ->
-                        if (challenge != null && challenge.group) {
-                            ChallengeItem(challenge = challenge, isGroupChallenge = true) {
-                                // Navigate to friend's profile
-                                navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")
+                    if (challenges.isEmpty() || challenges.none { it?.group == true }) {
+                        Text(
+                            text = "Nothing to see here... Add some friends!",
+                            fontSize = 20.sp,
+                        )
+                    } else {
+                        challenges.forEachIndexed { index, challenge ->
+                            if (challenge != null && challenge.group) {
+                                ChallengeItem(challenge = challenge, isGroupChallenge = true) {
+                                    // Navigate to friend's profile
+                                    navController.navigate("${Screens.LocationChallenge.route}/${challenge.title}")
+                                }
                             }
-                        }
-                        if (index < challenges.size - 1) {
-                            Divider()
+                            if (index < challenges.size - 1 && challenge?.group == true) {
+                                Divider()
+                            }
                         }
                     }
                 }
+
             }
         }
     }

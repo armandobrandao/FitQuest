@@ -95,14 +95,14 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                         ) {
                             Text(
                                 text = challenge.title,
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 text = challenge.xp.toString() + " XP",
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 textAlign = TextAlign.Center
                             )
                         }

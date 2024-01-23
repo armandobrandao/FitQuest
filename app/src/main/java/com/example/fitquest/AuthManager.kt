@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -553,7 +554,6 @@ class AuthManager(private val activity: Activity) {
                     val downloadUri = task.result
 
                     // Save the reference to the user's subcollection dailyQuests document
-//                    savePhotoReferenceToDailyQuest(userId, downloadUri)
                     savePhotoReferenceToPlacesAndCheckpoint(userId, downloadUri, checkpointName, challengeId, placeName)
 
                     // Return the download URI
@@ -571,14 +571,14 @@ class AuthManager(private val activity: Activity) {
         val currentDate = getCurrentFormattedDateDaily()
 
         var collection = "generatedWorkouts"
-        if(isQuest){
+        if (isQuest) {
             collection = "dailyQuests"
         }
 
-        Log.d("AuthManager", "coollection, $collection")
+        Log.d("AuthManager", "collection, $collection")
         Log.d("AuthManager", "isQuest, $isQuest")
 
-        // Query the dailyQuests collection to get the document for today
+        // Query the specified collection to get the document for today
         firestore.collection("users")
             .document(userId)
             .collection(collection)
@@ -595,6 +595,28 @@ class AuthManager(private val activity: Activity) {
                         .addOnSuccessListener {
                             // Successfully updated the dailyQuest document with the photo reference
                             Log.d("AuthManager", "Entra no success")
+
+                            // Add the completed quest to the "lastWorkouts" subcollection
+                            val lastWorkoutsRef = firestore.collection("users")
+                                .document(userId)
+                                .collection("lastWorkouts")
+                                .document()
+
+                            // Set the completed quest in "lastWorkouts"
+                            dailyQuestDocument.reference.get()
+                                .addOnSuccessListener { documentSnapshot ->
+                                    val completedWorkout = documentSnapshot.toObject(WorkoutData::class.java)
+                                    if (completedWorkout != null) {
+                                        lastWorkoutsRef.set(completedWorkout)
+                                            .addOnSuccessListener {
+                                                // Successfully added to "lastWorkouts"
+                                                Log.d("AuthManager", "Entra no success de lastWorkouts")
+                                            }
+                                            .addOnFailureListener {
+                                                // Handle failure to add to "lastWorkouts"
+                                            }
+                                    }
+                                }
                         }
                         .addOnFailureListener {
                             // Handle the failure to update the dailyQuest document
@@ -604,9 +626,10 @@ class AuthManager(private val activity: Activity) {
                 }
             }
             .addOnFailureListener {
-                // Handle the failure to query the dailyQuests collection
+                // Handle the failure to query the specified collection
             }
     }
+
 
     fun savePhotoReferenceToPlacesAndCheckpoint(
         userId: String,
@@ -661,6 +684,7 @@ class AuthManager(private val activity: Activity) {
     ) {
         val challengesCollectionRef = firestore.collection("users").document(userId)
             .collection("challenges").document(challengeId)
+
         challengesCollectionRef.get().addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists()) {
                 val challengeData = documentSnapshot.toObject(ChallengeData::class.java)
@@ -678,7 +702,30 @@ class AuthManager(private val activity: Activity) {
                 // Update the checkpoints list in the ChallengeData document
                 challengesCollectionRef.update("checkpoints", updatedCheckpoints)
                     .addOnSuccessListener {
+                        var updatedWorkout2: WorkoutData? = null
                         // Successfully updated the checkpoints list in the ChallengeData document
+                        updatedCheckpoints.map { checkpoint ->
+                            if(checkpoint?.name == checkpointName){
+                                updatedWorkout2 = checkpoint.workout?.copy(title = checkpointName)
+                            }
+                        }
+                        // Add the completed quest to the "lastWorkouts" subcollection
+                        val lastWorkoutsRef = firestore.collection("users")
+                            .document(userId)
+                            .collection("lastWorkouts")
+                            .document()
+
+                        // Set the completed quest in "lastWorkouts"
+                        updatedWorkout2?.let { it1 ->
+                            lastWorkoutsRef.set(it1)
+                                .addOnSuccessListener {
+                                    // Successfully added to "lastWorkouts"
+                                    Log.d("AuthManager", "Entra no success de lastWorkouts")
+                                }
+                                .addOnFailureListener {
+                                    // Handle failure to add to "lastWorkouts"
+                                }
+                        }
                     }
                     .addOnFailureListener {
                         // Handle the failure to update the checkpoints list
@@ -857,7 +904,7 @@ class AuthManager(private val activity: Activity) {
             if (selectedType != null && selectedDuration != null) {
                 // Assuming you have a collection named "exercises" in your Firestore
                 firestore.collection("exercises")
-//                    .whereEqualTo("target", selectedType) //TODO retirar isto de comentário
+                    .whereEqualTo("target", selectedType)
                     .get()
                     .addOnSuccessListener { querySnapshot ->
                         val exercisesList = mutableListOf<ExerciseData>()
@@ -984,6 +1031,35 @@ class AuthManager(private val activity: Activity) {
         }
     }
 
+    fun getLastWorkouts(callback: (List<WorkoutData>) -> Unit) {
+        // Query the "lastWorkouts" subcollection and order the results by date in descending order
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userId = user.uid
+            firestore.collection("users")
+                .document(userId)
+                .collection("lastWorkouts")
+                .orderBy("date", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val lastWorkoutsList = mutableListOf<WorkoutData>()
+
+                    for (document in querySnapshot) {
+                        // Assuming you have a WorkoutData data class to map the document data
+                        val workout = document.toObject(WorkoutData::class.java)
+                        lastWorkoutsList.add(workout)
+                    }
+
+                    // Invoke the callback with the list of last workouts
+                    callback(lastWorkoutsList)
+                }
+                .addOnFailureListener { exception ->
+                    // Handle the failure case, for now, using an empty list as a placeholder
+                    callback(emptyList())
+                }
+        }
+    }
 
     fun getChallengesForCurrentWeek(callback: (List<ChallengeData?>) -> Unit) {
         val currentDate = Calendar.getInstance().time
@@ -1051,28 +1127,36 @@ class AuthManager(private val activity: Activity) {
                     // Find the checkpoint in the challenge
                     val updatedCheckpoints = challenge?.checkpoints?.map { checkpoint ->
                         if (checkpoint?.name == checkpointName) {
-                            if(!checkpoint.completed){
+                            if (!checkpoint.completed) {
                                 checkpoint.completed = true
                                 checkpoint.workout!!.completed = true
                                 completou = true
+
+                                // Add the completed checkpoint to the "lastWorkouts" subcollection
+//                                val lastWorkoutsRef = firestore.collection("users")
+//                                    .document(userId)
+//                                    .collection("lastWorkouts")
+//                                    .document()
+//
+//                                transaction.set(lastWorkoutsRef, checkpoint.workout!!)
                             }
                         }
                         checkpoint
                     }
-                    if(completou) {
+                    if (completou) {
                         // Update the challenge with the modified checkpoints
                         challenge?.done_checkpoints = (challenge?.done_checkpoints ?: 0) + 1
                         if (updatedCheckpoints != null) {
                             challenge?.checkpoints = updatedCheckpoints
                         }
                         if (challenge != null) {
-                            if(challenge.done_checkpoints == challenge.total_checkpoints){
+                            if (challenge.done_checkpoints == challenge.total_checkpoints) {
                                 challenge.completed = true
-                                Log.d("AuthManager","Entra no if para tornar challege completed")
+                                Log.d("AuthManager", "Entra no if para tornar challege completed")
                                 //chamar funcao e passar-lhe o xp para aumentar o xp_total
                                 updateXP(challenge.xp) { success ->
                                     if (success) {
-                                        Log.d("AuthManager","Entra no sucess do updateXP")
+                                        Log.d("AuthManager", "Entra no sucess do updateXP")
                                     } else {
 
                                     }
@@ -1102,6 +1186,7 @@ class AuthManager(private val activity: Activity) {
             callback(false)
         }
     }
+
 
     fun updateXP(xp: Int, callback: (Boolean) -> Unit) {
         val user = auth.currentUser
@@ -1182,6 +1267,21 @@ class AuthManager(private val activity: Activity) {
                         // Save the updated document back to Firestore
                         dailyQuestDoc.reference.set(daily!!)
                             .addOnSuccessListener {
+//                                val lastWorkoutsRef = firestore.collection("users")
+//                                    .document(userId)
+//                                    .collection("lastWorkouts")
+//                                    .document()
+//
+//                                // Set the completed quest in "lastWorkouts"
+//                                lastWorkoutsRef.set(daily!!)
+//                                    .addOnSuccessListener {
+//                                        // Update successful
+//                                        callback(true)
+//                                    }
+//                                    .addOnFailureListener {
+//                                        // Update failed
+//                                        callback(false)
+//                                    }
                                 callback(true)
                             }
                             .addOnFailureListener {
@@ -1436,6 +1536,7 @@ class AuthManager(private val activity: Activity) {
         return calendar.time
     }
 
+    // TODO: meter esta função a criar challenges para amigos se o user tiver amigos
     private fun createNewChallenges(userId: String, startDate: Date, endDate: Date) {
         // Fetch exercises and places from the database
         firestore.collection("exercises")

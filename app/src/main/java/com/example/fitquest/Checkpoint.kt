@@ -153,7 +153,7 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = checkpoint.name, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            Text(text = checkpoint.name, fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.weight(1f))
         }
     }
