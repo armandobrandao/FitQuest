@@ -70,6 +70,9 @@ class MainActivity : ComponentActivity() {
 
         authManager = AuthManager(this)
 
+        val serviceIntent = Intent(this, StepCountingService::class.java)
+        startService(serviceIntent)
+
         setContent {
             FitQuestTheme {
                 val navController = rememberNavController()

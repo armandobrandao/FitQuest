@@ -396,7 +396,6 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Homepage(navController: NavController, dailyQuest: WorkoutData) {
-    Log.d("Homepage", "Estou na home")
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()

@@ -23,80 +23,23 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 
+
 class AuthManager(private val activity: Activity) {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-    private val executor = Executors.newSingleThreadScheduledExecutor()
-    private var renewalTask: ScheduledFuture<*>? = null
-
-
-//    init {
-//        // Verificar se há um token armazenado localmente e tentar fazer o login automaticamente
-//        val localAccessToken = getLocalAccessToken()
-//        if (localAccessToken != null) {
-//            // Existe um token armazenado localmente, tentar fazer o login
-//            signInWithToken(localAccessToken)
-//        } else {
-//            // Não existe um token localmente, iniciar a renovação automática
-//            //startTokenRenewal()
-//        }
-//    }
-
-    private fun signInWithToken(token: String) {
-        // Autenticar com o token diretamente (sem necessidade de email/senha)
-        Log.d("AuthManager", "---------------- TESTE DE TOKEN --------------")
-        Log.d("AuthManager", token)
-        auth.signInWithCustomToken(token)
-            .addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful) {
-                    // Login bem-sucedido com o token
-                    // Agora, você pode prosseguir com qualquer lógica adicional
-                    Log.d("AuthManager", "Login automático bem-sucedido com o token")
-                } else {
-                    // Tratar falha no login com o token
-                    Log.e("AuthManager", "Falha no login automático com o token: ${task.exception?.message}")
-                }
-            }
-    }
-
-    //fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
-    //    auth.createUserWithEmailAndPassword(email, password)
-    //        .addOnCompleteListener(activity) { task ->
-    //            if (task.isSuccessful) {
-    //                // If sign-up is successful, the signIn function will take care of creating a new DailyQuest
-    //                signIn(email, password) { signInSuccess, signInError ->
-    //                    if (signInSuccess) {
-    //                        // Callback with sign-up success
-    //                        callback(true, null)
-    //                    } else {
-    //                        // Callback with sign-up failure
-    //                        callback(false, signInError ?: "Error signing in after sign-up")
-    //                    }
-    //                }
-    //            } else {
-    //                // Callback with sign-up failure
-    //                callback(false, task.exception?.message)
-    //            }
-    //        }
-    //}
-
-
 
     fun signUp(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         // Check if the email is already in use using Firestore
-        Log.d("AuthManager", "Entra no signUp")
         val usersCollection = FirebaseFirestore.getInstance().collection("users")
-        Log.d("AuthManager", "usersCollection: $usersCollection")
 
         usersCollection.whereEqualTo("e-mail", email)
             .get()
             .addOnCompleteListener { queryTask ->
                 if (queryTask.isSuccessful) {
                     val querySnapshot = queryTask.result
-                    Log.d("querySnapshot", "$querySnapshot")
                     if (querySnapshot != null && !querySnapshot.isEmpty) {
                         // Email is already in use in Firestore, callback with failure
                         callback(false, "The email address is already in use by another account.")
@@ -106,19 +49,18 @@ class AuthManager(private val activity: Activity) {
                             // Password has more than 6 characters, proceed with Firebase Authentication
                             auth.createUserWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(activity) { task ->
-                                    Log.d("AuthManager", "entra na task do createUserWithEmailAndPassword")
                                     if (task.isSuccessful) {
-                                        Log.d("AuthManager", "diz que a task é successful")
                                         val signUpBefore = true
                                         signIn(email, password, signUpBefore) { signInSuccess, signInError ->
                                             if (signInSuccess) {
-                                                Log.d("ENTROU", "ENTROU")
+
+
                                                 callback(true, null)
                                             } else {
                                                 callback(false, signInError ?: "Error signing in after sign-up")
                                             }
                                         }
-                                        callback(true, null)
+                                    callback(true, null)
                                     } else {
                                         callback(false, task.exception?.message)
                                     }
@@ -135,57 +77,6 @@ class AuthManager(private val activity: Activity) {
             }
     }
 
-    private fun renewAccessToken(callback: (Boolean, String?) -> Unit) {
-        val user = auth.currentUser
-        user?.getIdToken(false)
-            ?.addOnCompleteListener { idTokenTask ->
-                if (idTokenTask.isSuccessful) {
-                    // Novo token de acesso obtido com sucesso
-                    val newAccessToken = idTokenTask.result?.token
-                    // Salvar o novo token localmente
-                    saveAccessTokenLocally(newAccessToken ?: "")
-                    // Callback com o novo token de acesso
-                    callback(true, newAccessToken)
-                } else {
-                    // Tratar falha na obtenção do novo token de acesso
-                    callback(false, "Erro ao renovar o token de acesso")
-                }
-            }
-    }
-
-    // Renovação automatica do token
-    private fun scheduleTokenRenewal() {
-        renewalTask = executor.scheduleAtFixedRate({
-            // Renovar o token a cada 24 horas
-            renewAccessToken { _, _ ->
-            }
-        }, 0, 24, TimeUnit.HOURS)
-    }
-
-    private fun saveAccessTokenLocally(token: String) {
-        // Salvar o token de acesso localmente usando SharedPreferences
-        val sharedPreferences = activity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("accessToken", token)
-        editor.apply()
-    }
-
-    private fun getLocalAccessToken(): String? {
-        // Obter o token de acesso armazenado localmente usando SharedPreferences
-        val sharedPreferences = activity.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("accessToken", null)
-    }
-
-    fun startTokenRenewal() {
-        if (renewalTask == null || renewalTask?.isCancelled == true) {
-            scheduleTokenRenewal()
-        }
-    }
-
-    fun stopTokenRenewal() {
-        renewalTask?.cancel(true)
-    }
-
 
     fun signIn(email: String, password: String, signUpBefore: Boolean, callback: (Boolean, String?) -> Unit) {
         Log.d("AuthManager", "entra no SignIn")
@@ -199,7 +90,6 @@ class AuthManager(private val activity: Activity) {
                     if (user != null) {
                         // Check if the user already has a DailyQuest for the current day
                         if (!signUpBefore) {
-                            Log.d("AuthManager", "entra no !signUpBefore")
                             hasDailyQuestForToday(user.uid) { hasDailyQuest ->
                                 if (!hasDailyQuest) {
                                     // If no DailyQuest exists for the current day, generate a new one
@@ -256,17 +146,6 @@ class AuthManager(private val activity: Activity) {
                                 }
                             }
                         }
-                         renewAccessToken { renewSuccess, renewError ->
-                            if (renewSuccess) {
-                                Log.d("AuthManager", "------ TESTE1 -------")
-                                // Callback com sucesso na renovação do token de acesso
-                                callback(true, null)
-                            } else {
-                                Log.d("AuthManager", "------ TESTE2 -------")
-                                // Callback com falha na renovação do token de acesso
-                                callback(false, renewError ?: "Erro durante a renovação do token de acesso")
-                            }
-                        }
                     } else {
                         // Handle the case when the user is null
                         callback(false, "Error retrieving user information")
@@ -276,6 +155,10 @@ class AuthManager(private val activity: Activity) {
                     callback(false, task.exception?.message)
                 }
             }
+    }
+
+    fun getCurrentUserId(): String {
+        return auth.currentUser?.uid.orEmpty()
     }
 
     private fun hasDailyQuestForToday(userId: String, callback: (Boolean) -> Unit) {
@@ -797,30 +680,6 @@ class AuthManager(private val activity: Activity) {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
     }
-
-//    fun generateUniqueCode(username: String): String {
-//        val random = SecureRandom()
-//        val salt = random.nextInt().absoluteValue.toString()
-//
-//        // Concatenate username and randomness
-//        val combinedData = "$username$salt"
-//
-//        // Create a hash of the combined data
-//        val hashedCode = hashString(combinedData)
-//
-//        val sanitizedHashedCode = hashedCode.replace("-", "")
-//
-//        val part1 = sanitizedHashedCode.substring(0, 2)
-//        val part2 = sanitizedHashedCode.substring(2, 4)
-//        val part3 = sanitizedHashedCode.substring(4, 6)
-//
-//        return "$part1-$part2-$part3"
-//    }
-//
-//    fun hashString(input: String): String {
-//        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
-//        return bytes.fold(StringBuilder()) { str, byte -> str.append(byte.toString(16).padStart(2, '0')) }.toString()
-//    }
 
     fun calculateUserLevel(xp_total: Int): Int{
         val levelThreshold = 200

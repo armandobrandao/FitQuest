@@ -32,7 +32,6 @@ class SignUpActivity : AppCompatActivity() {
                         // Registration successful, you can handle it here
                         Log.d("SignUpActivity", "Registration successful")
 
-                        // Redirect to the next activity, for example, WelcomeActivity
                         val intent = Intent(this@SignUpActivity, SignUpUser::class.java)
                         startActivity(intent)
                         finish() // Optional: finish this activity if you don't want the user to come back to it by pressing the back button

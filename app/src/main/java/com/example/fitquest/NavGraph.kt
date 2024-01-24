@@ -69,7 +69,6 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
     )
     {
         composable(Screens.Home.route) {
-            Log.d("NavGraph", "Navigating to Home")
             dailyQuest?.let {
                 Homepage(navController = navController, dailyQuest= dailyQuest!!)
             } ?: run {

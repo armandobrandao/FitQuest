@@ -33,4 +33,5 @@ data class UserProfile(
     val lastLoginDate: Date? = Date(), // Nullable Date for the last login date
     val currentStreak: Int = 0,
     var profileImageUrl: String? = null,
+    var steps: Int = 0,
 )
