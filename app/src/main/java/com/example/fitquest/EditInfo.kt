@@ -348,7 +348,19 @@ class EditInfo : AppCompatActivity() {
                         firstDayOfWeek = firstDay,
                         trainingDays = trainingDays,
                         sessionsOutside = sessionsOutside,
-                        profileImageUrl = profileImageUri.toString()
+                        profileImageUrl = profileImageUri.toString(),
+                        xp_total = currentUser.xp_total,
+                        xp_level = currentUser.xp_level,
+                        level = currentUser.level,
+                        longestStreak =currentUser.longestStreak,
+                        places = currentUser.places,
+                        friends = currentUser.friends,
+                        friend_reqs = currentUser.friend_reqs,
+                        achievements = currentUser.achievements,
+                        progress = currentUser.progress,
+                        lastLoginDate =currentUser.lastLoginDate,
+                        currentStreak=currentUser.currentStreak,
+                        steps =currentUser.steps,
                     )
 
                     // Call the updateCurrentUserProfile function with the UserProfile object
