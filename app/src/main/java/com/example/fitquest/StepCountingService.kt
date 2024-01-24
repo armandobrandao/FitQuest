@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+/*
 class StepCountingService : Service(), SensorEventListener {
 
     private var sensorManager: SensorManager? = null
@@ -92,3 +93,4 @@ class StepCountingService : Service(), SensorEventListener {
         return null
     }
 }
+*/

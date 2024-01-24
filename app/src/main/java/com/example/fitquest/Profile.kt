@@ -1,7 +1,6 @@
 package com.example.fitquest
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -91,7 +90,6 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                     .weight(1f)
                     .padding(horizontal = 16.dp) // Add padding here
             ) {
-                Log.d("Profile", "user.profileImageUrl, ${user.profileImageUrl}")
                 Box {
                     // Loading indicator
                     if (user.profileImageUrl.isNullOrEmpty()) {

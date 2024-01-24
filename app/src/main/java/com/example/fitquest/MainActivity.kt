@@ -68,10 +68,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
 
+
         authManager = AuthManager(this)
 
-        val serviceIntent = Intent(this, StepCountingService::class.java)
-        startService(serviceIntent)
+        /*
+            val serviceIntent = Intent(this, StepCountingService::class.java)
+            startService(serviceIntent)
+        */
 
         setContent {
             FitQuestTheme {

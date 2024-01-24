@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
-
+/*
 class StepActivity : AppCompatActivity(), SensorEventListener {
 
     private var sensorManager: SensorManager? = null
@@ -144,3 +144,4 @@ class StepActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 }
+*/

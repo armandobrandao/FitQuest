@@ -32,8 +32,7 @@ fun NavGraph (navController: NavHostController, authManager: AuthManager){
         authManager.getCurrentUser { user ->
             if (user != null) {
                 currentUser = user
-                // Increment the key to trigger a re-execution of LaunchedEffect
-                Log.d("NavGraph", "$currentUser")
+
                 userKey++
             } else {
                 // Handle the case where the user is null
