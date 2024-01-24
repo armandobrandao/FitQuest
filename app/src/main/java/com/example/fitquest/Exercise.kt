@@ -257,6 +257,7 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
         }
 
         // Timer controls
+        // Timer controls
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -264,20 +265,52 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(
-                onClick = {
-                    timerRunning = !timerRunning
-                },
-                modifier = Modifier.padding(end = 16.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
-            ) {
-                Text(
-                    text = if (timerRunning) "Pause" else "Play",
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.lightModeColor)
-                )
+            if (timerRunning) {
+                Button(
+                    onClick = {
+                        timerRunning = !timerRunning
+                    },
+                    modifier = Modifier.padding(end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
+                ) {
+                    Text(
+                        text = if (timerRunning) "Pause" else "Play",
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.lightModeColor)
+                    )
+                }
+            } else {
+                Button(
+                    onClick = {
+                        timerRunning = !timerRunning
+                    },
+                    modifier = Modifier.padding(end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
+                ) {
+                    Text(
+                        text = if (timerRunning) "Pause" else "Play",
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.lightModeColor)
+                    )
+                }
+                Button(
+                    onClick = {
+                        // Handle the "Conclude" button click here (navigate to home page, etc.)
+                        // You might need to add appropriate navigation logic based on your app's structure
+                        // navController.navigate(/* destination */)
+                              navController.navigate(Screens.Home.route)
+                    },
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
+                    Text(
+                        text = "Finish",
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.lightModeColor)
+                    )
+                }
             }
         }
+
 
 //            Button(
 //                onClick = {
