@@ -59,20 +59,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.maps.android.compose.CameraPositionState
 
-data class Place(
-    val name: String,
-    val done: Boolean,
-    val lat: Double,
-    val long: Double,
-    val prog: Int
-    )
-
-val samplePlaces = listOf(
-    Place("Jardim do Torel", true, lat = 38.718838, long =  -9.141320, 0),
-    Place("Príncipe Real", false, lat = 38.7167, long= -9.1483, 0),
-    Place("Parque Eduardo VII", false, lat= 38.728298, long= -9.152683, 0),
-)
-
 
 @Composable
 fun MapsActivity(navController: NavController, challenge: ChallengeData) {

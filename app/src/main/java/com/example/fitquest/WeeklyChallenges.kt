@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import java.time.Duration
 import java.time.Instant
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChallengeItem(challenge: ChallengeData, isGroupChallenge: Boolean = false, onClick: () -> Unit) {

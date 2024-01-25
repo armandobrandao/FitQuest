@@ -92,7 +92,7 @@ fun GoogleMapWithMarker(
     properties: MapProperties,
     cameraPositionState: CameraPositionState,
     focusCheckpoint: PlaceData?,
-    onMarkerClick: (Place) -> Unit
+    onMarkerClick: (PlaceData) -> Unit
 ) {
     GoogleMap(
         modifier = Modifier.fillMaxSize(),

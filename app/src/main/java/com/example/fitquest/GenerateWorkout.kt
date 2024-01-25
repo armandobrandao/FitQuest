@@ -51,7 +51,7 @@ import androidx.compose.ui.res.painterResource
 fun InputBox(
     label: String,
     options: List<String> = emptyList(),
-    onValueChange: (String) -> Unit // Add a callback to update the state
+    onValueChange: (String) -> Unit
 ) {
     var selectedOption by remember { mutableStateOf(options.firstOrNull()) }
     val context = LocalContext.current
@@ -94,7 +94,7 @@ fun InputBox(
                                 text = { Text(text = item) },
                                 onClick = {
                                     selectedOption = item
-                                    onValueChange(item) // Update the state with the original value
+                                    onValueChange(item)
                                     expanded = false
                                     Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
                                 }
@@ -114,7 +114,7 @@ fun InputBox(
                     value = selectedOption ?: "",
                     onValueChange = {
                         selectedOption = it
-                        onValueChange(it) // Update the state with the original value
+                        onValueChange(it)
                     },
                     label = { Text(text = label) },
                     keyboardOptions = KeyboardOptions(
@@ -123,11 +123,11 @@ fun InputBox(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            // Handle done action if needed
+
                         }
                     ),
                     modifier = Modifier
-                        .background(Color.Gray) // Adjust the background color as needed
+                        .background(Color.Gray)
                 )
             }
         }
@@ -141,8 +141,6 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
     var showError by remember { mutableStateOf(false) }
     val typeOptions = listOf("Cardio", "Back", "Abs", "Legs", "Shoulders", "Full Body", "Arms", "Chest")
     var selectedType by remember { mutableStateOf(typeOptions.firstOrNull()) }
-
-//    var selectedDuration by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -170,7 +168,6 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
                         )
                     }
                 }
-                // Box with title and stats on top of the image
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
@@ -180,7 +177,6 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
                         modifier = Modifier
                             .padding(16.dp)
                     ) {
-                        // Top Bar
                         Text(text = "Create Workout",
                             fontWeight = FontWeight.Bold,
                             fontSize = 27.sp

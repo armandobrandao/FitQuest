@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.google.firebase.firestore.auth.User
 
 
 @OptIn(ExperimentalMaterial3Api::class)

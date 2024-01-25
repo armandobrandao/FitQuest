@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 
 @Composable
-fun RoundedImageCard(imageResource: String) {
+fun RoundedImageCard(imageResource: String, placeData: PlaceData?) {
     Card(
         modifier = Modifier
             .height(250.dp)
@@ -59,17 +59,19 @@ fun RoundedImageCard(imageResource: String) {
                         .background(MaterialTheme.colorScheme.background)
                 )
             }
-            Image(
-                painter = rememberImagePainter(
-                    data = imageResource,
-                    builder = {
-                        crossfade(false)
-                    }
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            if (placeData != null) {
+                Image(
+                    painter = rememberImagePainter(
+                        data = imageResource,
+                        builder = {
+                            crossfade(false)
+                        }
+                    ),
+                    contentDescription = "Picture of ${placeData.name}",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -84,7 +86,7 @@ fun PhotosSection(placeData: PlaceData?) {
             val limitedPhotos = placeData.photos.take(3)
 
             items(limitedPhotos) { imageResource ->
-                RoundedImageCard(imageResource)
+                RoundedImageCard(imageResource, placeData)
             }
         }
     }

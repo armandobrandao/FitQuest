@@ -71,7 +71,7 @@ fun SearchFriend(navController: NavController, currentUser: UserProfile, userLis
                 .padding(bottom = 16.dp),
             label = { Text("Search for a friend") },
             trailingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,

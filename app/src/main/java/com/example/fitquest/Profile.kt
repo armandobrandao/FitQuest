@@ -389,7 +389,7 @@ fun AchievementItem(achievement: Achievement) {
         ) {
             Image(
                 painter = painterResource(id = achievement.icon),
-                contentDescription = null,
+                contentDescription = "${achievement.name}",
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
