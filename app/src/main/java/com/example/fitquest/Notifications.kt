@@ -1,7 +1,5 @@
 package com.example.fitquest
 
-import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,12 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,16 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 
@@ -70,15 +57,9 @@ fun NotificationItem(notification: Notification) {
     }
 }
 
-val requestList = listOf(
-    User("Lucy Bridgers", R.drawable.profile_image, "@lucy"),
-    User("Phoebe Backer", R.drawable.profile_image, "@phoebe"),
-)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FriendRequests(navController: NavHostController, currentUser: UserProfile, authManager: AuthManager) {
-    // Sample list of users for demonstration
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,8 +80,6 @@ fun FriendRequests(navController: NavHostController, currentUser: UserProfile, a
         if (currentUser.friend_reqs.isNotEmpty()) {
             currentUser.friend_reqs.forEach { user ->
                 FriendsRequestListItem(currentUser = currentUser, user = user, onClick = {
-                    // Navigate to friend's profile
-                    Log.d("Notifications", "Deteta o onClick")
                     navController.navigate("${Screens.Friend.route}/${user.username}")
                 }, authManager = authManager)
             }
@@ -112,7 +91,6 @@ fun FriendRequests(navController: NavHostController, currentUser: UserProfile, a
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
-                    //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 )  {
                     Text("Your friend requests will appear here", fontSize = 15.sp)
                 }
@@ -132,14 +110,14 @@ fun ClickableButton(
 ) {
     Box(
         modifier = modifier
-            .background(backgroundColor, shape = RoundedCornerShape(12.dp)) // Adjust corner radius here
+            .background(backgroundColor, shape = RoundedCornerShape(12.dp))
             .clickable { onClick() }
-            .padding(4.dp) // Adjust the internal padding here
+            .padding(4.dp)
     ) {
         Text(
             text = text,
             color = Color.White,
-            modifier = Modifier.padding(4.dp) // Adjust the text padding here
+            modifier = Modifier.padding(4.dp)
         )
     }
 }
@@ -152,7 +130,6 @@ fun NotificationsContainer(){
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
     ) {
         Column {
             sampleNotifications.forEachIndexed { index, notification ->
@@ -177,11 +154,9 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp) // Adjust spacing here
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Round profile image
             Box {
-                // Loading indicator
                 if (user.profileImageUrl.isNullOrEmpty()) {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -195,7 +170,6 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
                         data = user.profileImageUrl,
                         builder = {
                             crossfade(false)
-//                            placeholder(R.drawable.default_profile_image)
                         }
                     ),
                     contentScale = ContentScale.Crop,
@@ -206,27 +180,21 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
                 )
             }
 
-            // User's name
             Text(text = user.fullName, fontSize = 15.sp, fontWeight = FontWeight.Bold)
 
-            // Buttons container
             Row(
                 modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Send Friend Request Button
                 ClickableButton(
                     text = "Add",
                     onClick = {
-                        Log.d("Notifications", "Deteta o onClick Add")
-                        // Handle send friend request button click
-                        // You can perform the necessary actions here
                         authManager.acceptFriendRequest(currentUser, user) { success ->
                             if (success) {
-                                // Handle the case when the friend request is accepted successfully
+
                             } else {
-                                // Handle the case when there is an issue accepting the friend request
+
                             }
                         }
                     },
@@ -236,14 +204,11 @@ fun FriendsRequestListItem(currentUser: UserProfile, user: UserProfile, onClick:
                 ClickableButton(
                     text = "Delete",
                     onClick = {
-                        Log.d("Notifications", "Deteta o onClick Delete")
-                        // Handle send friend request button click
-                        // You can perform the necessary actions here
                         authManager.deleteFriendRequest(currentUser, user) { success ->
                             if (success) {
-                                // Handle the case when the friend request is accepted successfully
+
                             } else {
-                                // Handle the case when there is an issue accepting the friend request
+
                             }
                         }
                     },
@@ -266,9 +231,3 @@ fun Notifications (user: UserProfile, navController: NavHostController, authMana
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun AddFriendPreview() {
-//    AddFriend(name = "John Doe", code= "123-456-789")
-//}

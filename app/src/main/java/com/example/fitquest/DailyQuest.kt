@@ -56,7 +56,6 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
                         )
                     }
                 }
-                // Box with title and stats on top of the image
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
@@ -72,15 +71,13 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "$totalTimeInMinutes mins | ${quest.exercises.size} exercises | 3x", // tem de ser gerados
+                            text = "$totalTimeInMinutes mins | ${quest.exercises.size} exercises | 3x",
                             fontSize = 14.sp
                         )
-                        // Placeholder content (replace with your content)
                         ElevatedCard(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
                                 quest.exercises.forEachIndexed { index, exercise ->
@@ -91,31 +88,16 @@ fun DailyQuest(quest: WorkoutData, navController: NavController) {
                                 }
                             }
                         }
-//                    // Placeholder CreateWorkoutButton
-//                    StartWorkoutButton(navController)
                     }
                 }
             }
         }
-        // Bottom bar
         StartWorkoutButton(navController = navController, isQuest = true, isGen = false, checkpoint = null)
     }
 }
 
-// Function to calculate total time in minutes
 fun calculateTotalTime(exercises: List<ExerciseData>): Int {
-    // Calculate total time of exercises and breaks in seconds
     val totalTimeInSeconds = (exercises.sumBy { it.durationInSeconds } + (exercises.size - 1) * 30) * 4
 
-    // Convert total time to minutes
     return totalTimeInSeconds / 60
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DailyQuestPreview() {
-//    FitQuestTheme {
-//        DailyQuest()
-//    }
-//}

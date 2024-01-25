@@ -14,7 +14,6 @@ import com.example.fitquest.databinding.ActivityQuestionaryBinding
 class Questionary : AppCompatActivity() {
 
     private lateinit var binding: ActivityQuestionaryBinding
-    private val authManager = AuthManager(this)
 
     private lateinit var radioGroupGoal: RadioGroup
     private lateinit var radioGroupMotivation: RadioGroup
@@ -39,16 +38,14 @@ class Questionary : AppCompatActivity() {
 
         numberPickerTrainingDays.minValue = 0
         numberPickerTrainingDays.maxValue = 7
-        numberPickerTrainingDays.wrapSelectorWheel = true // This allows wrapping from 0 to 7
+        numberPickerTrainingDays.wrapSelectorWheel = true
 
-        // Set up Spinner for days of the week
         val adapter = ArrayAdapter.createFromResource(
             this, R.array.days_of_week, android.R.layout.simple_spinner_item
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFirstDay.adapter = adapter
 
-        // Set up button click listener
         buttonSubmit.setOnClickListener {
             val selectedGoal = findViewById<RadioButton>(radioGroupGoal.checkedRadioButtonId)?.text.toString()
             val selectedMotivation = findViewById<RadioButton>(radioGroupMotivation.checkedRadioButtonId)?.text.toString()

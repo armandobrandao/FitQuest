@@ -1,18 +1,12 @@
 package com.example.fitquest
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -26,11 +20,9 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -39,14 +31,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.core.app.ActivityCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fitquest.ui.theme.FitQuestTheme
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.BuildConfig
 
 data class BottomNavigationItem(
     val title: String,
@@ -66,8 +53,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
-
 
         authManager = AuthManager(this)
 
@@ -80,7 +65,6 @@ class MainActivity : ComponentActivity() {
             FitQuestTheme {
                 val navController = rememberNavController()
 
-                // A surface container using the 'background' color from the theme
                 val items = listOf(
                     BottomNavigationItem(
                         title = "Home",
@@ -99,7 +83,6 @@ class MainActivity : ComponentActivity() {
                         selectedIcon = Icons.Filled.LocationOn,
                         unselectedIcon = Icons.Outlined.LocationOn,
                         hasNews = false,
-//                        badgeCount = 2
                     ),
                     BottomNavigationItem(
                         title = "Profile",
@@ -116,7 +99,6 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination?.route ?: ""
 
-                // Conditionally show the NavigationBar only for the main pages
                 val shouldShowNavigationBar = currentDestination in listOf(
                     Screens.Home.route,
                     Screens.Workout.route,
@@ -136,7 +118,7 @@ class MainActivity : ComponentActivity() {
                                         onClick = {
                                             selectedItemIndex = index
                                             var titulo = item.title
-                                            Log.d("TITULO", "The value of titulo is: $titulo")
+
                                             val destinationRoute = when (titulo) {
                                                 "Home" -> Screens.Home.route
                                                 "Workout" -> Screens.Workout.route
@@ -175,7 +157,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    // Call your NavGraph composable to set up the navigation
                     NavGraph(navController = navController,authManager = authManager )
                 }
             }

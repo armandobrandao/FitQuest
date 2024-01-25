@@ -1,15 +1,11 @@
 package com.example.fitquest
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,21 +39,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
-import com.example.fitquest.ui.theme.FitQuestTheme
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Objects
 import android.Manifest
-import android.util.Log
 import androidx.compose.ui.res.colorResource
 
 
@@ -85,7 +75,6 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                 }
             }
-            // Box with title and stats on top of the image
             ElevatedCard (
                 modifier = Modifier
                     .fillMaxSize()
@@ -133,24 +122,14 @@ fun DailyQuestComplete(navController: NavController, listExercises: WorkoutData,
                         )
                     }
                     Spacer(modifier = Modifier.height(26.dp))
-//                    Text(
-//                        text = "This is your 25º FitQuest workout!",
-//                        fontSize = 25.sp,
-//                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
     }
         if(showButton){
-            // Placeholder CreateWorkoutButton
             TakePhotoButton { photoUri ->
-                // Handle the captured photo URI here
-                Log.d("DailyQuestComplete", "Photo captured: $photoUri")
-                // If you want to upload the photo to Firestore, call the upload function here
                 authManager.uploadPhotoToFirestore(isQuest, photoUri, userId) { downloadUri ->
-                    // Handle the download URI if needed
-                    Log.d("DailyQuestComplete", "Download URI: $downloadUri")
                 }
                 if(isQuest) {
                     navController.navigate(Screens.Home.route)
@@ -209,7 +188,6 @@ fun TakePhotoButton(onPhotoCaptured: (Uri?) -> Unit) {
             if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             } else {
-                // Request a permission
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
         },
@@ -226,22 +204,12 @@ fun TakePhotoButton(onPhotoCaptured: (Uri?) -> Unit) {
 }
 
 fun Context.createImageFile(): File {
-    // Create an image file name
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     val imageFileName = "JPEG_" + timeStamp + "_"
     val image = File.createTempFile(
-        imageFileName, /* prefix */
-        ".jpg", /* suffix */
-        externalCacheDir      /* directory */
+        imageFileName,
+        ".jpg",
+        externalCacheDir
     )
-    Log.d("DailyQuesComplete", "image: $image")
     return image
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DailyQuestCompletePreview() {
-//    FitQuestTheme {
-//        DailyQuestComplete()
-//    }
-//}

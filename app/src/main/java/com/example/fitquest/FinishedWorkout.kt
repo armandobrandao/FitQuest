@@ -1,7 +1,5 @@
 package com.example.fitquest
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,12 +30,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.example.fitquest.ui.theme.FitQuestTheme
 
 @Composable
 fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, isQuest: Boolean, isGen: Boolean) {
@@ -67,7 +62,6 @@ fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, is
                         )
                     }
                 }
-                // Box with title and stats on top of the image
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
@@ -133,15 +127,13 @@ fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, is
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Exercises Performed", // tem de ser gerados
+                            text = "Exercises Performed",
                             fontSize = 25.sp
                         )
-                        // Placeholder content (replace with your content)
                         ElevatedCard(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
                                 listExercises.exercises.forEachIndexed { index, exercise ->
@@ -156,7 +148,6 @@ fun FinishedWorkout(navController: NavController, listExercises: WorkoutData, is
                 }
             }
         }
-        // Placeholder CreateWorkoutButton
         ContinueWorkoutButton(navController, listExercises, isQuest, isGen)
     }
 }
@@ -177,9 +168,9 @@ fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutD
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(80.dp), // Adjust the height as needed
+            .height(80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+        verticalArrangement = Arrangement.Bottom
     ) {
         Button(
             onClick = {
@@ -198,11 +189,3 @@ fun ContinueWorkoutButton(navController : NavController, listExercises: WorkoutD
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun FinishedWorkoutPreview() {
-//    FitQuestTheme {
-//        FinishedWorkout()
-//    }
-//}

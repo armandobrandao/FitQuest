@@ -1,6 +1,5 @@
 package com.example.fitquest
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -12,8 +11,6 @@ class WorkoutAPI {
             val apiKey = "Tng/CZGSkgzfSCEV+DbTyw==fsY8JbSZOC11ObD4"
             val apiBaseUrl = "https://api.api-ninjas.com/v1/exercises"
             val apiUrl = buildApiUrl(apiBaseUrl, muscle, type, difficulty, offset)
-//            val apiUrl = "https://api.api-ninjas.com/v1/exercises?muscle=abdominals&type=strength"
-            Log.d("WORKOUT", "apiUrl: $apiUrl")
 
             val client = OkHttpClient()
 
@@ -21,8 +18,6 @@ class WorkoutAPI {
                 .url(apiUrl)
                 .header("X-Api-Key", apiKey)
                 .build()
-
-            Log.d("WORKOUT", "request: $request")
 
             client.newCall(request).execute().use { response ->
                 return@runBlocking if (response.isSuccessful) {
@@ -41,10 +36,8 @@ class WorkoutAPI {
             difficulty?.let { params.add("difficulty=$it") }
             params.add("offset=$offset")
 
-            Log.d("WORKOUT", "params: $params")
-
             val queryString = params.joinToString("&")
-            Log.d("WORKOUT", "queryString: $queryString")
+
             return "$baseUrl?$queryString"
         }
     }

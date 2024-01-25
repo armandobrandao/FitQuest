@@ -40,18 +40,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-//import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
-//import coil.request.ImageRequest
 
-data class Statistic(val value: String, val icon: Int, val title: String)  // Sample user data class
+data class Statistic(val value: String, val icon: Int, val title: String)
 
 data class Achievement(val name: String, val icon: Int, val description: String)
 
-val sampleAchievement = listOf(
-    Achievement("Milestone Master", R.drawable.bell, "Completed 500 miles of running or walking"),
-    Achievement("Streak Marathoner", R.drawable.bell, "Unstoppable! You achieved a remarkable 200-day streak of daily workouts, consistency is yor superpower"),
-)
 @Composable
 fun MainCard(user: UserProfile, authManager: AuthManager) {
     ElevatedCard(
@@ -68,18 +62,18 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp) // Add padding here
+                    .padding(horizontal = 16.dp)
             ) {
                 Text(text = user.fullName, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-                Spacer(modifier = Modifier.height(4.dp)) // Add more space here
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(text = "@" + user.username, fontSize = 18.sp)
 
-                Spacer(modifier = Modifier.height(8.dp)) // Add more space here
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(text = "Joined in " + user.joinDate.toString(), fontSize = 12.sp)
-                Spacer(modifier = Modifier.height(2.dp)) // Add more space here
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(text = "Portugal", fontSize = 12.sp)
             }
 
@@ -88,10 +82,9 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp) // Add padding here
+                    .padding(horizontal = 16.dp)
             ) {
                 Box {
-                    // Loading indicator
                     if (user.profileImageUrl.isNullOrEmpty()) {
                         CircularProgressIndicator(
                             modifier = Modifier
@@ -105,7 +98,6 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                             data = user.profileImageUrl,
                             builder = {
                                 crossfade(false)
-//                                placeholder(R.drawable.default_profile_image)
                             }
                         ),
                         contentScale = ContentScale.Crop,
@@ -138,7 +130,7 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                     progress = calculateProgress(user.xp_level, 200 ),
                     color = Color(0xFFE66353),
                     modifier = Modifier
-                        .fillMaxWidth() // Adjust the width here
+                        .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp)
                         .height(16.dp)
                 )
@@ -146,8 +138,8 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
             Row(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth(), // Adjusted to fill the width
-                horizontalArrangement = Arrangement.Center, // Center the content horizontally
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val context = LocalContext.current
@@ -160,7 +152,7 @@ fun MainCard(user: UserProfile, authManager: AuthManager) {
                         color = colorResource(id = R.color.lightModeColor)
                     )
                 }
-                Spacer(modifier = Modifier.weight(0.5f)) // Adjust spacing as needed
+                Spacer(modifier = Modifier.weight(0.5f))
                 Button(
                     colors = ButtonDefaults.buttonColors(Color(0xFFE66353)),
                     onClick = {
@@ -191,7 +183,7 @@ fun StatisticsSection(user: UserProfile) {
         Text("Statistics", fontWeight = FontWeight.Bold, fontSize = 21.sp)
 
         StatisticsRow(statisticsList1)
-        Spacer(modifier = Modifier.height(16.dp)) // Adjust spacing as needed
+        Spacer(modifier = Modifier.height(16.dp))
         StatisticsRow(statisticsList2)
     }
 }
@@ -216,8 +208,8 @@ fun StatisticsContainer(statistic: Statistic, modifier: Modifier) {
     ElevatedCard(
         modifier = Modifier
             .padding(2.dp)
-            .height(90.dp) // Adjust the height as needed
-            .width(130.dp) // Adjust the width as needed
+            .height(90.dp)
+            .width(130.dp)
             .aspectRatio(1.5f)
     ) {
         Row(
@@ -227,7 +219,6 @@ fun StatisticsContainer(statistic: Statistic, modifier: Modifier) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Column for the icon
             Column(
                 modifier = Modifier.padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -236,11 +227,10 @@ fun StatisticsContainer(statistic: Statistic, modifier: Modifier) {
                 Image(
                     painter = painterResource(id = statistic.icon),
                     contentDescription = statistic.title,
-                    modifier = Modifier.size(30.dp) // Adjust the size of the icon as needed
+                    modifier = Modifier.size(30.dp)
                 )
             }
 
-            // Column for the value and title
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -254,12 +244,6 @@ fun StatisticsContainer(statistic: Statistic, modifier: Modifier) {
         }
     }
 }
-
-val sampleFriends = listOf(
-    User("Jane Smith", R.drawable.profile_image, "@jane"),
-    User("Julien Dacus", R.drawable.profile_image, "@julien")
-    )
-
 
 @Composable
 fun FriendsSection(navController: NavController, user: UserProfile) {
@@ -285,7 +269,6 @@ fun FriendsSection(navController: NavController, user: UserProfile) {
             Column {
                 user.friends.forEachIndexed { index, friend ->
                     FriendItem(user = friend, onClick = {
-                        // Navigate to friend's profile
                         navController.navigate("${Screens.Friend.route}/${friend.username}")
                     })
                 }
@@ -298,7 +281,6 @@ fun FriendsSection(navController: NavController, user: UserProfile) {
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
-    //                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 )  {
                         Text("You don´t have any friends yet, add some!", fontSize = 15.sp)
                 }
@@ -320,11 +302,9 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp) // Adjust spacing here
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Round profile image
             Box {
-                // Loading indicator
                 if (user.profileImageUrl.isNullOrEmpty()) {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -338,7 +318,6 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
                         data = user.profileImageUrl,
                         builder = {
                             crossfade(false)
-//                            placeholder(R.drawable.default_profile_image)
                         }
                     ),
                     contentScale = ContentScale.Crop,
@@ -349,12 +328,11 @@ fun FriendItem(user: UserProfile, onClick: () -> Unit) {
                 )
             }
 
-            // User's name
             Text(text = user.username, fontSize = 15.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                painter = painterResource(id = R.drawable.right_arrow), // Replace with your arrow icon resource
-                contentDescription = "Arrow", // Content description can be set to null for decorative icons
+                painter = painterResource(id = R.drawable.right_arrow),
+                contentDescription = "Arrow",
                 modifier = Modifier
                     .size(24.dp)
             )
@@ -371,7 +349,6 @@ fun AchievementsSection(user: UserProfile){
         ElevatedCard(
             modifier = Modifier
                 .padding(16.dp)
-//                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
         ) {
             if(user.achievements.isNotEmpty()) {
                 Column {
@@ -386,7 +363,6 @@ fun AchievementsSection(user: UserProfile){
                 Column (
                     modifier = Modifier
                         .padding(16.dp)
-//                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 ) {
 
                         Text("Your achievements will appear here", fontSize = 15.sp)
@@ -409,9 +385,8 @@ fun AchievementItem(achievement: Achievement) {
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp) // Adjust spacing here
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Round profile image
             Image(
                 painter = painterResource(id = achievement.icon),
                 contentDescription = null,
@@ -420,10 +395,8 @@ fun AchievementItem(achievement: Achievement) {
                     .clip(CircleShape)
             )
             Column {
-                // User's name
                 Text(text = achievement.name, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                 Text(text = achievement.description, fontSize = 15.sp)
-
             }
         }
     }

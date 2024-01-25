@@ -87,7 +87,6 @@ fun MapsActivity(navController: NavController, challenge: ChallengeData) {
 
         var contextCurrent = LocalContext.current
 
-        // Location-related variables
         var currentLocation by remember { mutableStateOf<LatLng?>(null) }
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(contextCurrent)
@@ -111,7 +110,6 @@ fun MapsActivity(navController: NavController, challenge: ChallengeData) {
             if (hasLocationPermission(context)) {
                 getCurrentLocation(context, fusedLocationClient) { location ->
                     currentLocation = LatLng(location.latitude, location.longitude)
-                    // Move the camera to the current location immediately
                     val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation!!, 10f)
                     cameraPositionState.move(cameraUpdate)
                 }
@@ -132,17 +130,14 @@ fun MapsActivity(navController: NavController, challenge: ChallengeData) {
                 cameraPositionState = cameraPositionState,
                 focusCheckpoint = null,
             ) { place ->
-                // Handle marker click, you can navigate or show more details
-                // about the clicked place
             }
         }
 
-        // TopAppBar with just the back arrow
         Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(16.dp)
-                .background(Color.White) // Set a background color for visibility
+                .background(Color.White)
 
         ) {
             IconButton(
@@ -175,7 +170,7 @@ fun GoogleMapWithMarkers(
     properties: MapProperties,
     currentLocation: LatLng?,
     cameraPositionState: CameraPositionState,
-    focusCheckpoint: PlaceData?, // Add the focusCheckpoint parameter
+    focusCheckpoint: PlaceData?,
     onMarkerClick: (PlaceData) -> Unit
 ) {
     GoogleMap(
@@ -183,7 +178,6 @@ fun GoogleMapWithMarkers(
         cameraPositionState = cameraPositionState,
         properties = properties
     ) {
-        // Show markers for each place
         places.forEach { place ->
             val markerState = MarkerState(position = LatLng(place.lat, place.long))
             Marker(
@@ -192,7 +186,6 @@ fun GoogleMapWithMarkers(
             )
         }
 
-        // Show current location marker if available
         if (currentLocation != null) {
             val currentLocationState = MarkerState(position = currentLocation)
             Marker(
@@ -201,7 +194,6 @@ fun GoogleMapWithMarkers(
             )
         }
 
-        // Show marker for the focused checkpoint
         focusCheckpoint?.let { checkpoint ->
             val focusedCheckpointState = MarkerState(position = LatLng(checkpoint.lat, checkpoint.long))
             Marker(
@@ -211,71 +203,6 @@ fun GoogleMapWithMarkers(
         }
     }
 }
-
-
-//MARKER APARECER NA CURRENT lOCATION
-//@Composable
-//fun MapsActivity() {
-//    Column(
-//        modifier = Modifier
-//        .height(500.dp)
-//    ) {
-//
-//
-//        var properties by remember {
-//            mutableStateOf(MapProperties(mapType = MapType.TERRAIN))
-//        }
-//
-//        var contextCurrent = LocalContext.current
-//
-//        // Location-related variables
-//        var currentLocation by remember { mutableStateOf<LatLng?>(null) }
-//        val fusedLocationClient: FusedLocationProviderClient =
-//            LocationServices.getFusedLocationProviderClient(contextCurrent)
-//        val requestPermissionLauncher =
-//            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-//                if (isGranted) {
-//                    getCurrentLocation(contextCurrent, fusedLocationClient) { location ->
-//                        currentLocation = LatLng(location.latitude, location.longitude)
-//                    }
-//                }
-//            }
-//
-//        val cameraPositionState = rememberCameraPositionState {
-//            position = CameraPosition.fromLatLngZoom(currentLocation ?: LatLng(0.0, 0.0), 12f)
-//        }
-//
-//        val currentLocationState = MarkerState(position = currentLocation ?: LatLng(0.0, 0.0))
-//
-//        LaunchedEffect(Unit) {
-//            val context = contextCurrent
-//            if (hasLocationPermission(context)) {
-//                getCurrentLocation(context, fusedLocationClient) { location ->
-//                    currentLocation = LatLng(location.latitude, location.longitude)
-//                    // Move the camera to the current location immediately
-//                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation!!, 12f)
-//                    cameraPositionState.move(cameraUpdate)
-//                }
-//            } else {
-//                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//            }
-//        }
-//
-//        Box(Modifier.fillMaxSize()) {
-//            GoogleMap(
-//                modifier = Modifier.fillMaxSize(),
-//                cameraPositionState = cameraPositionState,
-//                properties = properties
-//            ) {
-//                Marker(
-//                    title = "Current Location",
-//                    state = currentLocationState
-//                )
-//            }
-//            // Remove the button, as we're now setting the initial location
-//        }
-//    }
-//}
 
 fun hasLocationPermission(context: Context): Boolean {
     return ActivityCompat.checkSelfPermission(
@@ -297,7 +224,6 @@ fun getCurrentLocation(
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        // Request permissions here
         return
     }
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
@@ -329,12 +255,11 @@ fun CheckpointItem(checkpoint: CheckpointData, checkpointNumber: Int, onClick: (
                 Text(text = "Checkpoint $checkpointNumber", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Display check mark if the checkpoint is done
                 if (checkpoint.completed) {
                     Image(
                         painter = painterResource(id = R.drawable.check_mark),
                         contentDescription = "Check mark icon",
-                        modifier = Modifier.size(24.dp) // Adjust the size of the icon as needed
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -352,11 +277,9 @@ fun CheckpointItem(checkpoint: CheckpointData, checkpointNumber: Int, onClick: (
 
 @Composable
 fun InfoSection(navController: NavController, challenge: ChallengeData) {
-    // Extract checkpoint information from the challenge
     val completedCheckpoints = challenge.done_checkpoints?.toFloat() ?: 0f
     val totalCheckpoints = challenge.total_checkpoints ?: 0
 
-    // Calculate progress percentage
     val progress = if (totalCheckpoints > 0) {
         completedCheckpoints.toFloat() / totalCheckpoints
     } else {
@@ -406,7 +329,7 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
     }
 
     Spacer(modifier = Modifier.height(8.dp))
-    // Placeholder content (replace with your content)
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -416,7 +339,6 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
             challenge.checkpoints.forEachIndexed { index, checkpoint ->
                 if (checkpoint != null) {
                     CheckpointItem(checkpoint = checkpoint, checkpointNumber = index + 1, onClick = {
-                        // Navigate to friend's profile
                         if(checkpoint.completed) {
                             navController.navigate("${Screens.CheckpointComplete.route}/${checkpoint.name}")
                         }else{
@@ -437,11 +359,9 @@ fun InfoSection(navController: NavController, challenge: ChallengeData) {
 fun LocationChallenge(navController: NavController, challenge: ChallengeData) {
     LazyColumn {
         item {
-            // Map section
             MapsActivity(navController, challenge)
         }
         stickyHeader {
-            // Info section
             InfoSection(navController, challenge)
         }
     }

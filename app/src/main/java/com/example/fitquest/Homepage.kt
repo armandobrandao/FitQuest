@@ -1,7 +1,6 @@
 package com.example.fitquest
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -56,9 +55,8 @@ fun Header(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp) // Set an appropriate height for the header
+            .height(150.dp)
     ) {
-        // Centered logo using a Column
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +70,6 @@ fun Header(navController: NavController) {
                 modifier = Modifier.size(120.dp)
             )
         }
-        // Bell in the top-right corner
         Image(
             painter = painterResource(id = R.drawable.bell),
             contentDescription = "Notification Bell",
@@ -80,8 +77,6 @@ fun Header(navController: NavController) {
                 .size(35.dp)
                 .padding(end = 8.dp, top = 10.dp)
                 .clickable {
-                    // Handle bell click
-                    // You can perform the necessary actions here
                     navController.navigate(Screens.Notifications.route)
                 }
                 .align(Alignment.TopEnd)
@@ -96,7 +91,6 @@ fun Calendario(close: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .padding(10.dp)
-//            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
     ) {
         val currentDate = remember { LocalDate.now() }
         val startDate = remember { currentDate.minusDays(500) }
@@ -151,13 +145,11 @@ private fun Day(date: LocalDate, isSelected: Boolean, onClick: (LocalDate) -> Un
             )
             Box(
                 modifier = Modifier
-                    .size(24.dp) // Adjust the size of the circle as needed
+                    .size(24.dp)
                     .background(
                         color = if (isSystemInDarkTheme()) {
-                            // Dark mode color
                             colorResource(id = R.color.darkModeColor)
                         } else {
-                            // Light mode color
                             colorResource(id = R.color.lightModeColor)
                         },
                         shape = CircleShape
@@ -181,14 +173,12 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
             .fillMaxWidth()
             .padding(horizontal = 5.dp)
     ) {
-        // Title Row
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Daily Progress", fontWeight = FontWeight.Bold, fontSize = 30.sp)
         }
 
-        // Two rounded containers side by side (Steps and Calories Burned)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -197,7 +187,6 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
         ) {
             val stepsIconRes = R.drawable.running
             val caloriesIconRes = R.drawable.calories
-
 
             val stepsProgress = 0.7f
             val stepsGoal = 10000
@@ -209,7 +198,6 @@ fun DailyProgress(steps: String, caloriesBurned: String, distance: String) {
             RoundedContainer("Calories Burned", caloriesBurned, caloriesIconRes, caloriesProgress, caloriesGoal)
         }
 
-        // Another rounded container (Distance) in a separate row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -231,9 +219,6 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
             .padding(8.dp)
             .height(150.dp)
             .width(170.dp)
-//            .clip(shape = RoundedCornerShape(16.dp))
-//            .shadow(2.dp, shape = RoundedCornerShape(2.dp))
-//            .background(Color.White)
     ) {
 
         Column(
@@ -246,7 +231,7 @@ fun RoundedContainer(title: String, value: String, iconRes: Int, progress: Float
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = title,
-                modifier = Modifier.size(40.dp) // Adjust the size of the icon as needed
+                modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -280,7 +265,6 @@ fun DailyQuests(navController: NavController, dailyQuest: WorkoutData) {
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
     ) {
-        // Title Row
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -288,30 +272,11 @@ fun DailyQuests(navController: NavController, dailyQuest: WorkoutData) {
         }
 
         ClickableCardItem(quest = dailyQuest, onClick = {
-            // Navigate to friend's profile
             navController.navigate("${Screens.DailyQuest.route}/${dailyQuest.title}")
         })
 
         }
-
 }
-//data class DailyQuest(
-//    val title: String,
-//    val duration: String,
-//    val isCompleted: Boolean = false,
-//    val image: Int,
-//    val exercises: List<ExerciseData>,
-//    val date: String
-//)
-
-//val sampleDailyQuests = listOf(
-//    WorkoutData(null,"Pilates Session", "20 mins", false, R.drawable.pilates, listOf(sampleExercises[0], sampleExercises[2]), "15 jan 2024"
-//    ),
-//    WorkoutData(null,"Cardio Session", "30 mins", false, R.drawable.pilates, listOf(sampleExercises[1], sampleExercises[3]), "15 jan 2024"
-//    )
-//    // Add more DailyQuest instances as needed
-//)
-
 
 @Composable
 fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
@@ -323,9 +288,7 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             .height(140.dp)
             .fillMaxWidth()
     ) {
-        // Image
         Box {
-            // Loading indicator
             if (quest.image.isNullOrEmpty()) {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -337,13 +300,11 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             Image(
                 painter = rememberImagePainter(
                     data = quest.image,
-//                data = "https://firebasestorage.googleapis.com/v0/b/fitquest-5d322.appspot.com/o/daily%2Ffullbody.jpg?alt=media&token=61a68882-6c5b-4357-88b1-2d5d35d4df9e",
                     builder = {
                         crossfade(false)
-//                        placeholder(R.drawable.pilates)
                     }
-                ), // Replace with your image resource
-                contentDescription = quest.title, // Content description can be set to null for decorative images
+                ),
+                contentDescription = quest.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
@@ -352,20 +313,16 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             )
         }
 
-        // Text and Arrow
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            // Content
             Text(text = "$totalTimeInMinutes minutes", fontSize = 20.sp, color = Color.White)
 
-            // Spacer for layout adjustment
             Spacer(modifier = Modifier.weight(1f))
 
-            // Arrow icon
             Icon(
                 painter = painterResource(id = R.drawable.right_arrow),
                 contentDescription = "Arrow",
@@ -377,19 +334,17 @@ fun ClickableCardItem(quest: WorkoutData, onClick: () -> Unit) {
             )
         }
 
-        // Check mark icon
         if (quest.completed) {
                 Icon(
                     painter = painterResource(id = R.drawable.check_mark),
                     contentDescription = "Check mark icon",
                     modifier = Modifier
                         .size(35.dp)
-                        .align(Alignment.TopEnd) // Align to the top-right corner
-                        .padding(top = 4.dp, end = 4.dp) // Add padding for spacing
+                        .align(Alignment.TopEnd)
+                        .padding(top = 4.dp, end = 4.dp)
                 )
             }
         }
-
 }
 
 
@@ -399,7 +354,7 @@ fun Homepage(navController: NavController, dailyQuest: WorkoutData) {
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 80.dp) // Adjust this value based on your bottom navigation bar height
+            .padding(bottom = 80.dp)
     )  {
         item {
             Header(navController)
@@ -411,22 +366,10 @@ fun Homepage(navController: NavController, dailyQuest: WorkoutData) {
 }
 
 fun calculateProgress(currentValue: Int, goalValue: Int): Float {
-    // Ensure that the goalValue is greater than 0 to avoid division by zero
     if (goalValue > 0) {
         val progress = currentValue.toFloat() / goalValue.toFloat()
-        return progress.coerceIn(0f, 1f) // Ensure the progress is between 0 and 1
+        return progress.coerceIn(0f, 1f)
     } else {
-        return 0f // Default to 0 if the goalValue is 0 or negative
+        return 0f
     }
 }
-
-
-
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Preview(showBackground = true)
-//@Composable
-//fun HomepagePreview() {
-//    FitQuestTheme {
-//        Homepage()
-//    }
-//}

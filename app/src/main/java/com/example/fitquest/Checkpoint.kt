@@ -66,18 +66,16 @@ fun MapSection(navController: NavController, properties: MapProperties, cameraPo
                 cameraPositionState = cameraPositionState,
                 focusCheckpoint = focusCheckpoint.place,
             ) { place ->
-                // Handle marker click, you can navigate or show more details
-                // about the clicked place
+
             }
 
         }
 
-        // TopAppBar with just the back arrow
         Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(16.dp)
-                .background(Color.White) // Set a background color for visibility
+                .background(Color.White)
 
         ) {
             IconButton(
@@ -93,7 +91,7 @@ fun MapSection(navController: NavController, properties: MapProperties, cameraPo
 fun GoogleMapWithMarker(
     properties: MapProperties,
     cameraPositionState: CameraPositionState,
-    focusCheckpoint: PlaceData?, // Add the focusCheckpoint parameter
+    focusCheckpoint: PlaceData?,
     onMarkerClick: (Place) -> Unit
 ) {
     GoogleMap(
@@ -101,7 +99,6 @@ fun GoogleMapWithMarker(
         cameraPositionState = cameraPositionState,
         properties = properties
     ) {
-        // Show marker for the focused checkpoint
         focusCheckpoint?.let { checkpoint ->
             val focusedCheckpointState =
                 MarkerState(position = LatLng(checkpoint.lat, checkpoint.long))
@@ -117,7 +114,6 @@ fun GoogleMapWithMarker(
 
 @Composable
 fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
-    // Calculate progress percentage
     val progress = if (checkpoint.completed) 1.0f else 0.0f
     val totalTimeInMinutes = checkpoint.workout?.let { calculateTotalTime(it.exercises) }
 
@@ -163,7 +159,7 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$totalTimeInMinutes mins | ${checkpoint.workout?.exercises?.size} exercises | 3x", // tem de ser gerados
+                text = "$totalTimeInMinutes mins | ${checkpoint.workout?.exercises?.size} exercises | 3x",
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -173,7 +169,6 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    // Placeholder content (replace with your content)
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -188,7 +183,6 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
                     }
                 }
             } else {
-                // Handle the case when there are no exercises in checkpoint.workout
                 Text(text = "No exercises available.")
             }
         }
@@ -200,7 +194,6 @@ fun CheckpointSection(navController: NavController, checkpoint: CheckpointData){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
-    // GoogleMapWithMarker
     var properties by remember {
         mutableStateOf(MapProperties(mapType = MapType.TERRAIN))
     }
@@ -208,7 +201,7 @@ fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
     var contextCurrent = LocalContext.current
 
     var checkpointCoords = checkpoint?.place?.let { LatLng(it.lat, it.long) }
-    // Location-related variables
+
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(contextCurrent)
 
@@ -247,32 +240,31 @@ fun Checkpoint(navController: NavController, checkpoint: CheckpointData) {
             }
         }
 
-        // PARA ATIVAR BASTA TIRAR ESTAS LINHAS DE COMENTÁRIO
-//        if(currentLocation != null && checkpointCoords != null && enter) {
-//            if (checkpointWithinRadius(currentLocation!!, checkpointCoords)) {
+        if(currentLocation != null && checkpointCoords != null && enter) {
+            if (checkpointWithinRadius(currentLocation!!, checkpointCoords)) {
                 StartWorkoutButton(
                     navController = navController,
                     isQuest = false,
                     isGen = false,
                     checkpoint = checkpoint.name
                 )
-//            } else {
-//                Box(
-//                    modifier = Modifier
-//                        .padding(16.dp) // Add your desired padding here
-//                ) {
-//                    Text(
-//                        text = "You can start when you're closer to the location",
-//                        fontSize = 16.sp,
-//                        textAlign = TextAlign.Center,
-//                        modifier = Modifier
-//                            .padding(8.dp) // Add additional padding if necessary
-//                    )
-//                }
-//            }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "You can start when you're closer to the location",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
+            }
         }
     }
-//}
+}
 
 fun checkpointWithinRadius(userLocation: LatLng, checkpointCoords: LatLng): Boolean {
     val results = FloatArray(1)

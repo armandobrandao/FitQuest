@@ -1,13 +1,9 @@
 package com.example.fitquest
 
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,13 +12,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,25 +28,17 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
     var isBreak by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(1f) }
 
-    Log.d("EX FORA","$currentExercise" )
-
     if (timerRunning) {
-        // Countdown timer for exercise
         DisposableEffect (currentExercise) {
             val exerciseTimer = object : CountDownTimer((timerValue * 1000).toLong(), 1000) {
                 val timerFull = timerValue
                 override fun onTick(millisUntilFinished: Long) {
                     timerValue = (millisUntilFinished / 1000).toInt()
-                    // Calculate progress based on elapsed time
                     val elapsed = (timerFull * 1000 - millisUntilFinished).toFloat()
 
-                    // Calculate the constant decrease per second
                     val decreasePerSecond = 1 / (timerFull * 1000).toFloat()
 
-                    // Calculate progress by subtracting the constant decrease per second
                     progress = (elapsed * decreasePerSecond)
-                    Log.d("SET onTick 1","$currentSet" )
-                    Log.d("EX onTick 1","$currentExercise" )
                 }
 
                 override fun onFinish() {
@@ -64,20 +49,15 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                             navController.navigate("${Screens.CheckpointComplete.route}/$checkpointName")
                         }
                     }else {
-                        // Exercise timer completed, start the break timer
                         isBreak = true
-                        timerValue = 30 + 1 // break time
+                        timerValue = 30 + 1
                         timerRunning = true
-
-                        Log.d("SET onFinish 1","$currentSet" )
-                        Log.d("EX onFinish 1","$currentExercise" )
                     }
                 }
             }
 
             exerciseTimer.start()
 
-            // Cleanup logic
             onDispose {
                 exerciseTimer.cancel()
             }
@@ -85,7 +65,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
     }
 
     if (timerRunning && isBreak) {
-        // Countdown timer for break
         DisposableEffect (isBreak) {
             val breakTimer = object : CountDownTimer((timerValue * 1000).toLong(), 1000) {
                 val timerFull = timerValue
@@ -93,47 +72,33 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     timerValue = (millisUntilFinished / 1000).toInt()
                     val elapsed = (timerFull * 1000 - millisUntilFinished).toFloat()
 
-                    // Calculate the constant decrease per second
                     val decreasePerSecond = 1 / (timerFull * 1000).toFloat()
 
-                    // Calculate progress by subtracting the constant decrease per second
                     progress = (elapsed * decreasePerSecond)
-                    Log.d("SET onTick 2","$currentSet" )
-                    Log.d("EX onTick 2","$currentExercise" )
                 }
 
                 override fun onFinish() {
-                    // Break timer completed, check if it's the last set and navigate accordingly
                     isBreak = false
                     currentExercise++
 
                     if (currentExercise >= listExercises.exercises.size) {
-                        // Move to the next set
                         currentSet++
                         currentExercise = 0
 
                         if (currentSet > numSets) {
-                            // All sets are completed, navigate or handle completion
                             navController.navigate("${Screens.FinishedWorkout.route}/$listExercises/$isQuest")
                         }
-                        // Reset exercise index for the new set
-
-                        Log.d("SET onFinish 2.1","$currentSet" )
-                        Log.d("EX onFinish 2.1","$currentExercise" )
 
                     } else {
                         timerValue = listExercises.exercises[currentExercise].durationInSeconds + 1
                         timerRunning = true
 
-                        Log.d("SET onFinish 2.2","$currentSet" )
-                        Log.d("EX onFinish 2.2","$currentExercise" )
                     }
                 }
             }
 
             breakTimer.start()
 
-            // Cleanup logic
             onDispose {
                 breakTimer.cancel()
             }
@@ -177,7 +142,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                         fontWeight = FontWeight.Bold
                     )
                     Box {
-                        // Loading indicator
                         if (listExercises.exercises[currentExercise].imageResId.isNullOrEmpty()) {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -245,7 +209,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                     color = Color(0xFFE66353)
                 )
 
-                // Centered text inside the circular shape
                 Text(
                     text = "$timerValue",
                     fontSize = 60.sp,
@@ -256,8 +219,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
             }
         }
 
-        // Timer controls
-        // Timer controls
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -295,9 +256,6 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                 }
                 Button(
                     onClick = {
-                        // Handle the "Conclude" button click here (navigate to home page, etc.)
-                        // You might need to add appropriate navigation logic based on your app's structure
-                        // navController.navigate(/* destination */)
                               navController.navigate(Screens.Home.route)
                     },
                     colors = ButtonDefaults.buttonColors(Color.Gray)
@@ -310,36 +268,5 @@ fun Exercise(navController: NavController, listExercises: WorkoutData, numSets: 
                 }
             }
         }
-
-
-//            Button(
-//                onClick = {
-//                    currentExercise++
-//                    isBreak = false
-//                    timerValue = listExercises[currentExercise].durationInSeconds
-//                    timerRunning = true
-//                },
-//                colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
-//            ) {
-//                Text(
-//                    text = "Next",
-//                    fontWeight = FontWeight.Bold
-//                )
-//            }
-
     }
-
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun ExercisePagePreview() {
-//    val sampleExercises = listOf(
-//        Exercise("Core and Cardio", "1:00", R.drawable.abs_exercise, 60),
-//        Exercise("Legs and Glutes", "0:45", R.drawable.abs_exercise, 45),
-//        Exercise("Upper Body", "1:30", R.drawable.abs_exercise, 90)
-//    )
-//
-//    Exercise(navController = rememberNavController(), listExercises = sampleExercises, numSets = 3)
-//}

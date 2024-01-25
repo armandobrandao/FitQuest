@@ -1,6 +1,5 @@
 package com.example.fitquest
 
-import android.net.Uri
 import java.util.Date
 
 data class UserProfile(
@@ -12,12 +11,12 @@ data class UserProfile(
     val age: Int = 0,
     val weight: Double = 0.0,
     val height: Double = 0.0,
-    val goal: String = "", // New field from the questionnaire
-    val motivation: String = "", // New field from the questionnaire
-    val pushUps: String = "", // New field from the questionnaire
-    val activityLevel: String = "", // New field from the questionnaire
-    val firstDayOfWeek: String = "", // New field from the questionnaire
-    val trainingDays: String = "", // New field from the questionnaire
+    val goal: String = "",
+    val motivation: String = "",
+    val pushUps: String = "",
+    val activityLevel: String = "",
+    val firstDayOfWeek: String = "",
+    val trainingDays: String = "",
     val sessionsOutside: String = "",
     var xp_total: Int = 0,
     val xp_level: Int = 0,
@@ -30,7 +29,7 @@ data class UserProfile(
     val achievements: List<Achievement> = emptyList(),
     val progress: Int = 0,
     val uniqueCode: String = "",
-    val lastLoginDate: Date? = Date(), // Nullable Date for the last login date
+    val lastLoginDate: Date? = Date(),
     val currentStreak: Int = 0,
     var profileImageUrl: String? = null,
     var steps: Int = 0,

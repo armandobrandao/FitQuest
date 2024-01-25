@@ -1,6 +1,5 @@
 package com.example.fitquest
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +24,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -43,36 +41,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-
-
-//data class Exercise(
-//    val name: String,
-//    val duration: String,
-//    val imageResId: String,
-//    val durationInSeconds: Int,
-//    val suitableGender: List<String>,
-//    val suitableGoals: List<String>,
-//    val suitableMotivations: List<String>,
-//    val suitablePushUps: List<String>,
-//    val suitableActivityLevels: List<String>,
-//    val target: String = ""
-//)
-
-//val sampleExercises = listOf(
-//    ExerciseData("Abdominais", "1 set of 12 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Abs"),
-//    ExerciseData("Flexoes", "1 set of 10 reps", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Chest"),
-//    ExerciseData("Core and Cardio", "1:00", R.drawable.abs_exercise, 60, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Core"),
-//    ExerciseData("Another Exercise", "0:45", R.drawable.abs_exercise, 45, listOf(""), listOf(""), listOf(), listOf(), listOf(), "Legs"),
-    // Add more exercises as needed
-//)
-
-//val sampleExercises2 = listOf(
-//    Exercise("Abdominais", "0:20", "R.drawable.abs_exercise", 20, listOf()),
-//    Exercise("Flexoes", "0:20", "R.drawable.abs_exercise", 20, listOf()),
-//    Exercise("Another Exercise", "0:20", "R.drawable.another_exercise", 20, listOf())
-//    // Add more exercises as needed
-//)
-
 
 var numSets = 3
 
@@ -103,7 +71,6 @@ fun ExerciseItem(exercise: ExerciseData) {
                 horizontalAlignment = Alignment.End
             ) {
                 Box {
-                    // Loading indicator
                     if ( exercise.imageResId.isNullOrEmpty()) {
                         CircularProgressIndicator(
                             modifier = Modifier
@@ -133,14 +100,13 @@ fun ExerciseItem(exercise: ExerciseData) {
 
 @Composable
 fun StartWorkoutButton(navController: NavController, isQuest: Boolean, isGen: Boolean, checkpoint: String?) {
-    Log.d("StartWorkoutButton", "isQuest, $isQuest")
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(70.dp), // Adjust the height as needed
+            .height(70.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+        verticalArrangement = Arrangement.Bottom
     ) {
         Button(
             onClick = {
@@ -186,7 +152,6 @@ fun GeneratedWorkout(navController: NavHostController, generatedWorkout: Workout
                         )
                     }
                 }
-                // Box with title and stats on top of the image
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
@@ -209,12 +174,10 @@ fun GeneratedWorkout(navController: NavHostController, generatedWorkout: Workout
                                 fontSize = 14.sp
                             )
                         }
-                        // Placeholder content (replace with your content)
                         ElevatedCard(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp)
-//                            .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                         ) {
                             Column {
                                 if (generatedWorkout != null) {
@@ -231,16 +194,6 @@ fun GeneratedWorkout(navController: NavHostController, generatedWorkout: Workout
                 }
             }
         }
-        // Placeholder CreateWorkoutButton
         StartWorkoutButton(navController, isQuest = false, isGen = true, checkpoint = null)
     }
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GeneratedWorkoutPreview() {
-//    FitQuestTheme {
-//        GeneratedWorkout()
-//    }
-//}

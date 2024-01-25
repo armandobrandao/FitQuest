@@ -66,7 +66,6 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                         )
                     }
                 }
-                // Box with title and stats on top of the image
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxSize()
@@ -155,7 +154,6 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                                 horizontalArrangement = Arrangement.End
                             ) {
                                 Box {
-                                    // Loading indicator
                                     if (challenge.friend?.profileImageUrl.isNullOrEmpty()) {
                                         CircularProgressIndicator(
                                             modifier = Modifier
@@ -169,7 +167,6 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                                             data = challenge.friend?.profileImageUrl,
                                             builder = {
                                                 crossfade(false)
-//                                                placeholder(R.drawable.default_profile_image)
                                             }
                                         ),
                                         contentScale = ContentScale.Crop,
@@ -185,8 +182,5 @@ fun Challenge(navController: NavHostController, challenge: ChallengeData) {
                 }
             }
         }
-        // Placeholder CreateWorkoutButton
-
-//        StartWorkoutButton(navController = navController, workout = checkpoint.exercises, isQuest = true)
     }
 }

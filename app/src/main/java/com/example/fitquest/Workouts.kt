@@ -1,6 +1,5 @@
 package com.example.fitquest
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,31 +10,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.fitquest.ui.theme.FitQuestTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -48,29 +37,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 
-
-data class Workout(
-    val name: String,
-    val duration: String,
-    val calories: String,
-    val imageResId: Int
-)
-
-val sampleWorkouts = listOf(
-    Workout("Core and Cardio", "45:00", "315 kcal", R.drawable.abs_exercise),
-    Workout("Core and Cardio", "45:00", "315 kcal", R.drawable.abs_exercise),
-    Workout("Core and Cardio", "45:00", "315 kcal", R.drawable.abs_exercise),
-
-)
-
 @Composable
 fun HeaderSimple() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp) // Set an appropriate height for the header
+            .height(150.dp)
     ) {
-        // Centered logo using a Column
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -114,7 +87,6 @@ fun WorkoutItem(workout: WorkoutData) {
                 horizontalAlignment = Alignment.End
             ) {
                 Box {
-                    // Loading indicator
                     if (workout.post_photo.isNullOrEmpty()) {
                         CircularProgressIndicator(
                             modifier = Modifier
@@ -124,7 +96,6 @@ fun WorkoutItem(workout: WorkoutData) {
                         )
                     }
 
-                    // Image
                     Image(
                         painter = rememberImagePainter(
                             data = workout.post_photo,
@@ -151,9 +122,9 @@ fun CreateWorkoutButton(navController: NavController) {
             .fillMaxWidth()
             .padding(8.dp)
             .padding(bottom = 80.dp)
-            .height(70.dp), // Adjust the height as needed
+            .height(70.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+        verticalArrangement = Arrangement.Bottom
     ) {
         Button(
 
@@ -173,10 +144,8 @@ fun CreateWorkoutButton(navController: NavController) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Workouts(navController: NavHostController, lastWorkouts: List<WorkoutData>) {
-    Log.d("Workouts", "Estou na Workouts")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -197,7 +166,6 @@ fun Workouts(navController: NavHostController, lastWorkouts: List<WorkoutData>) 
                 ElevatedCard(
                     modifier = Modifier
                         .padding(16.dp)
-//                    .shadow(12.dp, shape = RoundedCornerShape(16.dp))
                 ) {
                     Column {
                         if(lastWorkouts.isNotEmpty()) {
@@ -221,13 +189,3 @@ fun Workouts(navController: NavHostController, lastWorkouts: List<WorkoutData>) 
         CreateWorkoutButton(navController)
     }
 }
-
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun WorkoutsPreview() {
-//    FitQuestTheme {
-//        Workouts(navController= NavHostController)
-//    }
-//}

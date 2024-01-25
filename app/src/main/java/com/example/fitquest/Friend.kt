@@ -1,6 +1,5 @@
 package com.example.fitquest
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -84,18 +83,18 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 16.dp) // Add padding here
+                        .padding(horizontal = 16.dp)
                 ) {
                     Text(text = user.fullName, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
-                    Spacer(modifier = Modifier.height(4.dp)) // Add more space here
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Text(text = "@" + user.username, fontSize = 18.sp)
 
-                    Spacer(modifier = Modifier.height(8.dp)) // Add more space here
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Text(text =  "Joined in " + user.joinDate, fontSize = 12.sp)
-                    Spacer(modifier = Modifier.height(2.dp)) // Add more space here
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(text = "Portugal", fontSize = 12.sp)
                 }
 
@@ -104,10 +103,9 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 16.dp) // Add padding here
+                        .padding(horizontal = 16.dp)
                 ) {
                     Box {
-                        // Loading indicator
                         if (user.profileImageUrl.isNullOrEmpty()) {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -121,7 +119,6 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                                 data = user.profileImageUrl,
                                 builder = {
                                     crossfade(false)
-//                                    placeholder(R.drawable.default_profile_image)
                                 }
                             ),
                             contentScale = ContentScale.Crop,
@@ -154,13 +151,12 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                         progress = calculateProgress(user.xp_level, 200 ),
                         color = Color(0xFFE66353),
                         modifier = Modifier
-                            .fillMaxWidth() // Adjust the width here
+                            .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp)
                             .height(16.dp)
                     )
                 }
             }
-            // Add Friend Button Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -168,9 +164,6 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                 horizontalArrangement = Arrangement.Center
             ) {
                 val isFriend = currentUser.friends.any { it.uniqueCode == user.uniqueCode }
-                Log.d("Friend", "currentUser.friends: ${currentUser.friends}")
-                Log.d("Friend", "user: ${user}")
-                Log.d("Friend", "isFriend: ${isFriend}")
 
                 val isInFriendReq = user.friend_reqs.any { it.uniqueCode == currentUser.uniqueCode }
                 val isInMyFriendReq = currentUser.friend_reqs.any { it.uniqueCode == user.uniqueCode }
@@ -178,11 +171,8 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                 if (!isFriend && !isInFriendReq && !isInMyFriendReq) {
                     Button(
                         onClick = {
-                            // Handle add friend click here
-                            // Add the user to the friends list or perform the necessary action
                             authManager.sendFriendRequest(currentUser, user) { success ->
                                 if (success) {
-                                    // Update the friendRequestSent variable
                                     friendRequestSent = true
                                 }
                             }
@@ -195,7 +185,7 @@ fun MainCardFriend(user: UserProfile, navController: NavController, currentUser:
                         Image(
                             painter = addFriendIcon,
                             contentDescription = "Add Friend icon",
-                            modifier = Modifier.size(20.dp) // Adjust the size of the icon as needed
+                            modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(if (friendRequestSent || isInFriendReq || isInMyFriendReq) "Sent" else "Add Friend", fontWeight = FontWeight.Bold)
@@ -216,7 +206,6 @@ fun Friend(user: UserProfile, currentUser: UserProfile ,navController: NavContro
             Spacer(modifier = Modifier.height(16.dp))
             StatisticsSection(user)
             Spacer(modifier = Modifier.height(16.dp))
-//            AchievementsSection(user)
         }
     }
 }

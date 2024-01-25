@@ -9,10 +9,7 @@
     <uses-feature android:name="android.hardware.camera.any"/>
 
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="true" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
-
-
 
     <application
         android:allowBackup="true"
@@ -26,19 +23,12 @@
         tools:targetApi="31">
 
 
-
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_MAPS_API_KEY}"/>
 
         <activity
             android:name=".SignInActivity"
             android:exported="false">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -78,7 +68,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -87,13 +76,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="false">
-
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -108,7 +90,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/path_provider" />
         </provider>
-
 
     </application>
 

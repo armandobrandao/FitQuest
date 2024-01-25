@@ -15,13 +15,11 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.signInButton.setOnClickListener {
-            // Start the SignInActivity
             val intent = Intent(this@WelcomeActivity, SignInActivity::class.java)
             startActivity(intent)
         }
 
         binding.signUpButton.setOnClickListener {
-            // Start the SignUpActivity
             val intent = Intent(this@WelcomeActivity, SignUpActivity::class.java)
             startActivity(intent)
         }

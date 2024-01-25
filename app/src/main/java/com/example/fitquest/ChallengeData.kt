@@ -13,30 +13,8 @@ data class ChallengeData(
     val goal: Int? = null, //caso NAO tenha checkpoints
     val type: String = "",
     val group: Boolean = false,
-    val friend: UserProfile? = null, //caso seja group, algo que consiga identificar o amigo
+    val friend: UserProfile? = null, //caso seja group
     val begin_date: Date? = Date(),
     val end_date: Date? = Date(),
     var completed: Boolean = false,
 )
-
-// dá para associar como os dailyQuests e associar tmb ao documento do outro??
-
-// Exemplo Challenge com Checkpoints:
-// ChallengeData(title = "Urban Explorer", description = null, xp = 200,
-// total_checkpoints = 3, done_checkpoints = 1,
-// checkpoints = [CheckpointData(), CheckpointData()], goal = null
-// type = "Location", isGroup = false, friend = null),
-
-// Exemplo Challenge sem Checkpoints:
-// ChallengeData(title = "Insane Walker", description = "Complete 40 000 steps", xp = 100,
-// total_checkpoints = null, done_checkpoints = null,
-// checkpoints = null, goal = 40000,
-// type = "Steps", isGroup = false, friend = null),
-
-// Outro possible type -> Minutes
-
-//Exemplo Challenge de Grupo
-// ChallengeData(title = "Insane Walkers", description = "Complete 85 000 steps", xp = 150,
-// total_checkpoints = null, done_checkpoints = null,
-// checkpoints = null, goal = 40000,
-// type = "Steps", isGroup = true, friend = "Algo que identifique o amigo"),

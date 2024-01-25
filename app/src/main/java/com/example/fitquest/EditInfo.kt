@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -28,7 +27,7 @@ class EditInfo : AppCompatActivity() {
     private lateinit var TextName: EditText
     private lateinit var TextUsername: EditText
     private lateinit var textViewDescription: TextView
-    private lateinit var spinnerGender: Spinner // Add this line
+    private lateinit var spinnerGender: Spinner
     private lateinit var buttonContinue: Button
     private lateinit var textViewnameLabel: TextView
     private lateinit var textViewUsernameLabel: TextView
@@ -94,7 +93,6 @@ class EditInfo : AppCompatActivity() {
         imageViewProfilePhoto = findViewById(R.id.imageViewProfilePhoto)
         buttonSelectPhoto = findViewById(R.id.buttonSelectPhoto)
 
-        // Set up gender spinner
         val genderOptions = arrayOf("Male", "Female", "Other")
         val adapterGender = ArrayAdapter(this, android.R.layout.simple_spinner_item, genderOptions)
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -121,7 +119,6 @@ class EditInfo : AppCompatActivity() {
         buttonSubmitQuestionary = findViewById(R.id.buttonSubmit)
         errorMessageSubmitTextView = findViewById(R.id.errorMessageSubmitTextView)
 
-        // Set up Spinner for days of the week
         val adapterDay = ArrayAdapter.createFromResource(
             this, R.array.days_of_week, android.R.layout.simple_spinner_item
         )
@@ -129,16 +126,12 @@ class EditInfo : AppCompatActivity() {
         spinnerFirstDay.adapter = adapterDay
 
         buttonSelectPhoto.setOnClickListener {
-            // Handle photo selection here (open gallery, camera, etc.)
-            // For simplicity, let's assume you're opening a gallery intent
-
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
         }
 
         authManager.getCurrentUser { userProfile ->
             userProfile?.let {
-                // Populate UI elements with user data
                 currentUser = userProfile
                 TextName.setText(userProfile.fullName)
                 TextUsername.setText(userProfile.username)
@@ -148,13 +141,12 @@ class EditInfo : AppCompatActivity() {
 
                 spinnerGender.setSelection(adapterGender.getPosition(userProfile.gender))
 
-                // Load user's profile image using Coil
                 val profileImageUri = Uri.parse(userProfile.profileImageUrl)
                 imageViewProfilePhoto.load(profileImageUri) {
                     placeholder(R.drawable.default_profile_image)
                 }
 
-                val goalOptions = arrayOf("Lose weight", "Build muscle", "Maintain shape")  // Replace with your actual goal options
+                val goalOptions = arrayOf("Lose weight", "Build muscle", "Maintain shape")
                 val goalIndex = goalOptions.indexOf(userProfile.goal)
 
                 if (goalIndex != -1) {
@@ -203,13 +195,10 @@ class EditInfo : AppCompatActivity() {
                     val radioButtonId = radioGroupSessionsOutside.getChildAt(sessionsOutsideIndex).id
                     radioGroupSessionsOutside.check(radioButtonId)
                 }
-
             }
         }
 
-        // Handle Continue button click
         buttonContinue.setOnClickListener {
-            // Additional checks and validations if needed
 
             // Hide initial elements
             buttonContinue.visibility = View.GONE
@@ -293,7 +282,6 @@ class EditInfo : AppCompatActivity() {
             buttonSelectPhoto.visibility = View.VISIBLE
         }
 
-        // Handle Sign Up and Questionary Submit button clicks
         buttonSubmitQuestionary.setOnClickListener {
             val name = TextName.text.toString()
             val username = TextUsername.text.toString()
@@ -303,9 +291,6 @@ class EditInfo : AppCompatActivity() {
             val height = editHeight.text.toString().toDoubleOrNull()
 
             if (name.isNotBlank() && username.isNotBlank() && gender.isNotBlank() && age != null && weight != null && height != null) {
-                // All required fields are filled
-
-                // Check if the questionnaire fields are filled
                 val goalSelectedId = radioGroupGoal.checkedRadioButtonId
                 val motivationSelectedId = radioGroupMotivation.checkedRadioButtonId
                 val pushUpsSelectedId = radioGroupPushUps.checkedRadioButtonId
@@ -317,9 +302,6 @@ class EditInfo : AppCompatActivity() {
                 if (goalSelectedId != -1 && motivationSelectedId != -1 && pushUpsSelectedId != -1
                     && activityLevelSelectedId != -1 && firstDaySelectedPosition != AdapterView.INVALID_POSITION) {
 
-                    // All questionnaire fields are filled
-
-                    // Retrieve the selected values from radio buttons and spinners
                     val goal = findViewById<RadioButton>(goalSelectedId).text.toString()
                     val motivation = findViewById<RadioButton>(motivationSelectedId).text.toString()
                     val pushUps = findViewById<RadioButton>(pushUpsSelectedId).text.toString()
@@ -330,7 +312,6 @@ class EditInfo : AppCompatActivity() {
 
                     val profileImageUri = selectedImageUri
 
-                    // Create a UserProfile object
                     val updatedUserProfile = UserProfile(
                         username = username,
                         fullName = name,
@@ -363,51 +344,23 @@ class EditInfo : AppCompatActivity() {
                         steps =currentUser.steps,
                     )
 
-                    // Call the updateCurrentUserProfile function with the UserProfile object
                     currentUser.id?.let { it1 ->
                         authManager.updateCurrentUserProfile(it1, updatedUserProfile, profileImageUri) { success ->
                             if (success) {
-                                // Profile updated successfully
-                                Log.d("UpdateUserProfile", "User profile updated successfully")
-
                                 val intent = Intent(this@EditInfo, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
                             } else {
-                                // Handle update failure, show error message, etc.
                                 errorMessageSubmitTextView.text = "Error updating user profile"
                                 errorMessageSubmitTextView.visibility = View.VISIBLE
                             }
                         }
                     }
-
-                    // Call the signUpUser function with the additional values
-//                    authManager.signUpUser(
-//                        name, username, gender, age, weight, height,
-//                        goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside,
-//                        profileImageUri
-//                    ) { success, errorMessage ->
-//                        if (success) {
-//                            Log.d("SignUpUser", "User created successfully")
-//
-//                            val intent = Intent(this@EditInfo, MainActivity::class.java)
-//                            startActivity(intent)
-//                            finish()
-//                        } else {
-//                            errorMessage?.let {
-//                                // Your existing error handling logic
-//                                errorMessageSubmitTextView.text = "Error creating user"
-//                                errorMessageSubmitTextView.visibility = View.VISIBLE
-//                            }
-//                        }
-//                    }
                 } else {
-                    // Show an error message if any of the questionnaire fields are empty
                     errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"
                     errorMessageSubmitTextView.visibility = View.VISIBLE
                 }
             } else {
-                // Show an error message if any of the required fields are empty
                 errorMessageSubmitTextView.text = "Please fill in all required fields"
                 errorMessageSubmitTextView.visibility = View.VISIBLE
             }
@@ -418,9 +371,6 @@ class EditInfo : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.data
-            Log.d("EditInfo", "selectedImageUri: $selectedImageUri")
-
-            // Set the selected image to the ImageView
             imageViewProfilePhoto.setImageURI(selectedImageUri)
         }
     }

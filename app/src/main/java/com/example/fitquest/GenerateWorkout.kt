@@ -1,14 +1,10 @@
 package com.example.fitquest
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.ColumnScopeInstance.align
-//import androidx.compose.foundation.layout.RowScopeInstance.align
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -31,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,16 +39,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -201,35 +191,25 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
                             options = typeOptions,
                             onValueChange = { selectedType = it }
                         )
-
-//                    InputBox(
-//                        label = "Duration (m)",
-//                        onValueChange = { selectedDuration = it }
-//                    )
-
-
                     }
                 }
             }
         }
 
-        // Generate Workout Button
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .height(70.dp), // Adjust the height as needed
+                .height(70.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom // Align the content to the bottom
+            verticalArrangement = Arrangement.Bottom
         ) {
             Button(
                 onClick = {
                     if (selectedType.isNullOrBlank()) {
-                        // Display error message if type or duration is not selected
                         showError = true
 
                     } else {
-                        // Navigate to the next screen if both type and duration are selected
                         navController.navigate("${Screens.GeneratedWorkout.route}/$selectedType")
                     }
 
@@ -238,18 +218,16 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
                     .padding(8.dp),
                 colors = ButtonDefaults.buttonColors(Color(0xFFE66353))
             ) {
-
                 Text("Generate Workout", fontSize = 20.sp,color = colorResource(id = R.color.lightModeColor))
             }
         }
     }
 
     if (showError) {
-        // You can replace this with any UI element you want for displaying the error
         Text(
             "Please select the workout duration",
             modifier = Modifier
-                .offset(y = 306.dp) // Adjust the vertical offset as needed (negative value to move upwards)
+                .offset(y = 306.dp)
                 .padding(8.dp),
 
             color = Color.Red
@@ -257,12 +235,3 @@ fun GenerateWorkout(navController: NavHostController, authManager: AuthManager) 
 
     }
 }
-
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GenerateWorkoutPreview() {
-//    GenerateWorkout()
-//}
-

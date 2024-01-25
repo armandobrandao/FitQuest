@@ -1,15 +1,12 @@
 package com.example.fitquest
 
-import Questionary
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.NumberPicker
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
@@ -34,7 +31,7 @@ class SignUpUser : AppCompatActivity() {
     private lateinit var TextName: EditText
     private lateinit var TextUsername: EditText
     private lateinit var textViewDescription: TextView
-    private lateinit var spinnerGender: Spinner // Add this line
+    private lateinit var spinnerGender: Spinner
     private lateinit var buttonContinue: Button
     private lateinit var textViewnameLabel: TextView
     private lateinit var textViewUsernameLabel: TextView
@@ -75,6 +72,7 @@ class SignUpUser : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = UserSignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         //First
         textViewFirstTitle = findViewById(R.id.textViewTitle)
         textViewnameLabel = findViewById(R.id.textViewnameLabel)
@@ -99,12 +97,10 @@ class SignUpUser : AppCompatActivity() {
                 authManager.checkUsernameAvailability(username) { isAvailable, errorMessage ->
                     runOnUiThread {
                         if (isAvailable) {
-                            // Username is available, you can update the UI as needed
                             visibility = View.GONE
                             errorMessageTextView.visibility = visibility
                         } else {
                             visibility = View.VISIBLE
-                            // Username is not available, show an error message
                             errorMessageTextView.text = errorMessage
                             errorMessageTextView.visibility = visibility
 
@@ -113,12 +109,10 @@ class SignUpUser : AppCompatActivity() {
                     }
                 }
             } else {
-                // Clear error message and hide the view if the username is blank
                 errorMessageTextView.visibility = View.GONE
             }
         }
 
-        // Set up gender spinner
         val genderOptions = arrayOf("Male", "Female", "Other")
         val adapterGender = ArrayAdapter(this, android.R.layout.simple_spinner_item, genderOptions)
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -146,19 +140,13 @@ class SignUpUser : AppCompatActivity() {
         errorMessageSubmitTextView = findViewById(R.id.errorMessageSubmitTextView)
 
 
-
-        // Set up Spinner for days of the week
         val adapterDay = ArrayAdapter.createFromResource(
             this, R.array.days_of_week, android.R.layout.simple_spinner_item
         )
         adapterDay.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFirstDay.adapter = adapterDay
 
-
-        // Handle Continue button click
         buttonContinue.setOnClickListener {
-            // Additional checks and validations if needed
-
             // Hide initial elements
             buttonContinue.visibility = View.GONE
             spinnerGender.visibility = View.GONE
@@ -240,7 +228,6 @@ class SignUpUser : AppCompatActivity() {
 
         }
 
-        // Handle Sign Up and Questionary Submit button clicks
         buttonSubmitQuestionary.setOnClickListener {
             val name = TextName.text.toString()
             val username = TextUsername.text.toString()
@@ -250,13 +237,9 @@ class SignUpUser : AppCompatActivity() {
             val height = editHeight.text.toString().toDoubleOrNull()
 
             if (name.isNotBlank() && username.isNotBlank() && gender.isNotBlank() && age != null && weight != null && height != null) {
-                // All required fields are filled
-
-                // Check if the username is valid
                 authManager.checkUsernameAvailability(username) { isAvailable, errorMessage ->
                     if (isAvailable) {
                         errorMessageTextView.visibility = View.GONE
-                        // Username is available, proceed with checking other questionnaire fields
                         val goalSelectedId = radioGroupGoal.checkedRadioButtonId
                         val motivationSelectedId = radioGroupMotivation.checkedRadioButtonId
                         val pushUpsSelectedId = radioGroupPushUps.checkedRadioButtonId
@@ -268,9 +251,6 @@ class SignUpUser : AppCompatActivity() {
                         if (goalSelectedId != -1 && motivationSelectedId != -1 && pushUpsSelectedId != -1
                             && activityLevelSelectedId != -1 && firstDaySelectedPosition != AdapterView.INVALID_POSITION) {
 
-                            // All questionnaire fields are filled
-
-                            // Retrieve the selected values from radio buttons and spinners
                             val goal = findViewById<RadioButton>(goalSelectedId).text.toString()
                             val motivation = findViewById<RadioButton>(motivationSelectedId).text.toString()
                             val pushUps = findViewById<RadioButton>(pushUpsSelectedId).text.toString()
@@ -282,86 +262,40 @@ class SignUpUser : AppCompatActivity() {
                             val joinDate = getCurrentFormattedDate()
                             val uniqueCode = generateUniqueCode(username)
 
-                            // Call the signUpUser function with the additional values
                             authManager.signUpUser(
                                 name, username, gender, age, weight, height,
                                 goal, motivation, pushUps, activityLevel, firstDay, trainingDays, sessionsOutside, joinDate, uniqueCode,
                                 null
                             ) { success, errorMessage ->
                                 if (success) {
-                                    Log.d("SignUpUser", "User created successfully")
 
                                     val intent = Intent(this@SignUpUser, MainActivity::class.java)
                                     startActivity(intent)
                                     finish()
                                 } else {
                                     errorMessage?.let {
-                                        // Your existing error handling logic
                                         errorMessageSubmitTextView.text = "Error creating user"
                                         errorMessageSubmitTextView.visibility = View.VISIBLE
                                     }
                                 }
                             }
                         } else {
-                            // Show an error message if any of the questionnaire fields are empty
                             errorMessageSubmitTextView.text = "Please fill in all questionnaire fields"
                             errorMessageSubmitTextView.visibility = View.VISIBLE
-
-
-
                         }
                     } else {
-                        // Username is not available, show an error message
                         errorMessageSubmitTextView.text = errorMessage
                         errorMessageSubmitTextView.visibility = visibility
-
                     }
                 }
             } else {
-                // Show an error message if any of the required fields are empty
                 errorMessageSubmitTextView.text = "Please fill in all required fields"
                 errorMessageSubmitTextView.visibility = View.VISIBLE
             }
         }
-
-//        buttonSubmit.setOnClickListener {
-//            val name = TextName.text.toString()
-//            val username = TextUsername.text.toString()
-//            val gender = spinnerGender.selectedItem.toString()
-//            val age = findViewById<EditText>(R.id.editAge).text.toString().toIntOrNull()
-//            val weight = findViewById<EditText>(R.id.editWeight).text.toString().toDoubleOrNull()
-//            val height = findViewById<EditText>(R.id.editHeight).text.toString().toDoubleOrNull()
-//
-//            if (name.isNotBlank() && username.isNotBlank() && gender.isNotBlank() && age != null && weight != null && height != null) {
-//                // All required fields are filled
-//
-//                // Call the signUpUser function with the additional values
-//                authManager.signUpUser(name, username, gender, age, weight, height) { success, errorMessage ->
-//                    if (success) {
-//                        Log.d("SignUpUser", "User criado com sucesso")
-//
-//                        val intent = Intent(this@SignUpUser, Questionary::class.java)
-//                        startActivity(intent)
-//                        finish()
-//                    } else {
-//                        errorMessage?.let {
-//                            // Your existing error handling logic
-//                            textViewDescription.text = "Erro ao criar o usuário"
-//                            textViewDescription.visibility = View.VISIBLE
-//                        }
-//                    }
-//                }
-//            } else {
-//                // Show an error message if any of the required fields are empty
-//                textViewDescription.text = "Please fill in all required fields"
-//                textViewDescription.visibility = View.VISIBLE
-//            }
-//        }
-
     }
 
     private fun getCurrentFormattedDate(): String {
-        // Replace this with your date formatting logic
         val currentTime = Calendar.getInstance().time
         return SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentTime)
     }
@@ -370,10 +304,8 @@ class SignUpUser : AppCompatActivity() {
         val random = SecureRandom()
         val salt = random.nextInt().absoluteValue.toString()
 
-        // Concatenate username and randomness
         val combinedData = "$username$salt"
 
-        // Create a hash of the combined data
         val hashedCode = hashString(combinedData)
 
         val sanitizedHashedCode = hashedCode.replace("-", "")
