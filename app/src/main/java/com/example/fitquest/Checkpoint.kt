@@ -275,5 +275,5 @@ fun checkpointWithinRadius(userLocation: LatLng, checkpointCoords: LatLng): Bool
     )
     val distanceInMeters = results[0]
     val distanceInKm = distanceInMeters / 1000
-    return distanceInKm <= 5
+    return distanceInKm <= 1
 }
